@@ -1,12 +1,15 @@
 package com.example.hotsix_be.hotel.service;
 
-import com.example.hotsix_be.hotel.dto.HotelInfoDto;
+import static com.example.hotsix_be.common.exception.ExceptionCode.*;
+
+import com.example.hotsix_be.common.exception.ExceptionCode;
+import com.example.hotsix_be.hotel.dto.request.HotelInfoRequest;
+import com.example.hotsix_be.hotel.dto.response.HotelDetailResponse;
 import com.example.hotsix_be.hotel.entity.Hotel;
 import com.example.hotsix_be.hotel.exception.HotelNotFoundException;
 import com.example.hotsix_be.hotel.repository.HotelRepository;
 import com.example.hotsix_be.image.entity.Image;
 import com.example.hotsix_be.image.service.FileService;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -28,21 +31,21 @@ public class HotelService {
     private final HotelRepository hotelRepository;
 
     @Transactional
-    public Hotel save(final HotelInfoDto hotelInfoDto, final List<MultipartFile> multipartFiles) {
+    public Hotel save(final HotelInfoRequest hotelInfoRequest, final List<MultipartFile> multipartFiles) {
 
         List<Image> newImages = fileService.uploadImages(multipartFiles, "ACCOMODATION",
-                hotelInfoDto.getHotelName());
+                hotelInfoRequest.getHotelName());
 
-        final Hotel hotel = new Hotel(hotelInfoDto.getHotelType(),
-                hotelInfoDto.getHotelAddress(),
-                hotelInfoDto.getHotelDetailAddress(),
-                hotelInfoDto.getNumberOfBedrooms(),
-                hotelInfoDto.getNumberOfBeds(),
-                hotelInfoDto.getMaximumGuests(),
-                hotelInfoDto.getHotelAmenities(),
-                hotelInfoDto.getHotelName(),
-                hotelInfoDto.getHotelDescription(),
-                hotelInfoDto.getHotelPricePerNight());
+        final Hotel hotel = new Hotel(hotelInfoRequest.getHotelType(),
+                hotelInfoRequest.getHotelAddress(),
+                hotelInfoRequest.getHotelDetailAddress(),
+                hotelInfoRequest.getNumberOfBedrooms(),
+                hotelInfoRequest.getNumberOfBeds(),
+                hotelInfoRequest.getMaximumGuests(),
+                hotelInfoRequest.getHotelAmenities(),
+                hotelInfoRequest.getHotelName(),
+                hotelInfoRequest.getHotelDescription(),
+                hotelInfoRequest.getHotelPricePerNight());
 
         newImages.forEach(hotel::addImage);
 
@@ -59,7 +62,11 @@ public class HotelService {
 
         return Optional.of(pageHotel)
                 .filter(Slice::hasContent)
-                .orElseThrow(() -> new HotelNotFoundException("등록된 숙소가 없습니다."));
+                .orElseThrow(() -> new HotelNotFoundException(HOTEL_NOT_FOUND));
     }
 
+    public HotelDetailResponse findById(Long id) {
+        return HotelDetailResponse.of(
+                hotelRepository.findById(id).orElseThrow(() -> new HotelNotFoundException(HOTEL_NOT_FOUND)));
+    }
 }

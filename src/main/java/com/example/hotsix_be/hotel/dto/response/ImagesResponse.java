@@ -1,4 +1,4 @@
-package com.example.hotsix_be.hotel.dto;
+package com.example.hotsix_be.hotel.dto.response;
 
 import com.example.hotsix_be.image.entity.Image;
 import java.util.List;

@@ -1,10 +1,12 @@
-package com.example.hotsix_be.hotel.dto;
+package com.example.hotsix_be.hotel.dto.request;
 
 import java.util.List;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
-public class HotelInfoDto {
+@Getter
+@Setter
+public class HotelInfoRequest {
     private String hotelType;
     private String hotelAddress;
     private String hotelDetailAddress;

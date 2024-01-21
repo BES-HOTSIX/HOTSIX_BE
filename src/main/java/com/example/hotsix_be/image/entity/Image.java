@@ -39,7 +39,7 @@ public class Image extends DateEntity {
     private Long size;
 
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "hotel_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Hotel hotel;

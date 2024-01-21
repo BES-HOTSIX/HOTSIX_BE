@@ -5,6 +5,9 @@ import static jakarta.persistence.CascadeType.REMOVE;
 
 import com.example.hotsix_be.common.entity.DateEntity;
 import com.example.hotsix_be.image.entity.Image;
+import com.example.hotsix_be.member.entity.Member;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -14,7 +17,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -60,13 +65,18 @@ public class Hotel extends DateEntity {
 
     private Long price;
 
-    @OneToMany(mappedBy = "hotel", cascade = {REMOVE, PERSIST}, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "hotel", cascade = {REMOVE, PERSIST}, fetch = FetchType.LAZY)
     private List<Image> images = new ArrayList<>();
 
     @ElementCollection
     @CollectionTable(name = "unavailable_dates", joinColumns = @JoinColumn(name = "hotel_id"))
     @Column(name = "date")
     private Set<LocalDate> unavailableDates = new HashSet<>();
+
+    @JsonIgnore
+    @ManyToOne(cascade = {PERSIST, REMOVE})
+    @JoinColumn(name = "member_id")
+    private Member owner;
 
     public Hotel(
             final String hotelType,

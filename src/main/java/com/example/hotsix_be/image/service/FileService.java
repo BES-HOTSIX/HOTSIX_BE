@@ -23,9 +23,9 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 @RequiredArgsConstructor
 public class FileService {
+
     private final NcpS3Properties ncpS3Properties;
     private final AmazonS3Client amazonS3Client;
-
 
     // Ncp
     public List<Image> uploadImages(List<MultipartFile> multipartFiles, String filePath, String name) {
@@ -49,7 +49,8 @@ public class FileService {
                                 ncpS3Properties.getS3().getBucketName(), keyName, inputStream, objectMetadata)
                                 .withCannedAcl(CannedAccessControlList.PublicRead));
 
-                uploadUrl = ncpS3Properties.getS3().getEndPoint() + "/" + ncpS3Properties.getS3().getBucketName() + "/" + keyName;
+                uploadUrl = ncpS3Properties.getS3().getEndPoint() + "/" + ncpS3Properties.getS3().getBucketName() + "/"
+                        + keyName;
 
             } catch (SdkClientException e) {
                 e.printStackTrace();
@@ -69,6 +70,7 @@ public class FileService {
 
         return images;
     }
+
 
     private String createRandomFileName(String fileName) {
         String ext = fileName.substring(fileName.indexOf(".") + 1);
@@ -94,5 +96,4 @@ public class FileService {
             throw new SdkClientException(e.getMessage());
         }
     }
-
 }

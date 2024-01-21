@@ -1,9 +1,8 @@
-package com.example.hotsix_be.hotel.dto;
+package com.example.hotsix_be.hotel.dto.response;
 
 import static lombok.AccessLevel.PRIVATE;
 
 import com.example.hotsix_be.hotel.entity.Hotel;
-import com.example.hotsix_be.image.entity.Image;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -13,7 +12,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor(access = PRIVATE)
-public class HotelPageResponse {
+public class HotelDetailResponse {
 
     private final Long id;
     private final String hotelType;
@@ -30,9 +29,10 @@ public class HotelPageResponse {
     private final Set<LocalDate> unavailableDates;
     private final LocalDateTime createdAt;
 
-    public static HotelPageResponse of(final Hotel hotel) {
 
-        return new HotelPageResponse(
+    public static HotelDetailResponse of(final Hotel hotel) {
+
+        return new HotelDetailResponse(
                 hotel.getId(),
                 hotel.getHotelType(),
                 hotel.getAddress(),
@@ -50,4 +50,3 @@ public class HotelPageResponse {
         );
     }
 }
-
