@@ -9,6 +9,7 @@ import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -17,6 +18,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import lombok.AccessLevel;
@@ -58,13 +60,13 @@ public class Hotel extends DateEntity {
 
     private Long price;
 
-    @OneToMany(mappedBy = "hotel", cascade = {REMOVE, PERSIST})
+    @OneToMany(mappedBy = "hotel", cascade = {REMOVE, PERSIST}, fetch = FetchType.EAGER)
     private List<Image> images = new ArrayList<>();
 
     @ElementCollection
     @CollectionTable(name = "unavailable_dates", joinColumns = @JoinColumn(name = "hotel_id"))
     @Column(name = "date")
-    private Set<LocalDate> unavailableDates;
+    private Set<LocalDate> unavailableDates = new HashSet<>();
 
     public Hotel(
             final String hotelType,
@@ -76,9 +78,8 @@ public class Hotel extends DateEntity {
             final List<String> facility,
             final String nickname,
             final String description,
-            final Long price,
-            final List<Image> images) {
-
+            final Long price
+    ) {
         this.hotelType = hotelType;
         this.address = address;
         this.addressDetail = addressDetail;
@@ -89,6 +90,10 @@ public class Hotel extends DateEntity {
         this.nickname = nickname;
         this.description = description;
         this.price = price;
-        this.images = images;
+    }
+
+    public void addImage(Image image) {
+        images.add(image);
+        image.setHotel(this);
     }
 }

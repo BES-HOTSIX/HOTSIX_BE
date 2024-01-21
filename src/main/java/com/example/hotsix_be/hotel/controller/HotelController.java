@@ -2,16 +2,21 @@ package com.example.hotsix_be.hotel.controller;
 
 import com.example.hotsix_be.common.dto.ResponseDto;
 import com.example.hotsix_be.hotel.dto.HotelInfoDto;
+import com.example.hotsix_be.hotel.dto.HotelPageResponse;
+import com.example.hotsix_be.hotel.entity.Hotel;
 import com.example.hotsix_be.hotel.service.HotelService;
-import jakarta.validation.Valid;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -43,4 +48,20 @@ public class HotelController {
                 )
         );
     }
+
+    @GetMapping("/all")
+    public ResponseEntity<?> hotelMain(@PageableDefault(size = 9) Pageable pageable) {
+        Page<Hotel> hotels = hotelService.findPageList(pageable);
+
+        List<HotelPageResponse> hotelListResponse = hotels.stream().map(HotelPageResponse::of).toList();
+
+        PageImpl<HotelPageResponse> hotelPageResponse = new PageImpl<>(hotelListResponse, pageable,
+                hotels.getTotalElements());
+
+        return ResponseEntity.ok(new ResponseDto<>(
+                HttpStatus.OK.value(),
+                "리스트 조회 성공", null,
+                null, hotelPageResponse));
+    }
+
 }

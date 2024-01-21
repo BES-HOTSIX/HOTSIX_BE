@@ -38,9 +38,14 @@ public class Image extends DateEntity {
 
     private Long size;
 
-    @Setter
-    @ManyToOne(fetch = FetchType.LAZY)
+
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "hotel_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Hotel hotel;
+
+    public void setHotel(final Hotel hotel) {
+        this.hotel = hotel;
+    }
+
 }
