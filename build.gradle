@@ -36,6 +36,10 @@ dependencies {
     // VALIDATION
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 
+    // Aws Java Sdk S3
+    // https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-s3
+    implementation 'com.amazonaws:aws-java-sdk-s3:1.12.630'
+
     // Lombok
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
