@@ -1,8 +1,5 @@
 package com.example.hotsix_be.hotel.service;
 
-import static com.example.hotsix_be.common.exception.ExceptionCode.*;
-
-import com.example.hotsix_be.common.exception.ExceptionCode;
 import com.example.hotsix_be.hotel.dto.request.HotelInfoRequest;
 import com.example.hotsix_be.hotel.dto.response.HotelDetailResponse;
 import com.example.hotsix_be.hotel.entity.Hotel;
@@ -10,17 +7,16 @@ import com.example.hotsix_be.hotel.exception.HotelNotFoundException;
 import com.example.hotsix_be.hotel.repository.HotelRepository;
 import com.example.hotsix_be.image.entity.Image;
 import com.example.hotsix_be.image.service.FileService;
-import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
+import java.util.Optional;
+
+import static com.example.hotsix_be.common.exception.ExceptionCode.HOTEL_NOT_FOUND;
 
 @Service
 @Transactional(readOnly = true)
