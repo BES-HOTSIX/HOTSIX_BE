@@ -26,7 +26,6 @@ public class HotelPageResponse {
     private final String description;
     private final Long price;
     private final ImagesResponse imagesResponse;
-    private final Set<LocalDate> unavailableDates;
     private final LocalDateTime createdAt;
 
     public static HotelPageResponse of(final Hotel hotel) {
@@ -44,7 +43,6 @@ public class HotelPageResponse {
                 hotel.getDescription(),
                 hotel.getPrice(),
                 ImagesResponse.of(hotel.getImages()),
-                hotel.getUnavailableDates(),
                 hotel.getCreatedAt()
         );
     }

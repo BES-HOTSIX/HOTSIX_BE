@@ -68,11 +68,6 @@ public class Hotel extends DateEntity {
     @OneToMany(mappedBy = "hotel", cascade = {REMOVE, PERSIST}, fetch = FetchType.LAZY)
     private List<Image> images = new ArrayList<>();
 
-    @ElementCollection
-    @CollectionTable(name = "unavailable_dates", joinColumns = @JoinColumn(name = "hotel_id"))
-    @Column(name = "date")
-    private Set<LocalDate> unavailableDates = new HashSet<>();
-
     @JsonIgnore
     @ManyToOne(cascade = {PERSIST, REMOVE})
     @JoinColumn(name = "member_id")

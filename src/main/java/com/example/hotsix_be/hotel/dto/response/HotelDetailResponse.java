@@ -26,7 +26,6 @@ public class HotelDetailResponse {
     private final String description;
     private final Long price;
     private final ImagesResponse imagesResponse;
-    private final Set<LocalDate> unavailableDates;
     private final LocalDateTime createdAt;
 
 
@@ -45,7 +44,6 @@ public class HotelDetailResponse {
                 hotel.getDescription(),
                 hotel.getPrice(),
                 ImagesResponse.of(hotel.getImages()),
-                hotel.getUnavailableDates(),
                 hotel.getCreatedAt()
         );
     }
