@@ -4,6 +4,7 @@ import static jakarta.persistence.CascadeType.PERSIST;
 import static jakarta.persistence.CascadeType.REMOVE;
 
 import com.example.hotsix_be.common.entity.DateEntity;
+import com.example.hotsix_be.hotel.dto.request.HotelModifyRequest;
 import com.example.hotsix_be.image.entity.Image;
 import com.example.hotsix_be.member.entity.Member;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -102,8 +103,23 @@ public class Hotel extends DateEntity {
         this.price = price;
     }
 
+    public void update(final HotelModifyRequest hotelModifyRequest){
+        this.hotelType = hotelModifyRequest.getHotelType();
+        this.address = hotelModifyRequest.getHotelAddress();
+        this.addressDetail = hotelModifyRequest.getHotelDetailAddress();
+        this.roomCnt = hotelModifyRequest.getNumberOfBedrooms();
+        this.bedCnt = hotelModifyRequest.getNumberOfBeds();
+        this.bathroomCnt = hotelModifyRequest.getNumberOfBathrooms();
+        this.maxPeople = hotelModifyRequest.getMaximumGuests();
+        this.facility = hotelModifyRequest.getHotelAmenities();
+        this.nickname = hotelModifyRequest.getHotelName();
+        this.description = hotelModifyRequest.getHotelDescription();
+        this.price = hotelModifyRequest.getHotelPricePerNight();
+    }
+
     public void addImage(Image image) {
         images.add(image);
         image.setHotel(this);
     }
+
 }

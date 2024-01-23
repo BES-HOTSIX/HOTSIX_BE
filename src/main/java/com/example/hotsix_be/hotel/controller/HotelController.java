@@ -79,13 +79,15 @@ public class HotelController {
     public ResponseEntity<?> hotelModify(@PathVariable("hotelId") final Long hotelId,
                                          @RequestPart("hotelInfo") final HotelModifyRequest hotelModifyRequest,
                                          @RequestPart(value = "files", required = false) final List<MultipartFile> newImages,
-                                         @RequestParam(value = "deletedImages", required = false) String deletedImagesJson
+                                         @RequestParam(value = "deletedImages", required = false) List<String> deletedImagesUrl
                                          ) {
 
         log.info("hotelId: " + hotelId);
-        log.info("hotelInfoRequest: " + hotelModifyRequest);
+        log.info("hotelInfoRequest: " + hotelModifyRequest.getHotelName());
         log.info("newImages: " + newImages);
-        log.info("deletedImagesJson: " + deletedImagesJson);
+        log.info("deletedImagesJson: " + deletedImagesUrl);
+
+        hotelService.modifyHotel(hotelId, hotelModifyRequest, newImages, deletedImagesUrl);
 
         return ResponseEntity.ok(
                 new ResponseDto<>(
