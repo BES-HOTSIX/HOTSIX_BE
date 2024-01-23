@@ -21,7 +21,7 @@ public class HotelInit implements ApplicationRunner {
     public void run(ApplicationArguments args) throws Exception {
         if (hotelRepository.count() <= 0) {
             IntStream.rangeClosed(1, 50).forEach(i -> {
-                Hotel hotel = new Hotel("호텔", "서울" + i, "구로구" + i, 3L, 2L, 3L, 5L, List.of("화장실"), "test" + i,
+                Hotel hotel = new Hotel("호텔", "서울" + i, "구로구" + i, 3L, 2L, 3L, 5L, List.of("주차장"), "test" + i,
                         "test" + i, 10000L);
 
                 hotelRepository.save(hotel);

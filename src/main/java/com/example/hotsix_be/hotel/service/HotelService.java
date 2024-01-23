@@ -36,19 +36,19 @@ public class HotelService {
     public Hotel save(final HotelInfoRequest hotelInfoRequest, final List<MultipartFile> multipartFiles) {
 
         List<Image> newImages = imageService.uploadImages(multipartFiles, "ACCOMODATION",
-                hotelInfoRequest.getHotelName());
+                hotelInfoRequest.getNickname());
 
         final Hotel hotel = new Hotel(hotelInfoRequest.getHotelType(),
-                hotelInfoRequest.getHotelAddress(),
-                hotelInfoRequest.getHotelDetailAddress(),
-                hotelInfoRequest.getNumberOfBedrooms(),
-                hotelInfoRequest.getNumberOfBeds(),
-                hotelInfoRequest.getNumberOfBathrooms(),
-                hotelInfoRequest.getMaximumGuests(),
-                hotelInfoRequest.getHotelAmenities(),
-                hotelInfoRequest.getHotelName(),
-                hotelInfoRequest.getHotelDescription(),
-                hotelInfoRequest.getHotelPricePerNight());
+                hotelInfoRequest.getAddress(),
+                hotelInfoRequest.getAddressDetail(),
+                hotelInfoRequest.getRoomCnt(),
+                hotelInfoRequest.getBedCnt(),
+                hotelInfoRequest.getBathroomCnt(),
+                hotelInfoRequest.getMaxPeople(),
+                hotelInfoRequest.getFacility(),
+                hotelInfoRequest.getNickname(),
+                hotelInfoRequest.getDescription(),
+                hotelInfoRequest.getPrice());
 
         newImages.forEach(hotel::addImage);
 
@@ -63,7 +63,7 @@ public class HotelService {
 
         if (newImages != null && !newImages.isEmpty()) {
             uploadedNewImages = imageService.uploadImages(newImages, "ACCOMODATION",
-                    hotelModifyRequest.getHotelName());
+                    hotelModifyRequest.getNickname());
         } // 새로운 사진이 있을 경우 업로드
 
         if (deleteImagesUrl != null && !deleteImagesUrl.isEmpty()) {

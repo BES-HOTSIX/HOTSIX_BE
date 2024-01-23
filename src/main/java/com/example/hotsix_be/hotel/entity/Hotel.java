@@ -105,16 +105,16 @@ public class Hotel extends DateEntity {
 
     public void update(final HotelModifyRequest hotelModifyRequest){
         this.hotelType = hotelModifyRequest.getHotelType();
-        this.address = hotelModifyRequest.getHotelAddress();
-        this.addressDetail = hotelModifyRequest.getHotelDetailAddress();
-        this.roomCnt = hotelModifyRequest.getNumberOfBedrooms();
-        this.bedCnt = hotelModifyRequest.getNumberOfBeds();
-        this.bathroomCnt = hotelModifyRequest.getNumberOfBathrooms();
-        this.maxPeople = hotelModifyRequest.getMaximumGuests();
-        this.facility = hotelModifyRequest.getHotelAmenities();
-        this.nickname = hotelModifyRequest.getHotelName();
-        this.description = hotelModifyRequest.getHotelDescription();
-        this.price = hotelModifyRequest.getHotelPricePerNight();
+        this.address = hotelModifyRequest.getAddress();
+        this.addressDetail = hotelModifyRequest.getAddressDetail();
+        this.roomCnt = hotelModifyRequest.getRoomCnt();
+        this.bedCnt = hotelModifyRequest.getBedCnt();
+        this.bathroomCnt = hotelModifyRequest.getBathroomCnt();
+        this.maxPeople = hotelModifyRequest.getMaxPeople();
+        this.facility = hotelModifyRequest.getFacility();
+        this.nickname = hotelModifyRequest.getNickname();
+        this.description = hotelModifyRequest.getDescription();
+        this.price = hotelModifyRequest.getPrice();
     }
 
     public void addImage(Image image) {

@@ -83,7 +83,7 @@ public class HotelController {
                                          ) {
 
         log.info("hotelId: " + hotelId);
-        log.info("hotelInfoRequest: " + hotelModifyRequest.getHotelName());
+        log.info("hotelInfoRequest: " + hotelModifyRequest.getNickname());
         log.info("newImages: " + newImages);
         log.info("deletedImagesJson: " + deletedImagesUrl);
 
