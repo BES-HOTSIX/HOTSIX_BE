@@ -54,6 +54,8 @@ public class Hotel extends DateEntity {
 
     private Long bedCnt;
 
+    private Long bathroomCnt;
+
     private Long maxPeople;
 
     @ElementCollection
@@ -68,10 +70,6 @@ public class Hotel extends DateEntity {
     @OneToMany(mappedBy = "hotel", cascade = {REMOVE, PERSIST}, fetch = FetchType.LAZY)
     private List<Image> images = new ArrayList<>();
 
-    @ElementCollection
-    @CollectionTable(name = "unavailable_dates", joinColumns = @JoinColumn(name = "hotel_id"))
-    @Column(name = "date")
-    private Set<LocalDate> unavailableDates = new HashSet<>();
 
     @JsonIgnore
     @ManyToOne(cascade = {PERSIST, REMOVE})
@@ -84,6 +82,7 @@ public class Hotel extends DateEntity {
             final String addressDetail,
             final Long roomCnt,
             final Long bedCnt,
+            final Long bathroomCnt,
             final Long maxPeople,
             final List<String> facility,
             final String nickname,
@@ -95,6 +94,7 @@ public class Hotel extends DateEntity {
         this.addressDetail = addressDetail;
         this.roomCnt = roomCnt;
         this.bedCnt = bedCnt;
+        this.bathroomCnt = bathroomCnt;
         this.maxPeople = maxPeople;
         this.facility = facility;
         this.nickname = nickname;

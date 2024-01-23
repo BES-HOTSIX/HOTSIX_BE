@@ -2,6 +2,7 @@ package com.example.hotsix_be.hotel.controller;
 
 import com.example.hotsix_be.common.dto.ResponseDto;
 import com.example.hotsix_be.hotel.dto.request.HotelInfoRequest;
+import com.example.hotsix_be.hotel.dto.request.HotelModifyRequest;
 import com.example.hotsix_be.hotel.dto.response.HotelDetailResponse;
 import com.example.hotsix_be.hotel.dto.response.HotelPageResponse;
 import com.example.hotsix_be.hotel.entity.Hotel;
@@ -19,7 +20,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -70,6 +73,27 @@ public class HotelController {
                 HttpStatus.OK.value(),
                 "호텔 조회 성공", null,
                 null, hotelDetailResponse));
+    }
+
+    @PutMapping("/{hotelId}/modify")
+    public ResponseEntity<?> hotelModify(@PathVariable("hotelId") final Long hotelId,
+                                         @RequestPart("hotelInfo") final HotelModifyRequest hotelModifyRequest,
+                                         @RequestPart(value = "files", required = false) final List<MultipartFile> newImages,
+                                         @RequestParam(value = "deletedImages", required = false) String deletedImagesJson
+                                         ) {
+
+        log.info("hotelId: " + hotelId);
+        log.info("hotelInfoRequest: " + hotelModifyRequest);
+        log.info("newImages: " + newImages);
+        log.info("deletedImagesJson: " + deletedImagesJson);
+
+        return ResponseEntity.ok(
+                new ResponseDto<>(
+                        HttpStatus.OK.value(),
+                        "성공적으로 수정되었습니다.", null,
+                        null, null
+                )
+        );
     }
 
 }

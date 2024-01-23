@@ -2,14 +2,13 @@ package com.example.hotsix_be.hotel.service;
 
 import static com.example.hotsix_be.common.exception.ExceptionCode.*;
 
-import com.example.hotsix_be.common.exception.ExceptionCode;
 import com.example.hotsix_be.hotel.dto.request.HotelInfoRequest;
 import com.example.hotsix_be.hotel.dto.response.HotelDetailResponse;
 import com.example.hotsix_be.hotel.entity.Hotel;
 import com.example.hotsix_be.hotel.exception.HotelNotFoundException;
 import com.example.hotsix_be.hotel.repository.HotelRepository;
 import com.example.hotsix_be.image.entity.Image;
-import com.example.hotsix_be.image.service.FileService;
+import com.example.hotsix_be.image.service.ImageService;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -27,13 +26,13 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class HotelService {
 
-    private final FileService fileService;
+    private final ImageService imageService;
     private final HotelRepository hotelRepository;
 
     @Transactional
     public Hotel save(final HotelInfoRequest hotelInfoRequest, final List<MultipartFile> multipartFiles) {
 
-        List<Image> newImages = fileService.uploadImages(multipartFiles, "ACCOMODATION",
+        List<Image> newImages = imageService.uploadImages(multipartFiles, "ACCOMODATION",
                 hotelInfoRequest.getHotelName());
 
         final Hotel hotel = new Hotel(hotelInfoRequest.getHotelType(),
@@ -41,6 +40,7 @@ public class HotelService {
                 hotelInfoRequest.getHotelDetailAddress(),
                 hotelInfoRequest.getNumberOfBedrooms(),
                 hotelInfoRequest.getNumberOfBeds(),
+                hotelInfoRequest.getNumberOfBathrooms(),
                 hotelInfoRequest.getMaximumGuests(),
                 hotelInfoRequest.getHotelAmenities(),
                 hotelInfoRequest.getHotelName(),

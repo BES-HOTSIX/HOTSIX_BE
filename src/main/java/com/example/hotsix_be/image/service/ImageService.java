@@ -22,7 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Log4j2
 @Service
 @RequiredArgsConstructor
-public class FileService {
+public class ImageService {
 
     private final NcpS3Properties ncpS3Properties;
     private final AmazonS3Client amazonS3Client;
