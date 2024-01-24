@@ -2,6 +2,7 @@ package com.example.hotsix_be.hotel;
 
 import com.example.hotsix_be.hotel.entity.Hotel;
 import com.example.hotsix_be.hotel.repository.HotelRepository;
+import com.example.hotsix_be.image.entity.Image;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -22,6 +23,7 @@ public class HotelInit implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
+
         if (hotelRepository.count() <= 0) {
             IntStream.rangeClosed(1, 50).forEach(i -> {
                 Hotel hotel = new Hotel("호텔", "서울" + i, "구로구" + i, 3L, 2L, 3L, 5L, List.of("주차장"), "test" + i,
