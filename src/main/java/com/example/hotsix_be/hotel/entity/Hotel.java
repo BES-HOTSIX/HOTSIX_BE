@@ -95,35 +95,7 @@ public class Hotel extends DateEntity {
         this.price = price;
     }
 
-    public Hotel(
-            final String hotelType,
-            final String address,
-            final String addressDetail,
-            final Long roomCnt,
-            final Long bedCnt,
-            final Long bathroomCnt,
-            final Long maxPeople,
-            final List<String> facility,
-            final String nickname,
-            final String description,
-            final Long price,
-            final List<Image> images
-    ) {
-        this.hotelType = hotelType;
-        this.address = address;
-        this.addressDetail = addressDetail;
-        this.roomCnt = roomCnt;
-        this.bedCnt = bedCnt;
-        this.bathroomCnt = bathroomCnt;
-        this.maxPeople = maxPeople;
-        this.facility = facility;
-        this.nickname = nickname;
-        this.description = description;
-        this.price = price;
-        this.images = images;
-    }
-
-    public void update(final HotelUpdateRequest hotelUpdateRequest){
+    public void update(final HotelUpdateRequest hotelUpdateRequest) {
         this.hotelType = hotelUpdateRequest.getHotelType();
         this.address = hotelUpdateRequest.getAddress();
         this.addressDetail = hotelUpdateRequest.getAddressDetail();

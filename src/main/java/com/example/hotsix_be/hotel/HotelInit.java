@@ -26,9 +26,8 @@ public class HotelInit implements ApplicationRunner {
 
         if (hotelRepository.count() <= 0) {
             IntStream.rangeClosed(1, 50).forEach(i -> {
-                Image image = new Image( "test" + i, "test" + i,"https://kr.object.ncloudstorage.com/hotsix.accomodation.bucket/ACCOMODATION/2024/01/ACCOMODATION_123123_1376ecd7-8f48-42d6-aca7-775b6dd16200_7-1-12.png" , 10000L);
                 Hotel hotel = new Hotel("호텔", "서울" + i, "구로구" + i, 3L, 2L, 3L, 5L, List.of("주차장"), "test" + i,
-                        "test" + i, 10000L, List.of(image));
+                        "test" + i, 10000L);
 
                 hotelRepository.save(hotel);
             });
