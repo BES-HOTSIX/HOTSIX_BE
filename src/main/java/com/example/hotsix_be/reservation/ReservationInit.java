@@ -10,8 +10,6 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
-import java.util.stream.IntStream;
-
 @Component
 @RequiredArgsConstructor
 @Profile("dev")
@@ -22,18 +20,16 @@ public class ReservationInit implements ApplicationRunner {
 
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
-		if (reservationRepository.count() <= 0) {
-			IntStream.rangeClosed(1, 5).forEach(i -> {
-				Reservation reservation = new Reservation(
-						"2024-01-22",
-						"2024-01-28",
-						3,
-						550000,
-						hotelRepository.findById(Long.valueOf(i)).get()
-				);
+		if (hotelRepository.count() > 50) {
+			Reservation reservation = new Reservation(
+					"2024-01-22",
+					"2024-01-28",
+					3,
+					550000,
+					hotelRepository.findAll().getLast()
+			);
 
-				reservationRepository.save(reservation);
-			});
+			reservationRepository.save(reservation);
 		}
 	}
 }
