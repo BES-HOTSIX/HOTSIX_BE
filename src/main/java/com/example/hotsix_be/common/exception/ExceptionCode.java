@@ -18,6 +18,8 @@ public enum ExceptionCode {
     INVALID_IMAGE_PATH(5101, "이미지를 저장할 경로가 올바르지 않습니다."),
     FAIL_IMAGE_NAME_HASH(5102, "이미지 이름을 해싱하는 데 실패했습니다."),
     INVALID_IMAGE(5103, "올바르지 않은 이미지 파일입니다."),
+    NCP_S3_UPLOAD_FAIL(5104, "NCP S3 업로드 중 에러가 발생했습니다"),
+    IMAGE_UPLOAD_IO_ERROR(5105, "이미지 저장 중 IO 에러가 발생했습니다"),
 
 
     NOT_FOUND_HOTEL_ID(6001, "요청한 ID에 해당하는 호텔이 존재하지 않습니다."),
