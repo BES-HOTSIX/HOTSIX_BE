@@ -60,8 +60,10 @@ public class ImageService {
 
             } catch (SdkClientException e) {
                 e.printStackTrace();
+                throw new SdkClientException(e.getMessage());
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                e.printStackTrace();
+                throw new ImageException(EXCEED_IMAGE_CAPACITY);
             }
 
             Image image = Image.builder()

@@ -2,7 +2,7 @@ package com.example.hotsix_be.hotel.controller;
 
 import com.example.hotsix_be.common.dto.ResponseDto;
 import com.example.hotsix_be.hotel.dto.request.HotelInfoRequest;
-import com.example.hotsix_be.hotel.dto.request.HotelModifyRequest;
+import com.example.hotsix_be.hotel.dto.request.HotelUpdateRequest;
 import com.example.hotsix_be.hotel.dto.response.HotelDetailResponse;
 import com.example.hotsix_be.hotel.dto.response.HotelPageResponse;
 import com.example.hotsix_be.hotel.entity.Hotel;
@@ -15,8 +15,8 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,12 +30,12 @@ import org.springframework.web.multipart.MultipartFile;
 @Log4j2
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/hotel")
+@RequestMapping("/api/v1/hotels")
 public class HotelController {
 
     private final HotelService hotelService;
 
-    @PostMapping(value = "/register", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping
     public ResponseEntity<?> registerHotel(@RequestPart("hotelInfo") final HotelInfoRequest hotelInfoRequest,
                                            @RequestPart(value = "files", required = false) final List<MultipartFile> multipartFiles) {
 
@@ -50,8 +50,8 @@ public class HotelController {
         );
     }
 
-    @GetMapping("/all")
-    public ResponseEntity<?> hotelMain(@PageableDefault(size = 9) final Pageable pageable) {
+    @GetMapping
+    public ResponseEntity<?> getHotels(@PageableDefault(size = 9) final Pageable pageable) {
         Page<Hotel> hotels = hotelService.findPageList(pageable);
 
         List<HotelPageResponse> hotelListResponse = hotels.stream().map(HotelPageResponse::of).toList();
@@ -75,24 +75,38 @@ public class HotelController {
                 null, hotelDetailResponse));
     }
 
-    @PutMapping("/{hotelId}/modify")
-    public ResponseEntity<?> hotelModify(@PathVariable("hotelId") final Long hotelId,
-                                         @RequestPart("hotelInfo") final HotelModifyRequest hotelModifyRequest,
+    @PutMapping("/{hotelId}")
+    public ResponseEntity<?> updateHotel(@PathVariable("hotelId") final Long hotelId,
+                                         @RequestPart("hotelInfo") final HotelUpdateRequest hotelUpdateRequest,
                                          @RequestPart(value = "files", required = false) final List<MultipartFile> newImages,
                                          @RequestParam(value = "deletedImages", required = false) List<String> deletedImagesUrl
                                          ) {
 
         log.info("hotelId: " + hotelId);
-        log.info("hotelInfoRequest: " + hotelModifyRequest.getNickname());
+        log.info("hotelInfoRequest: " + hotelUpdateRequest.getNickname());
         log.info("newImages: " + newImages);
         log.info("deletedImagesJson: " + deletedImagesUrl);
 
-        hotelService.modifyHotel(hotelId, hotelModifyRequest, newImages, deletedImagesUrl);
+        hotelService.modifyHotel(hotelId, hotelUpdateRequest, newImages, deletedImagesUrl);
 
         return ResponseEntity.ok(
                 new ResponseDto<>(
                         HttpStatus.OK.value(),
                         "성공적으로 수정되었습니다.", null,
+                        null, null
+                )
+        );
+    }
+
+    @DeleteMapping("/{hotelId}")
+    public ResponseEntity<?> deleteHotel(@PathVariable("hotelId") final Long hotelId) {
+
+        hotelService.deleteHotel(hotelId);
+
+        return ResponseEntity.ok(
+                new ResponseDto<>(
+                        HttpStatus.OK.value(),
+                        "성공적으로 삭제되었습니다.", null,
                         null, null
                 )
         );

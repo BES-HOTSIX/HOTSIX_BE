@@ -20,7 +20,8 @@ public enum ExceptionCode {
     INVALID_IMAGE(5103, "올바르지 않은 이미지 파일입니다."),
 
 
-    HOTEL_NOT_FOUND(6001, "해당 호텔이 존재하지 않습니다."),
+    NOT_FOUND_HOTEL_ID(6001, "요청한 ID에 해당하는 호텔이 존재하지 않습니다."),
+
 
 
     INVALID_REFRESH_TOKEN(9101, "올바르지 않은 형식의 RefreshToken입니다."),

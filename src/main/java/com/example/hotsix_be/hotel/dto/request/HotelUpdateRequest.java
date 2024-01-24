@@ -2,12 +2,11 @@ package com.example.hotsix_be.hotel.dto.request;
 
 import java.util.List;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class HotelModifyRequest {
+public class HotelUpdateRequest {
     private String hotelType;
     private String address;
     private String addressDetail;

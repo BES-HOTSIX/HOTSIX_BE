@@ -13,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor(access = PRIVATE)
 public class HotelPageResponse {
-
     private final Long id;
     private final String hotelType;
     private final String address;

@@ -4,13 +4,10 @@ import static jakarta.persistence.CascadeType.PERSIST;
 import static jakarta.persistence.CascadeType.REMOVE;
 
 import com.example.hotsix_be.common.entity.DateEntity;
-import com.example.hotsix_be.hotel.dto.request.HotelModifyRequest;
+import com.example.hotsix_be.hotel.dto.request.HotelUpdateRequest;
 import com.example.hotsix_be.image.entity.Image;
 import com.example.hotsix_be.member.entity.Member;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.CollectionTable;
-import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -20,13 +17,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -103,18 +96,18 @@ public class Hotel extends DateEntity {
         this.price = price;
     }
 
-    public void update(final HotelModifyRequest hotelModifyRequest){
-        this.hotelType = hotelModifyRequest.getHotelType();
-        this.address = hotelModifyRequest.getAddress();
-        this.addressDetail = hotelModifyRequest.getAddressDetail();
-        this.roomCnt = hotelModifyRequest.getRoomCnt();
-        this.bedCnt = hotelModifyRequest.getBedCnt();
-        this.bathroomCnt = hotelModifyRequest.getBathroomCnt();
-        this.maxPeople = hotelModifyRequest.getMaxPeople();
-        this.facility = hotelModifyRequest.getFacility();
-        this.nickname = hotelModifyRequest.getNickname();
-        this.description = hotelModifyRequest.getDescription();
-        this.price = hotelModifyRequest.getPrice();
+    public void update(final HotelUpdateRequest hotelUpdateRequest){
+        this.hotelType = hotelUpdateRequest.getHotelType();
+        this.address = hotelUpdateRequest.getAddress();
+        this.addressDetail = hotelUpdateRequest.getAddressDetail();
+        this.roomCnt = hotelUpdateRequest.getRoomCnt();
+        this.bedCnt = hotelUpdateRequest.getBedCnt();
+        this.bathroomCnt = hotelUpdateRequest.getBathroomCnt();
+        this.maxPeople = hotelUpdateRequest.getMaxPeople();
+        this.facility = hotelUpdateRequest.getFacility();
+        this.nickname = hotelUpdateRequest.getNickname();
+        this.description = hotelUpdateRequest.getDescription();
+        this.price = hotelUpdateRequest.getPrice();
     }
 
     public void addImage(Image image) {

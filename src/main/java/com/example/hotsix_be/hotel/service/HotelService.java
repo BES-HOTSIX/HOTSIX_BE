@@ -3,7 +3,7 @@ package com.example.hotsix_be.hotel.service;
 import static com.example.hotsix_be.common.exception.ExceptionCode.*;
 
 import com.example.hotsix_be.hotel.dto.request.HotelInfoRequest;
-import com.example.hotsix_be.hotel.dto.request.HotelModifyRequest;
+import com.example.hotsix_be.hotel.dto.request.HotelUpdateRequest;
 import com.example.hotsix_be.hotel.dto.response.HotelDetailResponse;
 import com.example.hotsix_be.hotel.entity.Hotel;
 import com.example.hotsix_be.hotel.exception.HotelException;
@@ -24,15 +24,13 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
-@Transactional(readOnly = true)
+@Transactional
 @RequiredArgsConstructor
 public class HotelService {
 
     private final ImageService imageService;
     private final HotelRepository hotelRepository;
 
-
-    @Transactional
     public Hotel save(final HotelInfoRequest hotelInfoRequest, final List<MultipartFile> multipartFiles) {
 
         List<Image> newImages = imageService.uploadImages(multipartFiles, "ACCOMODATION",
@@ -55,15 +53,15 @@ public class HotelService {
         return hotelRepository.save(hotel);
     }
 
-    @Transactional
-    public void modifyHotel(final Long hotelId, final HotelModifyRequest hotelModifyRequest,
+
+    public void modifyHotel(final Long hotelId, final HotelUpdateRequest hotelUpdateRequest,
                              final List<MultipartFile> newImages, final List<String> deleteImagesUrl) {
 
         List<Image> uploadedNewImages = new ArrayList<>();
 
         if (newImages != null && !newImages.isEmpty()) {
             uploadedNewImages = imageService.uploadImages(newImages, "ACCOMODATION",
-                    hotelModifyRequest.getNickname());
+                    hotelUpdateRequest.getNickname());
         } // 새로운 사진이 있을 경우 업로드
 
         if (deleteImagesUrl != null && !deleteImagesUrl.isEmpty()) {
@@ -71,9 +69,9 @@ public class HotelService {
         } // 삭제된 사진이 있을 경우 삭제
 
         Hotel hotel = hotelRepository.findById(hotelId)
-                .orElseThrow(() -> new HotelException(HOTEL_NOT_FOUND));
+                .orElseThrow(() -> new HotelException(NOT_FOUND_HOTEL_ID));
 
-        hotel.update(hotelModifyRequest);
+        hotel.update(hotelUpdateRequest);
 
         uploadedNewImages.forEach(hotel::addImage);
     }
@@ -86,6 +84,7 @@ public class HotelService {
         }
     }
 
+    @Transactional(readOnly = true)
     public Page<Hotel> findPageList(final Pageable pageable) {
         Pageable sortedPageable = PageRequest.of(
                 pageable.getPageNumber(),
@@ -96,12 +95,28 @@ public class HotelService {
 
         return Optional.of(pageHotel)
                 .filter(Slice::hasContent)
-                .orElseThrow(() -> new HotelException(HOTEL_NOT_FOUND));
+                .orElseThrow(() -> new HotelException(NOT_FOUND_HOTEL_ID));
     }
 
+    @Transactional(readOnly = true)
     public HotelDetailResponse findById(Long id) {
         return HotelDetailResponse.of(
-                hotelRepository.findById(id).orElseThrow(() -> new HotelException(HOTEL_NOT_FOUND)));
+                hotelRepository.findById(id).orElseThrow(() -> new HotelException(NOT_FOUND_HOTEL_ID)));
     }
 
+
+    public void deleteHotel(Long hotelId) {
+        Hotel hotel = hotelRepository.findById(hotelId)
+                .orElseThrow(() -> new HotelException(NOT_FOUND_HOTEL_ID));
+
+        if (hotel.getImages() != null && !hotel.getImages().isEmpty()) {
+            for (Image image : hotel.getImages()) {
+                String imageId = imageService.getImageIdAndDeleteImage(
+                        image.getUrl()); // ImageRepository 이미지 삭제 및 S3 버켓 이미지 ID 반환
+                imageService.deleteImageInS3Bucket(imageId); // S3 버켓 이미지 삭제
+            }
+        } // 호텔에 등록된 이미지가 있을 경우 삭제
+
+        hotelRepository.delete(hotel);
+    }
 }
