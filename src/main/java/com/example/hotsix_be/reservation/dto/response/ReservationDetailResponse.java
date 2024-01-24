@@ -14,8 +14,8 @@ import static lombok.AccessLevel.PRIVATE;
 public class ReservationDetailResponse {
 	private final String hotelNickname;
 	private final String hotelDescription;
-//	private final String hotelPhotoUrl;
-//	private final String hotelHost;
+	private final String hotelPhotoUrl;
+	//	private final String hotelHost;
 	private final LocalDateTime checkInDate;
 	private final LocalDateTime checkOutDate;
 	private final LocalDateTime createdAt;
@@ -27,7 +27,7 @@ public class ReservationDetailResponse {
 		return new ReservationDetailResponse(
 				hotel.getNickname(),
 				hotel.getDescription(),
-//				ImagesResponse.of(hotel.getImages()),
+				hotel.getImages().getFirst().getUrl(),
 //				hotel.getOwner().getUsername(),
 				reservation.getCheckInDate(),
 				reservation.getCheckOutDate(),
