@@ -9,6 +9,9 @@ public enum ExceptionCode {
 
     INVALID_REQUEST(1000, "올바르지 않은 요청입니다."),
 
+    INSUFFICIENT_DEPOSIT(2001, "예치금이 부족합니다."),
+    FAIL_APPROVE_PURCHASE(2002, "결제 승인에 실패하였습니다."),
+
     EXCEED_IMAGE_CAPACITY(5001, "업로드 가능한 이미지 용량을 초과했습니다."),
     NULL_IMAGE(5002, "업로드한 이미지 파일이 NULL입니다."),
     EMPTY_IMAGE_LIST(5003, "최소 한 장 이상의 이미지를 업로드해야합니다."),

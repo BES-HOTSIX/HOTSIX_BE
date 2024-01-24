@@ -3,27 +3,15 @@ package com.example.hotsix_be.reservation.entity;
 import com.example.hotsix_be.common.entity.DateEntity;
 import com.example.hotsix_be.hotel.entity.Hotel;
 import com.example.hotsix_be.member.entity.Member;
-import com.example.hotsix_be.member.entity.RefreshToken;
 import com.example.hotsix_be.review.entity.Review;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
-import java.time.LocalDateTime;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+
+import java.time.LocalDateTime;
 
 
 @Table(name = "reservations")
@@ -51,6 +39,10 @@ public class Reservation extends DateEntity {
 
     private Long price;
 
+    // TODO 결제 테스트용 임시 필드
+    @Builder.Default
+    private boolean isPaid = false;
+
     @JsonIgnore
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -67,5 +59,4 @@ public class Reservation extends DateEntity {
     @JoinColumn(name = "review_id")
     @JsonIgnore
     private Review review;
-
 }

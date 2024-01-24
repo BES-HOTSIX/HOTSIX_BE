@@ -3,19 +3,26 @@ package com.example.hotsix_be.cashlog.service;
 import com.example.hotsix_be.cashlog.dto.request.AddCashRequest;
 import com.example.hotsix_be.cashlog.entity.CashLog;
 import com.example.hotsix_be.cashlog.entity.EventType;
+import com.example.hotsix_be.cashlog.exception.CashException;
 import com.example.hotsix_be.cashlog.repository.CashLogRepository;
 import com.example.hotsix_be.member.entity.Member;
 import com.example.hotsix_be.reservation.entity.Reservation;
+import com.example.hotsix_be.reservation.service.ReservationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static com.example.hotsix_be.common.exception.ExceptionCode.INSUFFICIENT_DEPOSIT;
+import static com.example.hotsix_be.common.exception.ExceptionCode.INVALID_REQUEST;
 
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class CashLogService {
     private final CashLogRepository cashLogRepository;
+    private final ReservationService reservationService;
 
+    // 전반적인 입출금
     @Transactional
     public CashLog addCash(Member member, long price, Reservation reservation, EventType eventType) {
         CashLog cashLog = CashLog.builder()
@@ -36,6 +43,7 @@ public class CashLogService {
         return cashLog;
     }
 
+    // 입금
     @Transactional
     public CashLog addCash(final AddCashRequest addCashRequest, EventType eventType) {
         return addCash(
@@ -46,14 +54,14 @@ public class CashLogService {
         );
     }
 
+    // 예치금 사용 결제 // TODO payByCash 엔드포인트 만들기
     @Transactional
     public CashLog payByCashOnly(Reservation reservation) {
         Member buyer = reservation.getMember();
         long restCash = buyer.getRestCash();
         long payPrice = reservation.getPrice();
 
-        // TODO 5시 결산 시간에 회의 나누고 진행 (예치금이 부족할 경우 날리는 예외)
-        if (payPrice > restCash) throw null;
+        if (payPrice > restCash) throw new CashException(INSUFFICIENT_DEPOSIT);
 
         return addCash(
                 buyer,
@@ -62,4 +70,53 @@ public class CashLogService {
                 EventType.사용__예치금_결제
         );
     }
+
+    // 복합 결제 및 토스페이먼츠 결제 // TODO payByTossPayments 엔드포인트 만들기
+    @Transactional
+    public void payByTossPayments(long reservationId, long pgPayPrice) {
+        Reservation reservation = reservationService.findById(reservationId).orElse(null);
+
+        if (reservation == null) throw new CashException(INVALID_REQUEST);
+
+        Member buyer = reservation.getMember();
+        long restCash = buyer.getRestCash();
+        long payPrice = reservation.getPrice();
+
+        long useCash = payPrice - pgPayPrice;
+        addCash(buyer, pgPayPrice, reservation, EventType.충전__토스페이먼츠);
+        addCash(buyer, pgPayPrice * -1, reservation, EventType.사용__예치금_결제);
+
+        if (useCash > 0) {
+            if (useCash > restCash) {
+                throw new CashException(INSUFFICIENT_DEPOSIT);
+            }
+
+            addCash(buyer, useCash * -1, reservation, EventType.사용__예치금_결제);
+        }
+
+        reservationService.payDone(reservation);
+    }
+
+
+    public boolean canPay(Reservation reservation, long pgPayPrice) {
+        Member member = reservation.getMember();
+        long restCash = member.getRestCash();
+        long price = reservation.getPrice();
+
+        // 중복 결제 예방
+        if (reservation.isPaid()) throw new CashException(INVALID_REQUEST);
+
+        return price <= restCash + pgPayPrice;
+    }
+
+    // orderId = order.getCreateDate() + "__" + order.getId();
+    public boolean canPay(String orderId, long pgPayPrice) {
+        Reservation reservation = reservationService.findById(Long.parseLong(orderId.split("__", 2)[1])).orElse(null);
+
+        // 잘못된 방식의 접근으로 생성된 예약 객체가 없을 경우
+        if (reservation == null) throw new CashException(INVALID_REQUEST);
+
+        return canPay(reservation, pgPayPrice);
+    }
+
 }
