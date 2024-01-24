@@ -4,14 +4,12 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class HotelInfoRequest {
+public class HotelUpdateRequest {
 
     @NotBlank(message = "호텔 유형을 선택해주셔야 합니다.")
     private String hotelType;
@@ -19,7 +17,7 @@ public class HotelInfoRequest {
     @NotBlank(message = "주소는 비어 있을 수 없습니다")
     private String address;
 
-    @NotBlank(message = "상세 주소는 비어 있을 수 없습니다")
+    @NotBlank(message = "상세 주소는 비어 있을 수 없습니다.")
     private String addressDetail;
 
     @NotNull(message = "방 개수는 한 개 이상이어야 합니다.")
