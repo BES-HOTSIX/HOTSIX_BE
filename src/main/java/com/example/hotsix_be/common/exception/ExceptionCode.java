@@ -15,12 +15,16 @@ public enum ExceptionCode {
     EMPTY_IMAGE_LIST(5003, "최소 한 장 이상의 이미지를 업로드해야합니다."),
     EXCEED_IMAGE_LIST_SIZE(5004, "업로드 가능한 이미지 개수를 초과했습니다."),
     INVALID_IMAGE_URL(5005, "요청한 이미지 URL의 형식이 잘못되었습니다."),
+    IMAGE_NOT_FOUND(5006, "해당 이미지가 존재하지 않습니다."),
     INVALID_IMAGE_PATH(5101, "이미지를 저장할 경로가 올바르지 않습니다."),
     FAIL_IMAGE_NAME_HASH(5102, "이미지 이름을 해싱하는 데 실패했습니다."),
     INVALID_IMAGE(5103, "올바르지 않은 이미지 파일입니다."),
+    NCP_S3_UPLOAD_FAIL(5104, "NCP S3 업로드 중 에러가 발생했습니다"),
+    IMAGE_UPLOAD_IO_ERROR(5105, "이미지 저장 중 IO 에러가 발생했습니다"),
 
 
-    HOTEL_NOT_FOUND(6001, "해당 호텔이 존재하지 않습니다."),
+    NOT_FOUND_HOTEL_ID(6001, "요청한 ID에 해당하는 호텔이 존재하지 않습니다."),
+
 
 
     INVALID_REFRESH_TOKEN(9101, "올바르지 않은 형식의 RefreshToken입니다."),

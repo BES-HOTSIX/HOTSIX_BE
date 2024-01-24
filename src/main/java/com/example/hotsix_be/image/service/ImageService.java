@@ -1,5 +1,7 @@
 package com.example.hotsix_be.image.service;
 
+import static com.example.hotsix_be.common.exception.ExceptionCode.*;
+
 import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.AmazonS3Exception;
@@ -8,6 +10,8 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.example.hotsix_be.image.config.NcpS3Properties;
 import com.example.hotsix_be.image.entity.Image;
+import com.example.hotsix_be.image.exception.ImageException;
+import com.example.hotsix_be.image.repository.ImageRepository;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
@@ -22,13 +26,15 @@ import org.springframework.web.multipart.MultipartFile;
 @Log4j2
 @Service
 @RequiredArgsConstructor
-public class FileService {
+public class ImageService {
 
     private final NcpS3Properties ncpS3Properties;
     private final AmazonS3Client amazonS3Client;
+    private final ImageRepository imageRepository;
 
     // Ncp
-    public List<Image> uploadImages(List<MultipartFile> multipartFiles, String filePath, String name) {
+    public List<Image> uploadImages(final List<MultipartFile> multipartFiles, final String filePath,
+                                    final String name) {
         List<Image> images = new ArrayList<>();
 
         for (MultipartFile multipartFile : multipartFiles) {
@@ -54,8 +60,10 @@ public class FileService {
 
             } catch (SdkClientException e) {
                 e.printStackTrace();
+                throw new SdkClientException(e.getMessage());
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                e.printStackTrace();
+                throw new ImageException(EXCEED_IMAGE_CAPACITY);
             }
 
             Image image = Image.builder()
@@ -71,12 +79,6 @@ public class FileService {
         return images;
     }
 
-
-    private String createRandomFileName(String fileName) {
-        String ext = fileName.substring(fileName.indexOf(".") + 1);
-        return UUID.randomUUID() + "." + ext;
-    }
-
     private String createFolderNameWithTodayDate() {
         LocalDateTime now = LocalDateTime.now();
         String year = String.valueOf(now.getYear());
@@ -85,7 +87,7 @@ public class FileService {
         return year + "/" + month;
     }
 
-    public void deleteImage(String keyName) {
+    public void deleteImageInS3Bucket(final String keyName) {
         try {
             amazonS3Client.deleteObject(ncpS3Properties.getS3().getBucketName(), keyName);
         } catch (AmazonS3Exception e) {
@@ -96,4 +98,16 @@ public class FileService {
             throw new SdkClientException(e.getMessage());
         }
     }
+
+    public String getImageIdAndDeleteImage(final String imageUrl) {
+        Image image = findImageByUrl(imageUrl);
+        imageRepository.delete(image);
+        return image.getImageId();
+    }
+
+    private Image findImageByUrl(String imageUrl) {
+        return imageRepository.findByUrl(imageUrl)
+                .orElseThrow(() -> new ImageException(IMAGE_NOT_FOUND));
+    }
+
 }

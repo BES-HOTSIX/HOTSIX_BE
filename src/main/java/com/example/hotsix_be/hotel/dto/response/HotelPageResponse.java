@@ -13,13 +13,13 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor(access = PRIVATE)
 public class HotelPageResponse {
-
     private final Long id;
     private final String hotelType;
     private final String address;
     private final String addressDetail;
     private final Long roomCnt;
     private final Long bedCnt;
+    private final Long bathroomCnt;
     private final Long maxPeople;
     private final List<String> facility;
     private final String nickname;
@@ -37,6 +37,7 @@ public class HotelPageResponse {
                 hotel.getAddressDetail(),
                 hotel.getRoomCnt(),
                 hotel.getBedCnt(),
+                hotel.getBathroomCnt(),
                 hotel.getMaxPeople(),
                 hotel.getFacility(),
                 hotel.getNickname(),
