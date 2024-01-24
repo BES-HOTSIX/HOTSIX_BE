@@ -3,24 +3,17 @@ package com.example.hotsix_be.review.entity;
 import com.example.hotsix_be.common.entity.DateEntity;
 import com.example.hotsix_be.hotel.entity.Hotel;
 import com.example.hotsix_be.member.entity.Member;
+import com.example.hotsix_be.reservation.entity.Reservation;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 
 @Getter
+@Setter
 @SuperBuilder(toBuilder = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
@@ -54,5 +47,24 @@ public class Review extends DateEntity {
     @JoinColumn(name = "member_id")
     private Member member;
 
+    @JsonIgnore
+    @OneToOne
+    @JoinColumn(name = "reservation_id")
+    private Reservation reservation;
 
+    public Review(
+            final String body,
+            final Double totalRating,
+            final Double amenities,
+            final Double staffService,
+            final Double cleanliness,
+            final Reservation reservation
+    ) {
+        this.body = body;
+        this.totalRating = totalRating;
+        this.amenities = amenities;
+        this.staffService = staffService;
+        this.cleanliness = cleanliness;
+        this.reservation = reservation;
+    }
 }
