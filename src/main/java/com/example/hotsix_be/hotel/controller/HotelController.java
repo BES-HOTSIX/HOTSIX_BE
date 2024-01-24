@@ -7,6 +7,7 @@ import com.example.hotsix_be.hotel.dto.response.HotelDetailResponse;
 import com.example.hotsix_be.hotel.dto.response.HotelPageResponse;
 import com.example.hotsix_be.hotel.entity.Hotel;
 import com.example.hotsix_be.hotel.service.HotelService;
+import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -36,7 +37,7 @@ public class HotelController {
     private final HotelService hotelService;
 
     @PostMapping
-    public ResponseEntity<?> registerHotel(@RequestPart("hotelInfo") final HotelInfoRequest hotelInfoRequest,
+    public ResponseEntity<?> registerHotel(@RequestPart("hotelInfo") @Valid final HotelInfoRequest hotelInfoRequest,
                                            @RequestPart(value = "files", required = false) final List<MultipartFile> multipartFiles) {
 
         hotelService.save(hotelInfoRequest, multipartFiles);
@@ -77,15 +78,10 @@ public class HotelController {
 
     @PutMapping("/{hotelId}")
     public ResponseEntity<?> updateHotel(@PathVariable("hotelId") final Long hotelId,
-                                         @RequestPart("hotelInfo") final HotelUpdateRequest hotelUpdateRequest,
+                                         @RequestPart("hotelInfo") @Valid final HotelUpdateRequest hotelUpdateRequest,
                                          @RequestPart(value = "files", required = false) final List<MultipartFile> newImages,
                                          @RequestParam(value = "deletedImages", required = false) List<String> deletedImagesUrl
                                          ) {
-
-        log.info("hotelId: " + hotelId);
-        log.info("hotelInfoRequest: " + hotelUpdateRequest.getNickname());
-        log.info("newImages: " + newImages);
-        log.info("deletedImagesJson: " + deletedImagesUrl);
 
         hotelService.modifyHotel(hotelId, hotelUpdateRequest, newImages, deletedImagesUrl);
 
