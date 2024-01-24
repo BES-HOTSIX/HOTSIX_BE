@@ -23,12 +23,16 @@ public class ReservationDetailResponse {
 	private final long paidPrice;
 
 	public static ReservationDetailResponse of(final Hotel hotel, final Reservation reservation) {
+		String imageUrl = "";
+		if (!hotel.getImages().isEmpty()) {
+			imageUrl = hotel.getImages().get(0).getUrl(); // 첫 번째 이미지의 URL을 가져옵니다.
+		}
 
 		return new ReservationDetailResponse(
 				hotel.getNickname(),
 				hotel.getDescription(),
-				hotel.getImages().getFirst().getUrl(),
-//				hotel.getOwner().getUsername(),
+				imageUrl,
+				// hotel.getOwner().getUsername(), // 필요한 경우 주석 해제
 				reservation.getCheckInDate(),
 				reservation.getCheckOutDate(),
 				reservation.getCreatedAt(),
