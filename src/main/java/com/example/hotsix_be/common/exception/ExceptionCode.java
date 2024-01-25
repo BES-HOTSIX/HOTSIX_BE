@@ -25,7 +25,8 @@ public enum ExceptionCode {
 
     NOT_FOUND_HOTEL_ID(6001, "요청한 ID에 해당하는 호텔이 존재하지 않습니다."),
 
-
+    NOT_FOUND_RESERVATION_ID(7001, "요청한 ID에 해당하는 에약 내역이 존재하지 않습니다."),
+    INVALID_RESERVATION_REQUEST(7002, "요청에 해당하는 예약 내역을 불러올 수 없습니다."),
 
     INVALID_REFRESH_TOKEN(9101, "올바르지 않은 형식의 RefreshToken입니다."),
     INVALID_ACCESS_TOKEN(9102, "올바르지 않은 형식의 AccessToken입니다."),
