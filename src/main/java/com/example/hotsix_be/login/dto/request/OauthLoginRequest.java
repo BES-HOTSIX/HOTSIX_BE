@@ -1,4 +1,4 @@
-package com.example.hotsix_be.login.dto;
+package com.example.hotsix_be.login.dto.request;
 
 import static lombok.AccessLevel.PRIVATE;
 
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = PRIVATE)
-public class AccessTokenResponse {
+public class OauthLoginRequest {
 
-    private String accessToken;
+    private String code;
 }

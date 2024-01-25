@@ -10,4 +10,6 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     boolean existsByNickname(String nicknameWithRandomNumber);
 
     void deleteMemberById(Long memberId);
+
+    Optional<Member> findByUsername(String username);
 }

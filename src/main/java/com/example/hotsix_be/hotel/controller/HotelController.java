@@ -1,5 +1,8 @@
 package com.example.hotsix_be.hotel.controller;
 
+import com.example.hotsix_be.auth.Auth;
+import com.example.hotsix_be.auth.MemberOnly;
+import com.example.hotsix_be.auth.util.Accessor;
 import com.example.hotsix_be.common.dto.ResponseDto;
 import com.example.hotsix_be.hotel.dto.request.HotelInfoRequest;
 import com.example.hotsix_be.hotel.dto.request.HotelUpdateRequest;
@@ -37,8 +40,10 @@ public class HotelController {
     private final HotelService hotelService;
 
     @PostMapping
+    @MemberOnly
     public ResponseEntity<?> registerHotel(@RequestPart("hotelInfo") @Valid final HotelInfoRequest hotelInfoRequest,
-                                           @RequestPart(value = "files", required = false) final List<MultipartFile> multipartFiles) {
+                                           @RequestPart(value = "files", required = false) final List<MultipartFile> multipartFiles,
+                                           @Auth final Accessor accessor) {
 
         hotelService.save(hotelInfoRequest, multipartFiles);
 

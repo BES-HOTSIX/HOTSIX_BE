@@ -12,12 +12,14 @@ import com.example.hotsix_be.common.exception.BadRequestException;
 import com.example.hotsix_be.login.domain.MemberTokens;
 import com.example.hotsix_be.login.repository.RefreshTokenRepository;
 import com.example.hotsix_be.login.exception.RefreshTokenException;
+import com.example.hotsix_be.login.service.RefreshTokenService;
 import com.example.hotsix_be.login.util.BearerAuthorizationExtractor;
 import com.example.hotsix_be.login.util.JwtProvider;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -25,6 +27,7 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
+@Slf4j
 @RequiredArgsConstructor
 @Component
 public class LoginArgumentResolver implements HandlerMethodArgumentResolver {
@@ -35,7 +38,8 @@ public class LoginArgumentResolver implements HandlerMethodArgumentResolver {
 
     private final BearerAuthorizationExtractor extractor;
 
-    private final RefreshTokenRepository refreshTokenRepository;
+    private final RefreshTokenService refreshTokenService;
+
 
     @Override
     public boolean supportsParameter(final MethodParameter parameter) {
@@ -71,6 +75,7 @@ public class LoginArgumentResolver implements HandlerMethodArgumentResolver {
         if (cookies == null) {
             throw new RefreshTokenException(NOT_FOUND_REFRESH_TOKEN);
         }
+
         return Arrays.stream(cookies)
                 .filter(this::isValidRefreshToken)
                 .findFirst()
@@ -79,7 +84,6 @@ public class LoginArgumentResolver implements HandlerMethodArgumentResolver {
     }
 
     private boolean isValidRefreshToken(final Cookie cookie) {
-        return REFRESH_TOKEN.equals(cookie.getName()) &&
-                refreshTokenRepository.existsById(cookie.getValue());
+        return refreshTokenService.isValidRefreshToken(cookie.getValue());
     }
 }
