@@ -19,6 +19,7 @@ public class ReservationDetailResponse {
 	private final LocalDateTime checkInDate;
 	private final LocalDateTime checkOutDate;
 	private final LocalDateTime createdAt;
+	private final LocalDateTime cancelDate;
 	private final int numOfGuests;
 	private final long paidPrice;
 
@@ -36,6 +37,7 @@ public class ReservationDetailResponse {
 				reservation.getCheckInDate(),
 				reservation.getCheckOutDate(),
 				reservation.getCreatedAt(),
+				reservation.getCancelDate(),
 				reservation.getGuests(),
 				reservation.getPrice()
 		);
