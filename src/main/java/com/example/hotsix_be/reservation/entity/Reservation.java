@@ -3,20 +3,9 @@ package com.example.hotsix_be.reservation.entity;
 import com.example.hotsix_be.common.entity.DateEntity;
 import com.example.hotsix_be.hotel.entity.Hotel;
 import com.example.hotsix_be.member.entity.Member;
-import com.example.hotsix_be.member.entity.RefreshToken;
 import com.example.hotsix_be.review.entity.Review;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
-import java.time.LocalDateTime;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,6 +13,9 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 
 @Table(name = "reservations")
@@ -47,9 +39,9 @@ public class Reservation extends DateEntity {
     @Column(name = "cancel_date")
     private LocalDateTime cancelDate;
 
-    private Integer guests;
+    private int guests;
 
-    private Long price;
+    private long price;
 
     @JsonIgnore
     @ManyToOne
@@ -68,4 +60,17 @@ public class Reservation extends DateEntity {
     @JsonIgnore
     private Review review;
 
+    public Reservation(
+            final String checkInDate,
+            final String checkOutDate,
+            final int guests,
+            final long price,
+            final Hotel hotel
+    ) {
+        this.checkInDate = LocalDate.parse(checkInDate).atStartOfDay();
+        this.checkOutDate = LocalDate.parse(checkOutDate).atStartOfDay();
+        this.guests = guests;
+        this.price = price;
+        this.hotel = hotel;
+    }
 }

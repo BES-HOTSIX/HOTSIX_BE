@@ -44,6 +44,13 @@ public class Image extends DateEntity {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Hotel hotel;
 
+    public Image(final String imageId, final String name, final String url, final Long size) {
+        this.imageId = imageId;
+        this.name = name;
+        this.url = url;
+        this.size = size;
+    }
+
     public void setHotel(final Hotel hotel) {
         this.hotel = hotel;
     }
