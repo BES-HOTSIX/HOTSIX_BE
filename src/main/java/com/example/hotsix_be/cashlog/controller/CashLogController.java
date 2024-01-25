@@ -50,7 +50,7 @@ public class CashLogController {
 
     @PostMapping("/{id}/payByCash")
     public ResponseEntity<?> payByCash(@PathVariable long id) {
-        Reservation reservation = reservationService.findById(id).orElse(null);
+        Reservation reservation = reservationService.findOpById(id).orElse(null);
 
         cashLogService.canPay(reservation, reservation.getPrice());
 
@@ -65,6 +65,7 @@ public class CashLogController {
         );
     }
 
+    // TODO 토스페이먼츠 완성해야함
     @PostMapping("/confirm")
     public ResponseEntity<JSONObject> confirmPayment(@RequestBody String jsonBody) throws Exception {
 

@@ -74,7 +74,7 @@ public class CashLogService {
     // 복합 결제 및 토스페이먼츠 결제 // TODO payByTossPayments 엔드포인트 만들기
     @Transactional
     public void payByTossPayments(long reservationId, long pgPayPrice) {
-        Reservation reservation = reservationService.findById(reservationId).orElse(null);
+        Reservation reservation = reservationService.findOpById(reservationId).orElse(null);
 
         if (reservation == null) throw new CashException(INVALID_REQUEST);
 
@@ -111,7 +111,7 @@ public class CashLogService {
 
     // orderId = order.getCreateDate() + "__" + order.getId();
     public boolean canPay(String orderId, long pgPayPrice) {
-        Reservation reservation = reservationService.findById(Long.parseLong(orderId.split("__", 2)[1])).orElse(null);
+        Reservation reservation = reservationService.findOpById(Long.parseLong(orderId.split("__", 2)[1])).orElse(null);
 
         // 잘못된 방식의 접근으로 생성된 예약 객체가 없을 경우
         if (reservation == null) throw new CashException(INVALID_REQUEST);
