@@ -24,33 +24,44 @@ public class ReservationInit implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        if (hotelRepository.count() > 50) {
+        if (reservationRepository.count() == 0) {
             List<Hotel> hotels = hotelRepository.findAll();
             if (!hotels.isEmpty()) {
                 Hotel lastHotel = hotels.get(hotels.size() - 1);
 
-                Reservation reservation = new Reservation(
-                        "2024-02-22",
-                        "2024-02-28",
+                Reservation reservation1 = new Reservation(
+                        "2024-01-01",
+                        "2024-01-10",
                         3,
                         550000,
                         lastHotel
                 );
+                reservationRepository.save(reservation1);
 
-                reservationRepository.save(reservation);
-            }
-        }
+                Reservation reservation2 = new Reservation(
+                        "2024-01-22",
+                        "2024-01-28",
+                        1,
+                        100000,
+                        lastHotel
+                );
+                reservationRepository.save(reservation2);
 
-        if (reservationRepository.count() > 3) {
-            for (int i = 1; i <= 3; i++) {
-                Reservation reservation = reservationRepository.findById(Long.valueOf(i)).get();
+                Reservation reservation3 = new Reservation(
+                        "2024-02-22",
+                        "2024-02-28",
+                        4,
+                        1000000,
+                        lastHotel
+                );
+                reservationRepository.save(reservation3);
 
-                if (reservation == null || reservation.getCancelDate() != null)
-                    break;
-
-                reservation.setCancelDate(LocalDateTime.now());
-
-                reservationRepository.save(reservation);
+                List<Reservation> reservations = reservationRepository.findAll();
+                if (!reservations.isEmpty()) {
+                    Reservation reservation = reservations.get(0);
+                    reservation.setCancelDate(LocalDateTime.now());
+                    reservationRepository.save(reservation);
+                }
             }
         }
     }
