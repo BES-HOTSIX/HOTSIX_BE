@@ -19,7 +19,6 @@ public class ReservationController {
 
 	@GetMapping("/detail/{reserveId}")
 	public ResponseEntity<?> getReservationDetail(@PathVariable(value = "reserveId") final Long reserveId) {
-		System.out.println(reserveId);
 		ReservationDetailResponse reservationDetailResponse = reservationService.findById(reserveId);
 
 		return ResponseEntity.ok(new ResponseDto<>(

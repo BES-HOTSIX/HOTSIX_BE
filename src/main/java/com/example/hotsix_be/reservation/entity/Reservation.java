@@ -77,4 +77,8 @@ public class Reservation extends DateEntity {
         this.price = price;
         this.hotel = hotel;
     }
+
+    public void setCancelDate(LocalDateTime date) {
+        this.cancelDate = date;
+    }
 }
