@@ -15,7 +15,7 @@ public class ReservationDetailResponse {
 	private final String hotelNickname;
 	private final String hotelDescription;
 	private final String hotelPhotoUrl;
-//	private final String hotelHost;
+	private final String hotelHost;
 	private final LocalDateTime checkInDate;
 	private final LocalDateTime checkOutDate;
 	private final LocalDateTime createdAt;
@@ -33,7 +33,7 @@ public class ReservationDetailResponse {
 				hotel.getNickname(),
 				hotel.getDescription(),
 				imageUrl,
-				// hotel.getOwner().getUsername(), // 필요한 경우 주석 해제
+				hotel.getOwner().getUsername(),
 				reservation.getCheckInDate(),
 				reservation.getCheckOutDate(),
 				reservation.getCreatedAt(),
