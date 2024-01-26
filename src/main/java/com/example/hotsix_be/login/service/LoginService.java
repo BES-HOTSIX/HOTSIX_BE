@@ -107,7 +107,19 @@ public class LoginService {
         throw new AuthException(FAIL_TO_VALIDATE_TOKEN);
     }
 
-    public void removeRefreshToken(final String refreshToken, HttpServletResponse response) {
+    public void removeRefreshTokenProd(final String refreshToken, HttpServletResponse response) {
+        ResponseCookie deleteCookie = ResponseCookie.from("refresh-token", refreshToken)
+                .httpOnly(true)
+                .path("/")
+                .secure(true)
+                .domain(".hotshare.me")
+                .maxAge(0) // 쿠키의 유효기간을 0으로 설정하여 쿠키를 삭제
+                .build();
+
+        response.addHeader("Set-Cookie", deleteCookie.toString());
+    }
+
+    public void removeRefreshTokenDev(final String refreshToken, HttpServletResponse response) {
         ResponseCookie deleteCookie = ResponseCookie.from("refresh-token", refreshToken)
                 .httpOnly(true)
                 .path("/")
@@ -118,6 +130,8 @@ public class LoginService {
 
         response.addHeader("Set-Cookie", deleteCookie.toString());
     }
+
+
 
     public void deleteAccount(final Long memberId) {
         memberRepository.deleteMemberById(memberId);
