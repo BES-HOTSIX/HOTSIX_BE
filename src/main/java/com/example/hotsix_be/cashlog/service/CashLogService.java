@@ -1,6 +1,7 @@
 package com.example.hotsix_be.cashlog.service;
 
 import com.example.hotsix_be.cashlog.dto.request.AddCashRequest;
+import com.example.hotsix_be.cashlog.dto.response.ConfirmCashLogResponse;
 import com.example.hotsix_be.cashlog.entity.CashLog;
 import com.example.hotsix_be.cashlog.entity.EventType;
 import com.example.hotsix_be.cashlog.exception.CashException;
@@ -12,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 import static com.example.hotsix_be.common.exception.ExceptionCode.INSUFFICIENT_DEPOSIT;
 import static com.example.hotsix_be.common.exception.ExceptionCode.INVALID_REQUEST;
 
@@ -21,6 +24,18 @@ import static com.example.hotsix_be.common.exception.ExceptionCode.INVALID_REQUE
 public class CashLogService {
     private final CashLogRepository cashLogRepository;
     private final ReservationService reservationService;
+
+    public Optional<CashLog> findById(long id) {
+        return cashLogRepository.findById(id);
+    }
+
+    public ConfirmCashLogResponse findRespById(long id) {
+        CashLog cashLog = findById(id).orElse(null);
+
+        if (cashLog == null) throw new CashException(INVALID_REQUEST);
+
+        return ConfirmCashLogResponse.of(cashLog);
+    }
 
     // 전반적인 입출금
     @Transactional
@@ -35,6 +50,7 @@ public class CashLogService {
 
         cashLogRepository.save(cashLog);
 
+        // 충전 혹은 차감 발생 후 member의 restCash 갱신
         long newRestCash = member.getRestCash() + cashLog.getPrice();
         member.toBuilder()
                 .restCash(newRestCash)
@@ -43,7 +59,7 @@ public class CashLogService {
         return cashLog;
     }
 
-    // 입금
+    // 무통장 입금
     @Transactional
     public CashLog addCash(final AddCashRequest addCashRequest, EventType eventType) {
         return addCash(
@@ -54,7 +70,7 @@ public class CashLogService {
         );
     }
 
-    // 예치금 사용 결제 // TODO payByCash 엔드포인트 만들기
+    // 예치금 사용 결제
     @Transactional
     public CashLog payByCashOnly(Reservation reservation) {
         Member buyer = reservation.getMember();
@@ -118,5 +134,4 @@ public class CashLogService {
 
         return canPay(reservation, pgPayPrice);
     }
-
 }

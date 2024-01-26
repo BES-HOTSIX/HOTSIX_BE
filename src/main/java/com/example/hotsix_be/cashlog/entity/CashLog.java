@@ -6,10 +6,7 @@ import com.example.hotsix_be.reservation.entity.Reservation;
 import com.example.hotsix_be.withdrawapply.entity.WithdrawApply;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -47,5 +44,4 @@ public class CashLog extends DateEntity {
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "withdrawApply_id")
     private WithdrawApply withdrawApply;
-
 }

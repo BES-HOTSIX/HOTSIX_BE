@@ -1,10 +1,14 @@
 package com.example.hotsix_be.cashlog.controller;
 
 import com.example.hotsix_be.cashlog.dto.request.AddCashRequest;
+import com.example.hotsix_be.cashlog.dto.response.ConfirmCashLogResponse;
+import com.example.hotsix_be.cashlog.dto.response.TestResponse;
+import com.example.hotsix_be.cashlog.entity.CashLog;
 import com.example.hotsix_be.cashlog.entity.EventType;
 import com.example.hotsix_be.cashlog.exception.CashException;
 import com.example.hotsix_be.cashlog.service.CashLogService;
 import com.example.hotsix_be.common.dto.ResponseDto;
+import com.example.hotsix_be.reservation.dto.response.ReservationDetailResponse;
 import com.example.hotsix_be.reservation.entity.Reservation;
 import com.example.hotsix_be.reservation.service.ReservationService;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +38,21 @@ public class CashLogController {
     private final CashLogService cashLogService;
     private final ReservationService reservationService;
 
+    @GetMapping("/detail/{cashLogId}")
+    public ResponseEntity<?> getTestCashLog(@PathVariable(value = "cashLogId") long id) {
+        CashLog cashLog = cashLogService.findById(id).orElse(null);
+
+        if (cashLog == null) throw new CashException(INVALID_REQUEST);
+
+        System.out.println(id);
+        TestResponse cashLogDetailResponse = TestResponse.of(cashLog);
+
+        return ResponseEntity.ok(new ResponseDto<>(
+                HttpStatus.OK.value(),
+                "테스트 캐쉬로그 조회 성공", null,
+                null, cashLogDetailResponse));
+    }
+
     // TODO 무통장 입금 시 어드민이 수리하는 형식으로 수정할 예정
     @PostMapping("/addCash")
     public ResponseEntity<?> addCash(@RequestBody AddCashRequest addCashRequest) {
@@ -48,19 +67,49 @@ public class CashLogController {
         );
     }
 
-    @PostMapping("/{id}/payByCash")
-    public ResponseEntity<?> payByCash(@PathVariable long id) {
-        Reservation reservation = reservationService.findOpById(id).orElse(null);
+    @GetMapping("/payByCash/{reserveId}") // TODO 이미 결제된 예약일 경우 오류 발생시키기
+    public ResponseEntity<?> showPayByCash(@PathVariable(value = "reserveId") long reserveId) {
+        ReservationDetailResponse reservationDetailResponse = reservationService.findById(reserveId);
 
-        cashLogService.canPay(reservation, reservation.getPrice());
+        return ResponseEntity.ok(new ResponseDto<>(
+                        HttpStatus.OK.value(),
+                        "결제창 조회 성공", null,
+                        null, reservationDetailResponse));
+    }
 
-        cashLogService.payByCashOnly(reservation);
+    // 결제창에서 결제하기 버튼을 누를 경우 아래 메소드가 작동
+    // 이미 생성되어있는 임시 예약
+    @PostMapping("/payByCash/{reserveId}")
+    public ResponseEntity<?> payByCash(@PathVariable(value = "reserveId") long reserveId) {
+        Reservation reservation = reservationService.findOpById(reserveId).orElse(null);
+
+        if (reservation == null) throw new CashException(INVALID_REQUEST);
+
+        // TODO 멤버값 생기면 아래 활성화 후 테스트
+//        cashLogService.canPay(reservation, reservation.getPrice());
+
+//        cashLogService.payByCashOnly(reservation);
 
         return ResponseEntity.ok(
                 new ResponseDto<>(
                         HttpStatus.OK.value(),
                         "예치금 결제가 완료되었습니다.", null,
                         null, null
+                )
+        );
+    }
+
+    // TODO cashLog 의 내용에 따라 다르게 쓰이는 범용 완료 페이지로 만들 예정
+    // TODO 권한이 없는 사용자의 경우 접근을 막아야 한다
+    @GetMapping("/{cashLogId}/confirm")
+    public ResponseEntity<?> showConfirm(@PathVariable(value = "cashLogId") long cashLogId) {
+        ConfirmCashLogResponse confirmCashLogResponse = cashLogService.findRespById(cashLogId);
+
+        return ResponseEntity.ok(
+                new ResponseDto<>(
+                        HttpStatus.OK.value(),
+                        "예약이 완료되었습니다.", null,
+                        null, confirmCashLogResponse
                 )
         );
     }
