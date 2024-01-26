@@ -53,6 +53,14 @@ dependencies {
     // MySQL Database
     runtimeOnly 'com.mysql:mysql-connector-j'
 
+    // JWT
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+
+    //REDIS
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
     // JUnit 5
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 

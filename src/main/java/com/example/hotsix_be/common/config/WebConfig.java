@@ -1,6 +1,7 @@
 package com.example.hotsix_be.common.config;
 
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -11,11 +12,10 @@ public class WebConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
                 .allowedOrigins("http://localhost:3000", "https://www.hotshare.me") // Next.js 애플리케이션의 URL
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH")
-                .allowedHeaders("X-CSRF-Token", "X-Requested-With", "Accept", "Accept-Version", "Content-Length",
-                        "Content-MD5", "Content-Type", "Date", "X-Api-Version")
-                .allowCredentials(true);
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
+                .allowCredentials(true)
+                .exposedHeaders(HttpHeaders.LOCATION);
+        WebMvcConfigurer.super.addCorsMappings(registry);
     }
-
 
 }
