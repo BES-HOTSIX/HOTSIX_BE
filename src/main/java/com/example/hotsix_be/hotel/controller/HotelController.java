@@ -82,11 +82,14 @@ public class HotelController {
     }
 
     @PutMapping("/{hotelId}")
+    @MemberOnly
     public ResponseEntity<?> updateHotel(@PathVariable("hotelId") final Long hotelId,
                                          @RequestPart("hotelInfo") @Valid final HotelUpdateRequest hotelUpdateRequest,
                                          @RequestPart(value = "files", required = false) final List<MultipartFile> newImages,
-                                         @RequestParam(value = "deletedImages", required = false) List<String> deletedImagesUrl
-                                         ) {
+                                         @RequestParam(value = "deletedImages", required = false) List<String> deletedImagesUrl,
+                                         @Auth final Accessor accessor
+    ) {
+
 
         hotelService.modifyHotel(hotelId, hotelUpdateRequest, newImages, deletedImagesUrl);
 
@@ -100,8 +103,10 @@ public class HotelController {
     }
 
     @DeleteMapping("/{hotelId}")
-    public ResponseEntity<?> deleteHotel(@PathVariable("hotelId") final Long hotelId) {
+    @MemberOnly
+    public ResponseEntity<?> deleteHotel(@PathVariable("hotelId") final Long hotelId, @Auth final Accessor accessor) {
 
+        log.info("memberId = {}", accessor.getMemberId());
         hotelService.deleteHotel(hotelId);
 
         return ResponseEntity.ok(

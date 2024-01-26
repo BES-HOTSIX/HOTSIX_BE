@@ -44,8 +44,6 @@ public class LoginController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest, final HttpServletResponse response) {
 
-        log.info("memberRegisterRequest: " + loginRequest.getUsername());
-
         Member member = memberService.getMemberByUsername(loginRequest.getUsername());
 
         LoginResponse loginResponse = loginService.login(loginRequest, member);
