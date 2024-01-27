@@ -19,6 +19,7 @@ import com.example.hotsix_be.login.util.JwtProvider;
 import com.example.hotsix_be.member.entity.Member;
 import com.example.hotsix_be.member.repository.MemberRepository;
 import jakarta.servlet.http.HttpServletResponse;
+import java.nio.channels.FileChannel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseCookie;
@@ -76,6 +77,7 @@ public class LoginService {
                     return LoginResponse.of(memberTokens.getRefreshToken(), memberTokens.getAccessToken());
                 });
     }
+
 
     private Member findOrCreateMember(final String socialLoginId, final String nickname, final String imageUrl) {
         return memberRepository.findBySocialLoginId(socialLoginId)
@@ -144,4 +146,6 @@ public class LoginService {
     public void deleteAccount(final Long memberId) {
         memberRepository.deleteMemberById(memberId);
     }
+
+
 }

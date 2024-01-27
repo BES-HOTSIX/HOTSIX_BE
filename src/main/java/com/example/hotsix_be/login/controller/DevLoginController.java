@@ -9,7 +9,6 @@ import com.example.hotsix_be.auth.util.Accessor;
 import com.example.hotsix_be.common.dto.ResponseDto;
 import com.example.hotsix_be.login.dto.request.LoginRequest;
 import com.example.hotsix_be.login.dto.request.SocialLoginRequest;
-import com.example.hotsix_be.login.dto.response.AccessTokenResponse;
 import com.example.hotsix_be.login.dto.response.LoginResponse;
 import com.example.hotsix_be.login.service.LoginService;
 import com.example.hotsix_be.member.entity.Member;
@@ -21,7 +20,6 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -67,13 +65,13 @@ public class DevLoginController {
         );
     }
 
-    @PostMapping("/login/oauth/{provider}")
-    public Mono<ResponseEntity<?>> login(
-            @PathVariable final String provider,
+    @PostMapping("/login/kakao")
+    public Mono<ResponseEntity<?>> OAuthKaKaoLoginDev(
             @RequestBody final SocialLoginRequest socialLoginRequest,
             final HttpServletResponse httpServletResponse
     ) {
-        log.info(socialLoginRequest.getCode());
+
+
         return loginService.KakaoOauthLogin(socialLoginRequest.getCode())
                 .map(loginResponse -> {
                     ResponseCookie cookie = ResponseCookie.from("refresh-token", loginResponse.getRefreshToken())
@@ -94,6 +92,16 @@ public class DevLoginController {
                     );
                 });
     }
+
+    @PostMapping("/login/google")
+    public Mono<ResponseEntity<?>> OAuthGoogleLoginDev(
+            @RequestBody final SocialLoginRequest socialLoginRequest,
+            final HttpServletResponse httpServletResponse
+    ) {
+        log.info("code = {}", socialLoginRequest.getCode());
+        return null;
+    }
+
 
     @PostMapping("/token")
     public ResponseEntity<?> extendLogin(
