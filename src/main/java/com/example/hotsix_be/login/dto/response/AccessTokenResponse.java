@@ -9,12 +9,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = PRIVATE)
-public class LoginResponse {
+public class AccessTokenResponse {
 
-    private String refreshToken;
     private String accessToken;
-
-   public static LoginResponse of(String refreshToken, String accessToken) {
-        return new LoginResponse(refreshToken, accessToken);
-    }
 }

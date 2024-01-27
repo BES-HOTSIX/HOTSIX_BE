@@ -12,7 +12,6 @@ import com.example.hotsix_be.common.exception.BadRequestException;
 import com.example.hotsix_be.login.domain.MemberTokens;
 import com.example.hotsix_be.login.repository.RefreshTokenRepository;
 import com.example.hotsix_be.login.exception.RefreshTokenException;
-import com.example.hotsix_be.login.service.RefreshTokenService;
 import com.example.hotsix_be.login.util.BearerAuthorizationExtractor;
 import com.example.hotsix_be.login.util.JwtProvider;
 import jakarta.servlet.http.Cookie;
@@ -38,7 +37,7 @@ public class LoginArgumentResolver implements HandlerMethodArgumentResolver {
 
     private final BearerAuthorizationExtractor extractor;
 
-    private final RefreshTokenService refreshTokenService;
+    private final RefreshTokenRepository refreshTokenRepository;
 
 
     @Override
@@ -84,6 +83,7 @@ public class LoginArgumentResolver implements HandlerMethodArgumentResolver {
     }
 
     private boolean isValidRefreshToken(final Cookie cookie) {
-        return refreshTokenService.isValidRefreshToken(cookie.getValue());
+        return REFRESH_TOKEN.equals(cookie.getName()) &&
+                refreshTokenRepository.existsById(cookie.getValue());
     }
 }

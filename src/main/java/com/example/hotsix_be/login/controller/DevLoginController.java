@@ -8,7 +8,8 @@ import com.example.hotsix_be.auth.MemberOnly;
 import com.example.hotsix_be.auth.util.Accessor;
 import com.example.hotsix_be.common.dto.ResponseDto;
 import com.example.hotsix_be.login.dto.request.LoginRequest;
-import com.example.hotsix_be.login.dto.request.MemberIdRequest;
+import com.example.hotsix_be.login.dto.request.SocialLoginRequest;
+import com.example.hotsix_be.login.dto.response.AccessTokenResponse;
 import com.example.hotsix_be.login.dto.response.LoginResponse;
 import com.example.hotsix_be.login.service.LoginService;
 import com.example.hotsix_be.member.entity.Member;
@@ -20,12 +21,15 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Mono;
 
 @Slf4j
 @RestController
@@ -63,32 +67,40 @@ public class DevLoginController {
         );
     }
 
-//    @PostMapping("/login/{provider}")
-//    public ResponseEntity<LoginResponse> OauthLogin(
-//            @PathVariable final String provider,
-//            @RequestBody final OauthLoginRequest oauthLoginRequest,
-//            final HttpServletResponse response
-//    ) {
-//        final MemberTokens memberTokens = loginService.OauthLogin(provider, oauthLoginRequest.getCode());
-//        final ResponseCookie cookie = ResponseCookie.from("refresh-token", memberTokens.getRefreshToken())
-//                .maxAge(COOKIE_AGE_SECONDS)
-//                .sameSite("None")
-//                .secure(true)
-//                .httpOnly(true)
-//                .path("/")
-//                .build();
-//        response.addHeader(SET_COOKIE, cookie.toString());
-//        return ResponseEntity.status(CREATED).body(new LoginResponse(memberTokens.getAccessToken()));
-//    }
+    @PostMapping("/login/oauth/{provider}")
+    public Mono<ResponseEntity<?>> login(
+            @PathVariable final String provider,
+            @RequestBody final SocialLoginRequest socialLoginRequest,
+            final HttpServletResponse httpServletResponse
+    ) {
+        log.info(socialLoginRequest.getCode());
+        return loginService.KakaoOauthLogin(socialLoginRequest.getCode())
+                .map(loginResponse -> {
+                    ResponseCookie cookie = ResponseCookie.from("refresh-token", loginResponse.getRefreshToken())
+                            .maxAge(COOKIE_AGE_SECONDS)
+                            .sameSite("None")
+                            .secure(true)
+                            .httpOnly(true)
+                            .path("/")
+                            .build();
+                    httpServletResponse.addHeader(SET_COOKIE, cookie.toString());
+
+                    return ResponseEntity.ok(
+                            new ResponseDto<>(
+                                    HttpStatus.OK.value(),
+                                    "성공적으로 로그인 되었습니다.", null,
+                                    null, loginResponse
+                            )
+                    );
+                });
+    }
 
     @PostMapping("/token")
     public ResponseEntity<?> extendLogin(
             @CookieValue("refresh-token") final String refreshToken,
-            @RequestHeader("Authorization") final String authorizationHeader,
-            @RequestBody final MemberIdRequest memberIdRequest
+            @RequestHeader("Authorization") final String authorizationHeader
     ) {
-        final String renewalAccessToken = loginService.renewalAccessToken(refreshToken, authorizationHeader,
-                memberIdRequest);
+        final String renewalAccessToken = loginService.renewalAccessToken(refreshToken, authorizationHeader);
 
         return ResponseEntity.ok(
                 new ResponseDto<>(
