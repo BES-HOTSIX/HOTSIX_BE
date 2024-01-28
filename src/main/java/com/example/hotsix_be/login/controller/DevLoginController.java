@@ -71,7 +71,6 @@ public class DevLoginController {
             final HttpServletResponse httpServletResponse
     ) {
 
-
         return loginService.KakaoOauthLogin(socialLoginRequest.getCode())
                 .map(loginResponse -> {
                     ResponseCookie cookie = ResponseCookie.from("refresh-token", loginResponse.getRefreshToken())
@@ -95,6 +94,33 @@ public class DevLoginController {
 
     @PostMapping("/login/google")
     public Mono<ResponseEntity<?>> OAuthGoogleLoginDev(
+            @RequestBody final SocialLoginRequest socialLoginRequest,
+            final HttpServletResponse httpServletResponse
+    ) {
+        log.info("code = {}", socialLoginRequest.getCode());
+        return loginService.googleOauthLogin(socialLoginRequest.getCode())
+                .map(loginResponse -> {
+                    ResponseCookie cookie = ResponseCookie.from("refresh-token", loginResponse.getRefreshToken())
+                            .maxAge(COOKIE_AGE_SECONDS)
+                            .sameSite("None")
+                            .secure(true)
+                            .httpOnly(true)
+                            .path("/")
+                            .build();
+                    httpServletResponse.addHeader(SET_COOKIE, cookie.toString());
+
+                    return ResponseEntity.ok(
+                            new ResponseDto<>(
+                                    HttpStatus.OK.value(),
+                                    "성공적으로 로그인 되었습니다.", null,
+                                    null, loginResponse
+                            )
+                    );
+                });
+    }
+
+    @PostMapping("/login/naver")
+    public Mono<ResponseEntity<?>> OAuthNaverLoginDev(
             @RequestBody final SocialLoginRequest socialLoginRequest,
             final HttpServletResponse httpServletResponse
     ) {

@@ -83,7 +83,7 @@ public class KakaoOauthService {
         String nickname = properties.getNickname();
         String profileImageUrl = properties.getProfile_image();
 
-        Optional<Member> oauthMember = memberRepository.findMemberByNicknameAndAndSocialProvider(nickname,
+        Optional<Member> oauthMember = memberRepository.findMemberByNicknameAndSocialProvider(nickname,
                 KAKAO);
 
         if (oauthMember.isPresent()) {

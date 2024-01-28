@@ -1,11 +1,19 @@
 package com.example.hotsix_be.login.service;
 
+import static com.example.hotsix_be.member.entity.SocialProvider.GOOGLE;
+
 import com.example.hotsix_be.login.dto.google.GoogleTokenResponseDto;
+import com.example.hotsix_be.login.dto.google.GoogleUserInfoDto;
 import com.example.hotsix_be.login.dto.kakao.KakaoTokenResponseDto;
+import com.example.hotsix_be.member.entity.Member;
+import com.example.hotsix_be.member.entity.SocialProvider;
 import com.example.hotsix_be.member.repository.MemberRepository;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -45,14 +53,39 @@ public class GoogleOauthService {
 
 
     public Mono<GoogleTokenResponseDto> getToken(String code) {
-        String uri = tokenUri + "?grant_type=" + GRANT_TYPE + "&client_id=" + clientId + "&client_secret" + clientSecret
-                + "&redirect_uri=" + redirectUri
-                + "&code=" + code;
-
-        return webClient.get()
-                .uri(uri)
+        return webClient.post()
+                .uri(tokenUri)
+                .body(BodyInserters
+                        .fromFormData("grant_type", GRANT_TYPE)
+                        .with("code", code)
+                        .with("client_id", clientId)
+                        .with("client_secret", clientSecret)
+                        .with("redirect_uri", redirectUri))
                 .retrieve()
                 .bodyToMono(GoogleTokenResponseDto.class);
+    }
+
+    public Mono<GoogleUserInfoDto> getGoogleUserInfo(String token) {
+        return webClient.get()
+                .uri(userUri) // Google 사용자 정보 URI
+                .header("Authorization", "Bearer " + token)
+                .retrieve()
+                .bodyToMono(GoogleUserInfoDto.class);
+    }
+
+    @Transactional
+    public Member registerGoogleMember(GoogleUserInfoDto googleUserInfoDto) {
+        String nickname = googleUserInfoDto.getName();
+        String profileImageUrl = googleUserInfoDto.getPicture(); // Google 응답에 맞는 필드명으로 조정
+
+        Optional<Member> oauthMember = memberRepository.findMemberByNicknameAndSocialProvider(nickname, GOOGLE);
+
+        if (oauthMember.isPresent()) {
+            return oauthMember.get();
+        } else {
+            Member member = new Member(nickname, profileImageUrl, GOOGLE); // Google을 위한 Enum이나 상수
+            return memberRepository.save(member);
+        }
     }
 
 }

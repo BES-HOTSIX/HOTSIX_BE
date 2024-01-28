@@ -44,6 +44,7 @@ public class LoginService {
     private final BearerAuthorizationExtractor bearerExtractor;
     private final PasswordEncoder passwordEncoder;
     private final KakaoOauthService kakaoOAuthService;
+    private final GoogleOauthService googleOAuthService;
 
     public LoginResponse login(final LoginRequest loginRequest, final Member member) {
 
@@ -70,6 +71,25 @@ public class LoginService {
                     KakaoPropertiesDto properties = userInfo.getProperties();
 
                     final Member member = kakaoOAuthService.registerMember(properties);
+                    final MemberTokens memberTokens = jwtProvider.generateLoginToken(member.getId().toString());
+                    final RefreshToken savedRefreshToken = new RefreshToken(memberTokens.getRefreshToken(), member.getId());
+                    refreshTokenRepository.save(savedRefreshToken);
+
+                    return LoginResponse.of(memberTokens.getRefreshToken(), memberTokens.getAccessToken());
+                });
+    }
+
+    public Mono<LoginResponse> googleOauthLogin(final String code) {
+        return googleOAuthService.getToken(code)
+                .flatMap(token -> {
+                    String accessToken = token.getAccess_token();
+                    log.info("Google accessToken : {}", accessToken);
+
+                    return googleOAuthService.getGoogleUserInfo(accessToken);
+                })
+                .map(userInfo -> {
+
+                    final Member member = googleOAuthService.registerGoogleMember(userInfo);
                     final MemberTokens memberTokens = jwtProvider.generateLoginToken(member.getId().toString());
                     final RefreshToken savedRefreshToken = new RefreshToken(memberTokens.getRefreshToken(), member.getId());
                     refreshTokenRepository.save(savedRefreshToken);
