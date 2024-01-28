@@ -76,7 +76,7 @@ public class GoogleOauthService {
         String nickname = googleUserInfoDto.getName();
         String profileImageUrl = googleUserInfoDto.getPicture(); // Google 응답에 맞는 필드명으로 조정
 
-        Optional<Member> oauthMember = memberRepository.findMemberByNicknameAndSocialProvider(nickname, GOOGLE);
+        Optional<Member> oauthMember = memberRepository.findByNicknameAndSocialProvider(nickname, GOOGLE);
 
         if (oauthMember.isPresent()) {
             return oauthMember.get();

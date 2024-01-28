@@ -8,7 +8,6 @@ import static com.example.hotsix_be.common.exception.ExceptionCode.PASSWORD_NOT_
 
 import com.example.hotsix_be.common.exception.AuthException;
 import com.example.hotsix_be.login.domain.MemberTokens;
-import com.example.hotsix_be.login.domain.OauthProviders;
 import com.example.hotsix_be.login.domain.RefreshToken;
 import com.example.hotsix_be.login.dto.kakao.KakaoPropertiesDto;
 import com.example.hotsix_be.login.dto.naver.Response;
@@ -39,7 +38,6 @@ public class LoginService {
 
     private final RefreshTokenRepository refreshTokenRepository;
     private final MemberRepository memberRepository;
-    private final OauthProviders oauthProviders;
     private final JwtProvider jwtProvider;
     private final BearerAuthorizationExtractor bearerExtractor;
     private final PasswordEncoder passwordEncoder;
@@ -103,7 +101,7 @@ public class LoginService {
         return naverOAuthService.getToken(code, state)
                 .flatMap(token -> {
                     String accessToken = token.getAccess_token();
-                    log.info("Google accessToken : {}", accessToken);
+                    log.info("naver accessToken : {}", accessToken);
 
                     return naverOAuthService.getMemberInfo(accessToken);
                 })

@@ -38,10 +38,12 @@ public class Member extends DateEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true)
     private String username;
 
     private String password;
 
+    @Column(unique = true)
     private String nickname;
 
     private Long restCash;
@@ -65,9 +67,9 @@ public class Member extends DateEntity {
     }
 
     public Member(final String username, final String password, final String nickname) {
-       this.username = username;
-       this.password = password;
-       this.nickname = nickname;
+        this.username = username;
+        this.password = password;
+        this.nickname = nickname;
     }
 
     public Member(final String nickname, final String profileImageUrl, final SocialProvider socialProvider) {

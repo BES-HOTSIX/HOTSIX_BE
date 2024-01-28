@@ -23,7 +23,6 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -42,20 +41,13 @@ public class DevLoginController {
     private final MemberService memberService;
 
     @PostMapping("/login")
-    public ResponseEntity<?> loginDev(@RequestBody LoginRequest loginRequest, final HttpServletResponse response) {
+    public ResponseEntity<?> loginDev(@RequestBody final LoginRequest loginRequest, final HttpServletResponse response) {
 
         Member member = memberService.getMemberByUsername(loginRequest.getUsername());
 
         LoginResponse loginResponse = loginService.login(loginRequest, member);
 
-        final ResponseCookie cookie = ResponseCookie.from("refresh-token", loginResponse.getRefreshToken())
-                .maxAge(COOKIE_AGE_SECONDS)
-                .sameSite("None")
-                .secure(true)
-                .httpOnly(true)
-                .path("/")
-                .build();
-        response.addHeader(SET_COOKIE, cookie.toString());
+        sendRefreshTokenCookieDev(response, loginResponse);
 
         return ResponseEntity.ok(
                 new ResponseDto<>(
@@ -74,14 +66,7 @@ public class DevLoginController {
 
         return loginService.KakaoOauthLogin(socialLoginRequest.getCode())
                 .map(loginResponse -> {
-                    ResponseCookie cookie = ResponseCookie.from("refresh-token", loginResponse.getRefreshToken())
-                            .maxAge(COOKIE_AGE_SECONDS)
-                            .sameSite("None")
-                            .secure(true)
-                            .httpOnly(true)
-                            .path("/")
-                            .build();
-                    httpServletResponse.addHeader(SET_COOKIE, cookie.toString());
+                    sendRefreshTokenCookieDev(httpServletResponse, loginResponse);
 
                     return ResponseEntity.ok(
                             new ResponseDto<>(
@@ -101,14 +86,7 @@ public class DevLoginController {
         log.info("code = {}", socialLoginRequest.getCode());
         return loginService.googleOauthLogin(socialLoginRequest.getCode())
                 .map(loginResponse -> {
-                    ResponseCookie cookie = ResponseCookie.from("refresh-token", loginResponse.getRefreshToken())
-                            .maxAge(COOKIE_AGE_SECONDS)
-                            .sameSite("None")
-                            .secure(true)
-                            .httpOnly(true)
-                            .path("/")
-                            .build();
-                    httpServletResponse.addHeader(SET_COOKIE, cookie.toString());
+                    sendRefreshTokenCookieDev(httpServletResponse, loginResponse);
 
                     return ResponseEntity.ok(
                             new ResponseDto<>(
@@ -129,14 +107,7 @@ public class DevLoginController {
         log.info("state = {}", naverCodeDto.getState());
         return loginService.naverOauthLogin(naverCodeDto.getCode(), naverCodeDto.getState())
                 .map(loginResponse -> {
-                    ResponseCookie cookie = ResponseCookie.from("refresh-token", loginResponse.getRefreshToken())
-                            .maxAge(COOKIE_AGE_SECONDS)
-                            .sameSite("None")
-                            .secure(true)
-                            .httpOnly(true)
-                            .path("/")
-                            .build();
-                    httpServletResponse.addHeader(SET_COOKIE, cookie.toString());
+                    sendRefreshTokenCookieDev(httpServletResponse, loginResponse);
 
                     return ResponseEntity.ok(
                             new ResponseDto<>(
@@ -179,6 +150,18 @@ public class DevLoginController {
     public ResponseEntity<Void> deleteAccount(@Auth final Accessor accessor) {
         loginService.deleteAccount(accessor.getMemberId());
         return ResponseEntity.noContent().build();
+    }
+
+
+    private static void sendRefreshTokenCookieDev(final HttpServletResponse httpServletResponse, final LoginResponse loginResponse) {
+        ResponseCookie cookie = ResponseCookie.from("refresh-token", loginResponse.getRefreshToken())
+                .maxAge(COOKIE_AGE_SECONDS)
+                .sameSite("None")
+                .secure(true)
+                .httpOnly(true)
+                .path("/")
+                .build();
+        httpServletResponse.addHeader(SET_COOKIE, cookie.toString());
     }
 
 }

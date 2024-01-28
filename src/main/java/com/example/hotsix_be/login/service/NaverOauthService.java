@@ -74,7 +74,7 @@ public class NaverOauthService {
         String nickname = response.getNickname();
         String profileImageUrl = response.getProfile_image();
 
-        Optional<Member> oauthMember = memberRepository.findMemberByNicknameAndSocialProvider(nickname,
+        Optional<Member> oauthMember = memberRepository.findByNicknameAndSocialProvider(nickname + "1",
                 NAVER);
 
         if (oauthMember.isPresent()) {
