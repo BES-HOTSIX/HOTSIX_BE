@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 public enum ExceptionCode {
 
     INVALID_REQUEST(1000, "올바르지 않은 요청입니다."),
+    FAIL_TO_GENERATE_RANDOM_NICKNAME(1001, "랜덤한 닉네임을 생성하는데 실패하였습니다."),
 
 
     EXCEED_IMAGE_CAPACITY(5001, "업로드 가능한 이미지 용량을 초과했습니다."),
@@ -25,12 +26,22 @@ public enum ExceptionCode {
 
     NOT_FOUND_HOTEL_ID(6001, "요청한 ID에 해당하는 호텔이 존재하지 않습니다."),
 
+    NOT_FOUND_RESERVATION_ID(7001, "요청한 ID에 해당하는 예약 내역이 존재하지 않습니다."),
+    INVALID_RESERVATION_REQUEST(7002, "요청에 해당하는 예약 내역을 불러올 수 없습니다."),
 
-
+    INVALID_AUTHORIZATION_CODE(9001, "유효하지 않은 인증 코드입니다."),
+    NOT_SUPPORTED_OAUTH_SERVICE(9002, "해당 OAuth 서비스는 제공하지 않습니다."),
+    FAIL_TO_CONVERT_URL_PARAMETER(9003, "Url Parameter 변환 중 오류가 발생했습니다."),
     INVALID_REFRESH_TOKEN(9101, "올바르지 않은 형식의 RefreshToken입니다."),
     INVALID_ACCESS_TOKEN(9102, "올바르지 않은 형식의 AccessToken입니다."),
     EXPIRED_PERIOD_REFRESH_TOKEN(9103, "기한이 만료된 RefreshToken입니다."),
     EXPIRED_PERIOD_ACCESS_TOKEN(9104, "기한이 만료된 AccessToken입니다."),
+    FAIL_TO_VALIDATE_TOKEN(9105, "토큰 유효성 검사 중 오류가 발생했습니다."),
+    NOT_FOUND_REFRESH_TOKEN(9106, "refresh-token에 해당하는 쿠키 정보가 없습니다."),
+    INVALID_AUTHORITY(9201, "해당 요청에 대한 접근 권한이 없습니다."),
+    NOT_FOUND_MEMBER_BY_ID(9202, "해당 ID에 해당하는 회원이 존재하지 않습니다."),
+    NOT_FOUND_MEMBER_BY_USERNAME(9203, "해당 username에 해당하는 회원이 존재하지 않습니다."),
+    PASSWORD_NOT_MATCHED(9204, "비밀번호가 일치하지 않습니다."),
 
     INTERNAL_SEVER_ERROR(9999, "서버 에러가 발생하였습니다. 관리자에게 문의해 주세요.");
 
