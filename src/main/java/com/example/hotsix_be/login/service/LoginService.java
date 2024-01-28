@@ -5,6 +5,7 @@ import static com.example.hotsix_be.common.exception.ExceptionCode.FAIL_TO_GENER
 import static com.example.hotsix_be.common.exception.ExceptionCode.FAIL_TO_VALIDATE_TOKEN;
 import static com.example.hotsix_be.common.exception.ExceptionCode.INVALID_REFRESH_TOKEN;
 import static com.example.hotsix_be.common.exception.ExceptionCode.PASSWORD_NOT_MATCHED;
+import static org.springframework.http.HttpHeaders.SET_COOKIE;
 
 import com.example.hotsix_be.common.exception.AuthException;
 import com.example.hotsix_be.login.domain.MemberTokens;
@@ -35,6 +36,7 @@ public class LoginService {
 
     private static final int MAX_TRY_COUNT = 5;
     private static final int FOUR_DIGIT_RANGE = 10000;
+    public static final int COOKIE_AGE_SECONDS = 604800;
 
     private final RefreshTokenRepository refreshTokenRepository;
     private final MemberRepository memberRepository;
@@ -119,27 +121,6 @@ public class LoginService {
     }
 
 
-    private Member findOrCreateMember(final String socialLoginId, final String nickname, final String imageUrl) {
-        return memberRepository.findBySocialLoginId(socialLoginId)
-                .orElseGet(() -> createMember(socialLoginId, nickname, imageUrl));
-    }
-
-    private Member createMember(final String socialLoginId, final String nickname, final String imageUrl) {
-        int tryCount = 0;
-        while (tryCount < MAX_TRY_COUNT) {
-            final String nicknameWithRandomNumber = nickname + generateRandomFourDigitCode();
-            if (!memberRepository.existsByNickname(nicknameWithRandomNumber)) {
-                return null;
-            }
-            tryCount += 1;
-        }
-        throw new AuthException(FAIL_TO_GENERATE_RANDOM_NICKNAME);
-    }
-
-    private String generateRandomFourDigitCode() {
-        final int randomNumber = (int) (Math.random() * FOUR_DIGIT_RANGE);
-        return String.format("%04d", randomNumber);
-    }
 
     public String renewalAccessToken(final String refreshTokenRequest, final String authorizationHeader) {
         final String accessToken = bearerExtractor.extractAccessToken(authorizationHeader);
@@ -181,7 +162,6 @@ public class LoginService {
                 .build();
         response.addHeader("Set-Cookie", deleteCookie.toString());
     }
-
 
     public void deleteAccount(final Long memberId) {
         memberRepository.deleteMemberById(memberId);

@@ -1,16 +1,15 @@
 package com.example.hotsix_be.login.controller;
 
+import static com.example.hotsix_be.common.exception.ExceptionCode.NOT_SUPPORTED_OAUTH_SERVICE;
 import static org.springframework.http.HttpHeaders.SET_COOKIE;
-import static org.springframework.http.HttpStatus.CREATED;
 
 import com.example.hotsix_be.auth.Auth;
 import com.example.hotsix_be.auth.MemberOnly;
 import com.example.hotsix_be.auth.util.Accessor;
 import com.example.hotsix_be.common.dto.ResponseDto;
-import com.example.hotsix_be.login.domain.MemberTokens;
+import com.example.hotsix_be.common.exception.AuthException;
 import com.example.hotsix_be.login.dto.request.LoginRequest;
-import com.example.hotsix_be.login.dto.request.SocialLoginRequest;
-import com.example.hotsix_be.login.dto.response.AccessTokenResponse;
+import com.example.hotsix_be.login.dto.request.OAuthCodeRequest;
 import com.example.hotsix_be.login.dto.response.LoginResponse;
 import com.example.hotsix_be.login.service.LoginService;
 import com.example.hotsix_be.member.entity.Member;
@@ -49,50 +48,48 @@ public class ProdLoginController {
 
         LoginResponse loginResponse = loginService.login(loginRequest, member);
 
-        final ResponseCookie cookie = ResponseCookie.from("refresh-token", loginResponse.getRefreshToken())
-                .maxAge(COOKIE_AGE_SECONDS)
-                .domain(".hotshare.me")
-                .secure(true)
-                .httpOnly(true)
-                .path("/")
-                .build();
-        response.addHeader(SET_COOKIE, cookie.toString());
+        sendRefreshTokenCookieProd(response, loginResponse);
 
         return ResponseEntity.ok(
                 new ResponseDto<>(
                         HttpStatus.OK.value(),
                         "성공적으로 로그인 되었습니다.", null,
-                        null, loginResponse
+                        null, loginResponse.getAccessToken()
                 )
         );
     }
 
     @PostMapping("/login/{provider}")
-    public ResponseEntity<?> login(
-            @PathVariable final String provider,
-            @RequestBody final SocialLoginRequest socialLoginRequest,
-            final HttpServletResponse response
+    public Mono<ResponseEntity<ResponseDto<String>>> OAuthLoginDev(
+            @PathVariable String provider,
+            @RequestBody OAuthCodeRequest oAuthCodeRequest,
+            final HttpServletResponse httpServletResponse
     ) {
-        log.info(socialLoginRequest.getCode());
-        final Mono<LoginResponse> loginResponseMono = loginService.KakaoOauthLogin(socialLoginRequest.getCode());
+        String code = oAuthCodeRequest.getCode();
+        String state = oAuthCodeRequest.getState();
 
-        LoginResponse loginResponse = loginResponseMono.block();
+        Mono<LoginResponse> loginResponseMono = switch (provider.toLowerCase()) {
+            case "kakao" -> loginService.KakaoOauthLogin(code);
+            case "google" -> loginService.googleOauthLogin(code);
+            case "naver" -> loginService.naverOauthLogin(code, state);
+            default -> Mono.error(new AuthException(NOT_SUPPORTED_OAUTH_SERVICE));
+        };
 
-        final ResponseCookie cookie = ResponseCookie.from("refresh-token", loginResponse.getRefreshToken())
-                .maxAge(COOKIE_AGE_SECONDS)
-                .sameSite("None")
-                .secure(true)
-                .httpOnly(true)
-                .path("/")
-                .build();
-        response.addHeader(SET_COOKIE, cookie.toString());
-
-        return ResponseEntity.ok(
-                new ResponseDto<>(
-                        HttpStatus.OK.value(),
-                        "성공적으로 로그인 되었습니다.", null,
-                        null, loginResponse
-                )
+        return loginResponseMono.flatMap(loginResponse -> {
+            sendRefreshTokenCookieProd(httpServletResponse, loginResponse);
+            return Mono.just(ResponseEntity.ok(
+                    new ResponseDto<>(
+                            HttpStatus.OK.value(),
+                            "성공적으로 로그인 되었습니다.", null, null, loginResponse.getAccessToken()
+                    )
+            ));
+        }).onErrorResume(AuthException.class, e ->
+                Mono.just(ResponseEntity.badRequest().body(
+                        new ResponseDto<>(
+                                HttpStatus.BAD_REQUEST.value(),
+                                "로그인에 실패하였습니다.", null, null, null
+                        )
+                ))
         );
     }
 
@@ -126,6 +123,18 @@ public class ProdLoginController {
     public ResponseEntity<Void> deleteAccount(@Auth final Accessor accessor) {
         loginService.deleteAccount(accessor.getMemberId());
         return ResponseEntity.noContent().build();
+    }
+
+    private void sendRefreshTokenCookieProd(final HttpServletResponse response,
+                                           final LoginResponse loginResponse) {
+        final ResponseCookie cookie = ResponseCookie.from("refresh-token", loginResponse.getRefreshToken())
+                .maxAge(COOKIE_AGE_SECONDS)
+                .domain(".hotshare.me")
+                .secure(true)
+                .httpOnly(true)
+                .path("/")
+                .build();
+        response.addHeader(SET_COOKIE, cookie.toString());
     }
 
 }
