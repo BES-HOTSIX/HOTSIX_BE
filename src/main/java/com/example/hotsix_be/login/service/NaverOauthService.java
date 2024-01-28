@@ -1,9 +1,10 @@
 package com.example.hotsix_be.login.service;
 
-import static com.example.hotsix_be.member.entity.SocialProvider.GOOGLE;
+import static com.example.hotsix_be.member.entity.SocialProvider.NAVER;
 
-import com.example.hotsix_be.login.dto.google.GoogleTokenResponseDto;
-import com.example.hotsix_be.login.dto.google.GoogleUserInfoDto;
+import com.example.hotsix_be.login.dto.naver.Response;
+import com.example.hotsix_be.login.dto.naver.NaverTokenResponseDto;
+import com.example.hotsix_be.login.dto.naver.NaverUserInfoDto;
 import com.example.hotsix_be.member.entity.Member;
 import com.example.hotsix_be.member.repository.MemberRepository;
 import java.util.Optional;
@@ -11,12 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 @Component
-public class GoogleOauthService {
+public class NaverOauthService {
 
     @Autowired
     private WebClient webClient;
@@ -24,9 +24,7 @@ public class GoogleOauthService {
     @Autowired
     private MemberRepository memberRepository;
 
-    private static final String PROPERTIES_PATH = "${oauth2.provider.google.";
-    private static final String PROVIDER_NAME = "google";
-
+    private static final String PROPERTIES_PATH = "${oauth2.provider.naver.";
     private static final String GRANT_TYPE = "authorization_code";
 
     protected final String clientId;
@@ -35,7 +33,7 @@ public class GoogleOauthService {
     protected final String tokenUri;
     protected final String userUri;
 
-    public GoogleOauthService(
+    public NaverOauthService(
             @Value(PROPERTIES_PATH + "client-id}") final String clientId,
             @Value(PROPERTIES_PATH + "client-secret}") final String clientSecret,
             @Value(PROPERTIES_PATH + "redirect-uri}") final String redirectUri,
@@ -49,41 +47,41 @@ public class GoogleOauthService {
         this.userUri = userUri;
     }
 
+    public Mono<NaverTokenResponseDto> getToken(String code, String state) {
+        String uri =
+                tokenUri + "?grant_type=" + GRANT_TYPE + "&client_id=" + clientId + "&client_secret=" + clientSecret
+                        + "&redirect_uri=" + redirectUri
+                        + "&code=" + code + "&state=" + state;
 
-    public Mono<GoogleTokenResponseDto> getToken(String code) {
-        return webClient.post()
-                .uri(tokenUri)
-                .body(BodyInserters
-                        .fromFormData("grant_type", GRANT_TYPE)
-                        .with("code", code)
-                        .with("client_id", clientId)
-                        .with("client_secret", clientSecret)
-                        .with("redirect_uri", redirectUri))
+        return webClient.get()
+                .uri(uri)
                 .retrieve()
-                .bodyToMono(GoogleTokenResponseDto.class);
+                .bodyToMono(NaverTokenResponseDto.class);
     }
 
-    public Mono<GoogleUserInfoDto> getUserInfo(String token) {
+    public Mono<NaverUserInfoDto> getMemberInfo(String token) {
+
         return webClient.get()
-                .uri(userUri) // Google 사용자 정보 URI
+                .uri(userUri)
                 .header("Authorization", "Bearer " + token)
                 .retrieve()
-                .bodyToMono(GoogleUserInfoDto.class);
+                .bodyToFlux(NaverUserInfoDto.class)
+                .next(); // Flux 스트림의 첫 번째 항목을 반환
     }
 
     @Transactional
-    public Member registerGoogleMember(GoogleUserInfoDto googleUserInfoDto) {
-        String nickname = googleUserInfoDto.getName();
-        String profileImageUrl = googleUserInfoDto.getPicture(); // Google 응답에 맞는 필드명으로 조정
+    public Member registerMember(Response response) {
+        String nickname = response.getNickname();
+        String profileImageUrl = response.getProfile_image();
 
-        Optional<Member> oauthMember = memberRepository.findMemberByNicknameAndSocialProvider(nickname, GOOGLE);
+        Optional<Member> oauthMember = memberRepository.findMemberByNicknameAndSocialProvider(nickname,
+                NAVER);
 
         if (oauthMember.isPresent()) {
             return oauthMember.get();
         } else {
-            Member member = new Member(nickname, profileImageUrl, GOOGLE); // Google을 위한 Enum이나 상수
+            Member member = new Member(nickname + "1", profileImageUrl, NAVER);
             return memberRepository.save(member);
         }
     }
-
 }

@@ -11,6 +11,7 @@ import com.example.hotsix_be.login.domain.MemberTokens;
 import com.example.hotsix_be.login.domain.OauthProviders;
 import com.example.hotsix_be.login.domain.RefreshToken;
 import com.example.hotsix_be.login.dto.kakao.KakaoPropertiesDto;
+import com.example.hotsix_be.login.dto.naver.Response;
 import com.example.hotsix_be.login.dto.request.LoginRequest;
 import com.example.hotsix_be.login.dto.response.LoginResponse;
 import com.example.hotsix_be.login.repository.RefreshTokenRepository;
@@ -19,7 +20,6 @@ import com.example.hotsix_be.login.util.JwtProvider;
 import com.example.hotsix_be.member.entity.Member;
 import com.example.hotsix_be.member.repository.MemberRepository;
 import jakarta.servlet.http.HttpServletResponse;
-import java.nio.channels.FileChannel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseCookie;
@@ -45,6 +45,7 @@ public class LoginService {
     private final PasswordEncoder passwordEncoder;
     private final KakaoOauthService kakaoOAuthService;
     private final GoogleOauthService googleOAuthService;
+    private final NaverOauthService naverOAuthService;
 
     public LoginResponse login(final LoginRequest loginRequest, final Member member) {
 
@@ -85,11 +86,32 @@ public class LoginService {
                     String accessToken = token.getAccess_token();
                     log.info("Google accessToken : {}", accessToken);
 
-                    return googleOAuthService.getGoogleUserInfo(accessToken);
+                    return googleOAuthService.getUserInfo(accessToken);
                 })
                 .map(userInfo -> {
 
                     final Member member = googleOAuthService.registerGoogleMember(userInfo);
+                    final MemberTokens memberTokens = jwtProvider.generateLoginToken(member.getId().toString());
+                    final RefreshToken savedRefreshToken = new RefreshToken(memberTokens.getRefreshToken(), member.getId());
+                    refreshTokenRepository.save(savedRefreshToken);
+
+                    return LoginResponse.of(memberTokens.getRefreshToken(), memberTokens.getAccessToken());
+                });
+    }
+
+    public Mono<LoginResponse> naverOauthLogin(final String code, final String state) {
+        return naverOAuthService.getToken(code, state)
+                .flatMap(token -> {
+                    String accessToken = token.getAccess_token();
+                    log.info("Google accessToken : {}", accessToken);
+
+                    return naverOAuthService.getMemberInfo(accessToken);
+                })
+                .map(userInfo -> {
+
+                    Response properties = userInfo.getResponse();
+
+                    final Member member = naverOAuthService.registerMember(properties);
                     final MemberTokens memberTokens = jwtProvider.generateLoginToken(member.getId().toString());
                     final RefreshToken savedRefreshToken = new RefreshToken(memberTokens.getRefreshToken(), member.getId());
                     refreshTokenRepository.save(savedRefreshToken);

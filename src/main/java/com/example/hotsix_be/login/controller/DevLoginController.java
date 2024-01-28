@@ -7,6 +7,7 @@ import com.example.hotsix_be.auth.Auth;
 import com.example.hotsix_be.auth.MemberOnly;
 import com.example.hotsix_be.auth.util.Accessor;
 import com.example.hotsix_be.common.dto.ResponseDto;
+import com.example.hotsix_be.login.dto.naver.NaverCodeDto;
 import com.example.hotsix_be.login.dto.request.LoginRequest;
 import com.example.hotsix_be.login.dto.request.SocialLoginRequest;
 import com.example.hotsix_be.login.dto.response.LoginResponse;
@@ -121,11 +122,30 @@ public class DevLoginController {
 
     @PostMapping("/login/naver")
     public Mono<ResponseEntity<?>> OAuthNaverLoginDev(
-            @RequestBody final SocialLoginRequest socialLoginRequest,
+            @RequestBody final NaverCodeDto naverCodeDto,
             final HttpServletResponse httpServletResponse
     ) {
-        log.info("code = {}", socialLoginRequest.getCode());
-        return null;
+        log.info("code = {}", naverCodeDto.getCode());
+        log.info("state = {}", naverCodeDto.getState());
+        return loginService.naverOauthLogin(naverCodeDto.getCode(), naverCodeDto.getState())
+                .map(loginResponse -> {
+                    ResponseCookie cookie = ResponseCookie.from("refresh-token", loginResponse.getRefreshToken())
+                            .maxAge(COOKIE_AGE_SECONDS)
+                            .sameSite("None")
+                            .secure(true)
+                            .httpOnly(true)
+                            .path("/")
+                            .build();
+                    httpServletResponse.addHeader(SET_COOKIE, cookie.toString());
+
+                    return ResponseEntity.ok(
+                            new ResponseDto<>(
+                                    HttpStatus.OK.value(),
+                                    "성공적으로 로그인 되었습니다.", null,
+                                    null, loginResponse
+                            )
+                    );
+                });
     }
 
 
