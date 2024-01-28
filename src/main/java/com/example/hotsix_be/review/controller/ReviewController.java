@@ -2,16 +2,16 @@ package com.example.hotsix_be.review.controller;
 
 import com.example.hotsix_be.common.dto.ResponseDto;
 import com.example.hotsix_be.review.dto.request.ReviewRequestDTO;
+import com.example.hotsix_be.review.dto.response.ReviewResponseDTO;
 import com.example.hotsix_be.review.service.ReviewService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Log4j2
 @RestController
@@ -34,5 +34,12 @@ public class ReviewController {
                         null, null
                 )
         );
+    }
+
+    @GetMapping("/all")
+    @ResponseBody
+    public ResponseEntity<List<ReviewResponseDTO>> getAllReviews() {
+        List<ReviewResponseDTO> reviews = reviewService.getAllReviews();
+        return ResponseEntity.ok(reviews);
     }
 }

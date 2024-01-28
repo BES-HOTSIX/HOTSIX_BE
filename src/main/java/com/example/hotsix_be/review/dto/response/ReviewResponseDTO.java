@@ -7,8 +7,20 @@ import lombok.Setter;
 @Setter
 public class ReviewResponseDTO {
 
-    private Long id;
-    private String body;
-    private Double totalRating;
+    private final String body;
+    private final Double amenities;
+    private final Double staffService;
+    private final Double cleanliness;
+    private final Double rating;
+
+
+    public ReviewResponseDTO(String body, Double amenities, Double staffService, Double cleanliness, Double rating) {
+
+        this.body = body;
+        this.amenities = amenities;
+        this.staffService = staffService;
+        this.cleanliness = cleanliness;
+        this.rating = rating;
+    }
 
 }

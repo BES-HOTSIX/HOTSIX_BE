@@ -27,7 +27,7 @@ public class Review extends DateEntity {
 
     private String body;
 
-    private Double totalRating;
+    private Double rating;
 
     private Double amenities;
 
@@ -52,19 +52,15 @@ public class Review extends DateEntity {
     @JoinColumn(name = "reservation_id")
     private Reservation reservation;
 
-    public Review(
-            final String body,
-            final Double totalRating,
-            final Double amenities,
-            final Double staffService,
-            final Double cleanliness,
-            final Reservation reservation
-    ) {
+    @Builder
+    public Review(String body, Double amenities, Double staffService, Double cleanliness, Double rating, Long hotelId, Long memberId, Reservation reservation) {
         this.body = body;
-        this.totalRating = totalRating;
         this.amenities = amenities;
         this.staffService = staffService;
         this.cleanliness = cleanliness;
+        this.rating = rating;
+        this.hotel = hotel;
+        this.member = member;
         this.reservation = reservation;
     }
 }
