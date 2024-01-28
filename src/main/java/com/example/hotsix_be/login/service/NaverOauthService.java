@@ -18,15 +18,12 @@ import reactor.core.publisher.Mono;
 @Component
 public class NaverOauthService {
 
-    @Autowired
-    private WebClient webClient;
-
-    @Autowired
-    private MemberRepository memberRepository;
-
     private static final String PROPERTIES_PATH = "${oauth2.provider.naver.";
     private static final String GRANT_TYPE = "authorization_code";
 
+    private final WebClient webClient;
+
+    private final MemberRepository memberRepository;
     protected final String clientId;
     protected final String clientSecret;
     protected final String redirectUri;
@@ -34,12 +31,16 @@ public class NaverOauthService {
     protected final String userUri;
 
     public NaverOauthService(
+            final WebClient webClient,
+            final MemberRepository memberRepository,
             @Value(PROPERTIES_PATH + "client-id}") final String clientId,
             @Value(PROPERTIES_PATH + "client-secret}") final String clientSecret,
             @Value(PROPERTIES_PATH + "redirect-uri}") final String redirectUri,
             @Value(PROPERTIES_PATH + "token-uri}") final String tokenUri,
             @Value(PROPERTIES_PATH + "user-info}") final String userUri
     ) {
+        this.webClient = webClient;
+        this.memberRepository = memberRepository;
         this.clientId = clientId;
         this.clientSecret = clientSecret;
         this.redirectUri = redirectUri;
@@ -74,13 +75,13 @@ public class NaverOauthService {
         String nickname = response.getNickname();
         String profileImageUrl = response.getProfile_image();
 
-        Optional<Member> oauthMember = memberRepository.findByNicknameAndSocialProvider(nickname + "1",
+        Optional<Member> oauthMember = memberRepository.findByNicknameAndSocialProvider(nickname + "\uD83D\uDE01",
                 NAVER);
 
         if (oauthMember.isPresent()) {
             return oauthMember.get();
         } else {
-            Member member = new Member(nickname + "1", profileImageUrl, NAVER);
+            Member member = new Member(nickname + "\uD83D\uDE01", profileImageUrl, NAVER);
             return memberRepository.save(member);
         }
     }

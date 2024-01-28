@@ -34,17 +34,21 @@ import reactor.core.publisher.Mono;
 @Slf4j
 public class LoginService {
 
-    private static final int MAX_TRY_COUNT = 5;
-    private static final int FOUR_DIGIT_RANGE = 10000;
-    public static final int COOKIE_AGE_SECONDS = 604800;
 
     private final RefreshTokenRepository refreshTokenRepository;
+
     private final MemberRepository memberRepository;
+
     private final JwtProvider jwtProvider;
+
     private final BearerAuthorizationExtractor bearerExtractor;
+
     private final PasswordEncoder passwordEncoder;
+
     private final KakaoOauthService kakaoOAuthService;
+
     private final GoogleOauthService googleOAuthService;
+
     private final NaverOauthService naverOAuthService;
 
     public LoginResponse login(final LoginRequest loginRequest, final Member member) {
@@ -73,7 +77,8 @@ public class LoginService {
 
                     final Member member = kakaoOAuthService.registerMember(properties);
                     final MemberTokens memberTokens = jwtProvider.generateLoginToken(member.getId().toString());
-                    final RefreshToken savedRefreshToken = new RefreshToken(memberTokens.getRefreshToken(), member.getId());
+                    final RefreshToken savedRefreshToken = new RefreshToken(memberTokens.getRefreshToken(),
+                            member.getId());
                     refreshTokenRepository.save(savedRefreshToken);
 
                     return LoginResponse.of(memberTokens.getRefreshToken(), memberTokens.getAccessToken());
@@ -92,7 +97,8 @@ public class LoginService {
 
                     final Member member = googleOAuthService.registerGoogleMember(userInfo);
                     final MemberTokens memberTokens = jwtProvider.generateLoginToken(member.getId().toString());
-                    final RefreshToken savedRefreshToken = new RefreshToken(memberTokens.getRefreshToken(), member.getId());
+                    final RefreshToken savedRefreshToken = new RefreshToken(memberTokens.getRefreshToken(),
+                            member.getId());
                     refreshTokenRepository.save(savedRefreshToken);
 
                     return LoginResponse.of(memberTokens.getRefreshToken(), memberTokens.getAccessToken());
@@ -113,13 +119,13 @@ public class LoginService {
 
                     final Member member = naverOAuthService.registerMember(properties);
                     final MemberTokens memberTokens = jwtProvider.generateLoginToken(member.getId().toString());
-                    final RefreshToken savedRefreshToken = new RefreshToken(memberTokens.getRefreshToken(), member.getId());
+                    final RefreshToken savedRefreshToken = new RefreshToken(memberTokens.getRefreshToken(),
+                            member.getId());
                     refreshTokenRepository.save(savedRefreshToken);
 
                     return LoginResponse.of(memberTokens.getRefreshToken(), memberTokens.getAccessToken());
                 });
     }
-
 
 
     public String renewalAccessToken(final String refreshTokenRequest, final String authorizationHeader) {

@@ -23,18 +23,14 @@ import reactor.core.publisher.Mono;
 public class KakaoOauthService {
 
 
-    @Autowired
-    private WebClient webClient;
-
-    @Autowired
-    private MemberRepository memberRepository;
-
     private static final String PROPERTIES_PATH = "${oauth2.provider.kakao.";
     private static final String PROVIDER_NAME = "kakao";
     private static final String SECURE_RESOURCE = "secure_resource";
 
     private static final String GRANT_TYPE = "authorization_code";
 
+    private final WebClient webClient;
+    private final MemberRepository memberRepository;
     protected final String clientId;
     protected final String clientSecret;
     protected final String redirectUri;
@@ -42,12 +38,16 @@ public class KakaoOauthService {
     protected final String userUri;
 
     public KakaoOauthService(
+            final WebClient webClient,
+            final MemberRepository memberRepository,
             @Value(PROPERTIES_PATH + "client-id}") final String clientId,
             @Value(PROPERTIES_PATH + "client-secret}") final String clientSecret,
             @Value(PROPERTIES_PATH + "redirect-uri}") final String redirectUri,
             @Value(PROPERTIES_PATH + "token-uri}") final String tokenUri,
             @Value(PROPERTIES_PATH + "user-info}") final String userUri
     ) {
+        this.webClient = webClient;
+        this.memberRepository = memberRepository;
         this.clientId = clientId;
         this.clientSecret = clientSecret;
         this.redirectUri = redirectUri;
