@@ -1,8 +1,14 @@
 package com.example.hotsix_be.login.dto.google;
 
-import lombok.Data;
+import static lombok.AccessLevel.PRIVATE;
 
-@Data
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Getter
+@NoArgsConstructor(access = PRIVATE)
+@AllArgsConstructor
 public class GoogleUserInfoDto {
     private String sub; // 고유 식별자
     private String name; // 전체 이름

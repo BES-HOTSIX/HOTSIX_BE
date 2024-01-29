@@ -1,8 +1,13 @@
 package com.example.hotsix_be.login.dto.kakao;
 
-import lombok.Data;
+import static lombok.AccessLevel.PRIVATE;
 
-@Data
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Getter
+@NoArgsConstructor(access = PRIVATE)
 public class KakaoTokenResponseDto {
     private String access_token;
     private String token_type;

@@ -1,9 +1,15 @@
 package com.example.hotsix_be.login.dto.kakao;
 
-import java.util.Map;
-import lombok.Data;
+import static lombok.AccessLevel.PRIVATE;
 
-@Data
+import java.util.Map;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Getter
+@NoArgsConstructor(access = PRIVATE)
+@AllArgsConstructor
 public class KakaoUserInfoDto {
 
     private Long id;

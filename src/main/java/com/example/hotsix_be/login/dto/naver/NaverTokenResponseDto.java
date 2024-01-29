@@ -1,8 +1,12 @@
 package com.example.hotsix_be.login.dto.naver;
 
-import lombok.Data;
+import static lombok.AccessLevel.PRIVATE;
 
-@Data
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Getter
+@NoArgsConstructor(access = PRIVATE)
 public class NaverTokenResponseDto {
     private String access_token;
     private String refresh_token;

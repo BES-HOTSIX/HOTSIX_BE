@@ -1,10 +1,14 @@
 package com.example.hotsix_be.login.dto.request;
 
+import static lombok.AccessLevel.PRIVATE;
+
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
 @Getter
-@Setter
+@AllArgsConstructor
+@NoArgsConstructor(access = PRIVATE)
 public class LoginRequest {
     private String username;
     private String password;
