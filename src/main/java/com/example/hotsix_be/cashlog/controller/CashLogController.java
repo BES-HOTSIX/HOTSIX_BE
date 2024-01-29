@@ -13,6 +13,7 @@ import com.example.hotsix_be.reservation.dto.response.ReservationDetailResponse;
 import com.example.hotsix_be.reservation.entity.Reservation;
 import com.example.hotsix_be.reservation.service.ReservationService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -35,6 +36,7 @@ import static com.example.hotsix_be.common.exception.ExceptionCode.INVALID_REQUE
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/cashLog")
+@Slf4j
 public class CashLogController {
     private final CashLogService cashLogService;
     private final ReservationService reservationService;
@@ -91,10 +93,7 @@ public class CashLogController {
 
         CashLogIdResponse cashLogIdResponse = cashLogService.getCashLogIdById(cashLog.getId());
 
-        // TODO 멤버값 생기면 아래 활성화 후 테스트
         cashLogService.canPay(reservation, reservation.getPrice());
-
-        cashLogService.payByCashOnly(reservation);
 
         return ResponseEntity.ok(
                 new ResponseDto<>(

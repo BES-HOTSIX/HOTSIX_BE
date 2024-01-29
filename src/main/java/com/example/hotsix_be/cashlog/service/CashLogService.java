@@ -13,6 +13,7 @@ import com.example.hotsix_be.member.service.MemberService;
 import com.example.hotsix_be.reservation.entity.Reservation;
 import com.example.hotsix_be.reservation.service.ReservationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,6 +32,20 @@ public class CashLogService {
 
     public Optional<CashLog> findById(long id) {
         return cashLogRepository.findById(id);
+    }
+
+    // 개인 캐시 사용 내역 페이지의 cashLog 리스트
+    public Page<CashLog> findMyPageList(final Member member,final Pageable pageable) {
+        Pageable sortedPageable = PageRequest.of(
+                pageable.getPageNumber(),
+                pageable.getPageSize(),
+                Sort.by("createdAt").descending());
+
+        Page<CashLog> pageCashLog = cashLogRepository.findAllByMember(member, sortedPageable);
+
+        return Optional.of(pageCashLog)
+                .filter(Slice::hasContent)
+                .orElseThrow(() -> new CashException(INVALID_REQUEST));
     }
 
     // TODO ConfirmResponse 가 필요 없어질 경우 같이 삭제
@@ -72,6 +87,7 @@ public class CashLogService {
 
         cashLogRepository.save(cashLog);
 
+
         // 충전 혹은 차감 발생 후 member의 restCash 갱신
         long newRestCash = member.getRestCash() + cashLog.getPrice();
         member.updateRestCash(newRestCash);
@@ -102,6 +118,7 @@ public class CashLogService {
 
         if (payPrice > restCash) throw new CashException(INSUFFICIENT_DEPOSIT);
 
+        // TODO 테스트를 용이하게 하기 위해 결제 완료 상태 업데이트 메소드 비활성화해둠
 //        reservation.updateIsPaid(true);
 
         return addCash(

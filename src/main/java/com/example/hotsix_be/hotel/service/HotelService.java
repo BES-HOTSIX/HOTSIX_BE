@@ -1,7 +1,5 @@
 package com.example.hotsix_be.hotel.service;
 
-import static com.example.hotsix_be.common.exception.ExceptionCode.*;
-
 import com.example.hotsix_be.common.exception.AuthException;
 import com.example.hotsix_be.hotel.dto.request.HotelInfoRequest;
 import com.example.hotsix_be.hotel.dto.request.HotelUpdateRequest;
@@ -13,16 +11,18 @@ import com.example.hotsix_be.image.entity.Image;
 import com.example.hotsix_be.image.service.ImageService;
 import com.example.hotsix_be.member.entity.Member;
 import com.example.hotsix_be.member.repository.MemberRepository;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 import static com.example.hotsix_be.common.exception.ExceptionCode.NOT_FOUND_HOTEL_ID;
+import static com.example.hotsix_be.common.exception.ExceptionCode.NOT_FOUND_MEMBER_BY_ID;
 
 @Service
 @Transactional

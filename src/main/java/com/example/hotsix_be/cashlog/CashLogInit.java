@@ -23,7 +23,7 @@ public class CashLogInit implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        if (hotelRepository.count() > 20) {
+        if (hotelRepository.count() < 20) {
             IntStream.rangeClosed(1, 50).forEach(i -> {
                 CashLog cashLog = CashLog.builder()
                         .eventType(EventType.충전__무통장입금)
