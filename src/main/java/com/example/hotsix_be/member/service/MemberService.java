@@ -1,7 +1,5 @@
 package com.example.hotsix_be.member.service;
 
-import static com.example.hotsix_be.common.exception.ExceptionCode.*;
-
 import com.example.hotsix_be.common.exception.AuthException;
 import com.example.hotsix_be.member.dto.request.MemberRegisterRequest;
 import com.example.hotsix_be.member.dto.response.MemberInfoResponse;
@@ -11,6 +9,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static com.example.hotsix_be.common.exception.ExceptionCode.NOT_FOUND_MEMBER_BY_ID;
+import static com.example.hotsix_be.common.exception.ExceptionCode.NOT_FOUND_MEMBER_BY_USERNAME;
 
 @Service
 @Transactional
@@ -41,5 +42,14 @@ public class MemberService {
                 .orElseThrow(() -> new AuthException(NOT_FOUND_MEMBER_BY_ID));
 
         return MemberInfoResponse.of(member);
+    }
+
+    public void changePassword(Long memberId, String password) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new AuthException(NOT_FOUND_MEMBER_BY_ID));
+
+        member.setPassword(passwordEncoder.encode(password));
+
+        memberRepository.save(member);
     }
 }

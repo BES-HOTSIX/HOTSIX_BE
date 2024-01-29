@@ -4,18 +4,20 @@ import com.example.hotsix_be.auth.Auth;
 import com.example.hotsix_be.auth.MemberOnly;
 import com.example.hotsix_be.auth.util.Accessor;
 import com.example.hotsix_be.common.dto.ResponseDto;
+import com.example.hotsix_be.member.dto.request.MemberPasswordChangeRequest;
 import com.example.hotsix_be.member.dto.request.MemberRegisterRequest;
 import com.example.hotsix_be.member.dto.response.MemberInfoResponse;
 import com.example.hotsix_be.member.service.MemberService;
+import com.example.hotsix_be.reservation.dto.response.ReservationDetailResponse;
+import com.example.hotsix_be.reservation.service.ReservationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Log4j2
@@ -25,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class MemberController {
 
     private final MemberService memberService;
+    private final ReservationService reservationService;
 
     @PostMapping("/register")
     public ResponseEntity<?> registerMember(@RequestBody MemberRegisterRequest memberRegisterRequest) {
@@ -57,5 +60,49 @@ public class MemberController {
         );
     }
 
+    @PutMapping("/password")
+    @MemberOnly
+    public ResponseEntity<?> changePassword(
+            MemberPasswordChangeRequest memberPasswordChangeRequest,
+            @Auth final Accessor accessor
+    ) {
+        String password = memberPasswordChangeRequest.getPassword();
+        String passwordCheck = memberPasswordChangeRequest.getPasswordCheck();
 
+        if (!password.equals(passwordCheck)) {
+            return ResponseEntity.badRequest().body(
+                    new ResponseDto<>(
+                            HttpStatus.BAD_REQUEST.value(),
+                            "비밀번호가 일치하지 않습니다.", null,
+                            null, null
+                    )
+            );
+        }
+
+        memberService.changePassword(accessor.getMemberId(), password);
+
+        return ResponseEntity.ok(
+                new ResponseDto<>(
+                        HttpStatus.OK.value(),
+                        "비밀번호 변경이 성공적으로 완료되었습니다.", null,
+                        null, null
+                )
+        );
+    }
+
+    @GetMapping("/me/reservations")
+    @MemberOnly
+    public ResponseEntity<?> getMyReservations(@Auth final Accessor accessor) {
+        List<ReservationDetailResponse> reservations = new ArrayList<>();
+
+        reservations = reservationService.findByMemberId(accessor.getMemberId());
+
+        return ResponseEntity.ok(
+                new ResponseDto<>(
+                        HttpStatus.OK.value(),
+                        "예약 조회가 성공적으로 완료되었습니다.", null,
+                        null, reservations
+                )
+        );
+    }
 }
