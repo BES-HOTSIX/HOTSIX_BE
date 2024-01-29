@@ -45,7 +45,7 @@ public class HotelController {
                                            @RequestPart(value = "files", required = false) final List<MultipartFile> multipartFiles,
                                            @Auth final Accessor accessor) {
 
-        hotelService.save(hotelInfoRequest, multipartFiles);
+        hotelService.save(hotelInfoRequest, multipartFiles, accessor.getMemberId());
 
         return ResponseEntity.ok(
                 new ResponseDto<>(

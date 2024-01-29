@@ -3,6 +3,7 @@ package com.example.hotsix_be.hotel.dto.response;
 import static lombok.AccessLevel.PRIVATE;
 
 import com.example.hotsix_be.hotel.entity.Hotel;
+import com.example.hotsix_be.member.entity.Member;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.Getter;
@@ -26,7 +27,7 @@ public class HotelDetailResponse {
     private final Long price;
     private final ImagesResponse imagesResponse;
     private final LocalDateTime createdAt;
-
+    private final String host;
 
     public static HotelDetailResponse of(final Hotel hotel) {
 
@@ -44,7 +45,8 @@ public class HotelDetailResponse {
                 hotel.getDescription(),
                 hotel.getPrice(),
                 ImagesResponse.of(hotel.getImages()),
-                hotel.getCreatedAt()
+                hotel.getCreatedAt(),
+                hotel.getOwner().getNickname()
         );
     }
 }
