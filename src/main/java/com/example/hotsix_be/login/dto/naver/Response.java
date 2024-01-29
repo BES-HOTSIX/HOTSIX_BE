@@ -1,4 +1,4 @@
-package com.example.hotsix_be.login.dto.request;
+package com.example.hotsix_be.login.dto.naver;
 
 import static lombok.AccessLevel.PRIVATE;
 
@@ -7,9 +7,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor(access = PRIVATE)
-public class LoginRequest {
-    private String username;
-    private String password;
+@AllArgsConstructor
+public class Response {
+    private String id;
+    private String nickname;
+    private String profile_image;
 }

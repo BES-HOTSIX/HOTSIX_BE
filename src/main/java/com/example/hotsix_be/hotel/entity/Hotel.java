@@ -1,5 +1,6 @@
 package com.example.hotsix_be.hotel.entity;
 
+import static jakarta.persistence.CascadeType.*;
 import static jakarta.persistence.CascadeType.PERSIST;
 import static jakarta.persistence.CascadeType.REMOVE;
 
@@ -8,23 +9,34 @@ import com.example.hotsix_be.hotel.dto.request.HotelUpdateRequest;
 import com.example.hotsix_be.image.entity.Image;
 import com.example.hotsix_be.member.entity.Member;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.MapKeyColumn;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.PreRemove;
 import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+import org.springframework.web.bind.annotation.DeleteMapping;
 
 @Getter
 @SuperBuilder(toBuilder = true)
@@ -53,6 +65,15 @@ public class Hotel extends DateEntity {
     private Long maxPeople;
 
     @ElementCollection
+    @CollectionTable(
+            name = "facility",
+            joinColumns = @JoinColumn(name = "hotel_id"),
+            foreignKey = @ForeignKey(
+                    name = "fk_hotel_facility",
+                    foreignKeyDefinition = "foreign key (hotel_id) references hotels (id) on delete cascade"
+            )
+    )
+
     private List<String> facility = new ArrayList<>();
 
     private String nickname;
@@ -61,11 +82,11 @@ public class Hotel extends DateEntity {
 
     private Long price;
 
-    @OneToMany(mappedBy = "hotel", cascade = {REMOVE, PERSIST}, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "hotel", cascade = {REMOVE, PERSIST}, orphanRemoval = true)
     private List<Image> images = new ArrayList<>();
 
     @JsonIgnore
-    @ManyToOne(cascade = {PERSIST, REMOVE})
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member owner;
 
@@ -80,34 +101,8 @@ public class Hotel extends DateEntity {
             final List<String> facility,
             final String nickname,
             final String description,
-            final Long price
-    ) {
-        this.hotelType = hotelType;
-        this.address = address;
-        this.addressDetail = addressDetail;
-        this.roomCnt = roomCnt;
-        this.bedCnt = bedCnt;
-        this.bathroomCnt = bathroomCnt;
-        this.maxPeople = maxPeople;
-        this.facility = facility;
-        this.nickname = nickname;
-        this.description = description;
-        this.price = price;
-    }
-
-    public Hotel(
-            final String hotelType,
-            final String address,
-            final String addressDetail,
-            final Long roomCnt,
-            final Long bedCnt,
-            final Long bathroomCnt,
-            final Long maxPeople,
-            final List<String> facility,
-            final String nickname,
-            final String description,
             final Long price,
-            final Member member
+            final Member owner
     ) {
         this.hotelType = hotelType;
         this.address = address;
@@ -120,7 +115,7 @@ public class Hotel extends DateEntity {
         this.nickname = nickname;
         this.description = description;
         this.price = price;
-        this.owner = member;
+        this.owner = owner;
     }
 
     public void update(final HotelUpdateRequest hotelUpdateRequest) {
