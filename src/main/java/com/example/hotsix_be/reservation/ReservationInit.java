@@ -59,7 +59,7 @@ public class ReservationInit implements ApplicationRunner {
                 List<Reservation> reservations = reservationRepository.findAll();
                 if (!reservations.isEmpty()) {
                     Reservation reservation = reservations.get(0);
-                    reservation.setCancelDate(LocalDateTime.now());
+                    reservation.updateCancelDate(LocalDateTime.now());
                     reservationRepository.save(reservation);
                 }
             }
