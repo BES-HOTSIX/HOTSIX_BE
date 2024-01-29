@@ -48,7 +48,7 @@ public class MemberService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new AuthException(NOT_FOUND_MEMBER_BY_ID));
 
-        member.setPassword(passwordEncoder.encode(password));
+        member.changePassword(passwordEncoder.encode(password));
 
         memberRepository.save(member);
     }

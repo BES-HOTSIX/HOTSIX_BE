@@ -2,6 +2,8 @@ package com.example.hotsix_be.hotel.service;
 
 import static com.example.hotsix_be.common.exception.ExceptionCode.*;
 
+import com.example.hotsix_be.common.exception.AuthException;
+import com.example.hotsix_be.common.exception.ExceptionCode;
 import com.example.hotsix_be.hotel.dto.request.HotelInfoRequest;
 import com.example.hotsix_be.hotel.dto.request.HotelUpdateRequest;
 import com.example.hotsix_be.hotel.dto.response.HotelDetailResponse;
@@ -10,6 +12,8 @@ import com.example.hotsix_be.hotel.exception.HotelException;
 import com.example.hotsix_be.hotel.repository.HotelRepository;
 import com.example.hotsix_be.image.entity.Image;
 import com.example.hotsix_be.image.service.ImageService;
+import com.example.hotsix_be.member.entity.Member;
+import com.example.hotsix_be.member.repository.MemberRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -30,11 +34,18 @@ public class HotelService {
 
     private final ImageService imageService;
     private final HotelRepository hotelRepository;
+    private final MemberRepository memberRepository;
 
-    public Hotel save(final HotelInfoRequest hotelInfoRequest, final List<MultipartFile> multipartFiles) {
+    public Hotel save(final HotelInfoRequest hotelInfoRequest, final List<MultipartFile> multipartFiles,
+                      final Long memberId) {
 
         List<Image> newImages = imageService.uploadImages(multipartFiles, "ACCOMODATION",
                 hotelInfoRequest.getNickname());
+
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new AuthException(NOT_FOUND_MEMBER_BY_ID));
+
+        memberRepository.save(member);
 
         final Hotel hotel = new Hotel(hotelInfoRequest.getHotelType(),
                 hotelInfoRequest.getAddress(),
@@ -46,7 +57,7 @@ public class HotelService {
                 hotelInfoRequest.getFacility(),
                 hotelInfoRequest.getNickname(),
                 hotelInfoRequest.getDescription(),
-                hotelInfoRequest.getPrice());
+                hotelInfoRequest.getPrice(), member);
 
         newImages.forEach(hotel::addImage);
 
@@ -55,7 +66,7 @@ public class HotelService {
 
 
     public void modifyHotel(final Long hotelId, final HotelUpdateRequest hotelUpdateRequest,
-                             final List<MultipartFile> newImages, final List<String> deleteImagesUrl) {
+                            final List<MultipartFile> newImages, final List<String> deleteImagesUrl) {
 
         List<Image> uploadedNewImages = new ArrayList<>();
 
