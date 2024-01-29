@@ -11,11 +11,9 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
-<<<<<<< HEAD
-=======
 import java.time.LocalDateTime;
->>>>>>> 38513d6c132fb2ae4e64dff1e2e9aaa6d7c201bc
 import java.util.List;
+
 
 @Component
 @RequiredArgsConstructor
@@ -27,11 +25,7 @@ public class ReservationInit implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-<<<<<<< HEAD
-        if (reservationRepository.count() < 30) {
-=======
         if (reservationRepository.count() == 0) {
->>>>>>> 38513d6c132fb2ae4e64dff1e2e9aaa6d7c201bc
             List<Hotel> hotels = hotelRepository.findAll();
             if (!hotels.isEmpty()) {
                 Hotel lastHotel = hotels.get(hotels.size() - 1);

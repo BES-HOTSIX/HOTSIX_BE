@@ -1,7 +1,8 @@
 package com.example.hotsix_be.cashlog.controller;
 
 import com.example.hotsix_be.cashlog.dto.request.AddCashRequest;
-import com.example.hotsix_be.cashlog.dto.response.ConfirmCashLogResponse;
+import com.example.hotsix_be.cashlog.dto.response.CashLogIdResponse;
+import com.example.hotsix_be.cashlog.dto.response.ConfirmResponse;
 import com.example.hotsix_be.cashlog.dto.response.TestResponse;
 import com.example.hotsix_be.cashlog.entity.CashLog;
 import com.example.hotsix_be.cashlog.entity.EventType;
@@ -56,7 +57,8 @@ public class CashLogController {
     // TODO 무통장 입금 시 어드민이 수리하는 형식으로 수정할 예정
     @PostMapping("/addCash")
     public ResponseEntity<?> addCash(@RequestBody AddCashRequest addCashRequest) {
-        cashLogService.addCash(addCashRequest, EventType.충전__무통장입금);
+
+        cashLogService.addCash(addCashRequest, EventType.충전__무통장입금); // TODO 여기서부터 시작
 
         return ResponseEntity.ok(
                 new ResponseDto<>(
@@ -85,16 +87,20 @@ public class CashLogController {
 
         if (reservation == null) throw new CashException(INVALID_REQUEST);
 
-        // TODO 멤버값 생기면 아래 활성화 후 테스트
-//        cashLogService.canPay(reservation, reservation.getPrice());
+        CashLog cashLog = cashLogService.payByCashOnly(reservation);
 
-//        cashLogService.payByCashOnly(reservation);
+        CashLogIdResponse cashLogIdResponse = cashLogService.getCashLogIdById(cashLog.getId());
+
+        // TODO 멤버값 생기면 아래 활성화 후 테스트
+        cashLogService.canPay(reservation, reservation.getPrice());
+
+        cashLogService.payByCashOnly(reservation);
 
         return ResponseEntity.ok(
                 new ResponseDto<>(
                         HttpStatus.OK.value(),
                         "예치금 결제가 완료되었습니다.", null,
-                        null, null
+                        null, cashLogIdResponse
                 )
         );
     }
@@ -103,13 +109,13 @@ public class CashLogController {
     // TODO 권한이 없는 사용자의 경우 접근을 막아야 한다
     @GetMapping("/{cashLogId}/confirm")
     public ResponseEntity<?> showConfirm(@PathVariable(value = "cashLogId") long cashLogId) {
-        ConfirmCashLogResponse confirmCashLogResponse = cashLogService.findRespById(cashLogId);
+        ConfirmResponse confirmResponse = cashLogService.getConfirmRespById(cashLogId);
 
         return ResponseEntity.ok(
                 new ResponseDto<>(
                         HttpStatus.OK.value(),
                         "예약이 완료되었습니다.", null,
-                        null, confirmCashLogResponse
+                        null, confirmResponse
                 )
         );
     }

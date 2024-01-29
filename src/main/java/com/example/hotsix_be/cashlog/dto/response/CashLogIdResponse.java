@@ -7,6 +7,12 @@ import static lombok.AccessLevel.PRIVATE;
 
 @Getter
 @RequiredArgsConstructor(access = PRIVATE)
-public class PayReserveResponse {
+public class CashLogIdResponse {
+    private final Long cashLogId;
 
+    public static CashLogIdResponse of(final long cashLogId) {
+        return new CashLogIdResponse(
+                cashLogId
+        );
+    }
 }

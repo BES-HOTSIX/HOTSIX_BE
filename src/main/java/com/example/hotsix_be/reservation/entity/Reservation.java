@@ -81,4 +81,8 @@ public class Reservation extends DateEntity {
     public void setCancelDate(LocalDateTime date) {
         this.cancelDate = date;
     }
+
+    public void updateIsPaid(boolean isPaid) {
+        this.isPaid = isPaid;
+    }
 }

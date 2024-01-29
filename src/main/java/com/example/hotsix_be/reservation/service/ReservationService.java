@@ -7,11 +7,9 @@ import com.example.hotsix_be.reservation.repository.ReservationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-<<<<<<< HEAD
 import java.util.Optional;
-=======
+
 import static com.example.hotsix_be.common.exception.ExceptionCode.NOT_FOUND_RESERVATION_ID;
->>>>>>> 38513d6c132fb2ae4e64dff1e2e9aaa6d7c201bc
 
 @Service
 @RequiredArgsConstructor

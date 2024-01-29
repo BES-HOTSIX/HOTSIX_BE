@@ -1,12 +1,15 @@
 package com.example.hotsix_be.cashlog.service;
 
 import com.example.hotsix_be.cashlog.dto.request.AddCashRequest;
-import com.example.hotsix_be.cashlog.dto.response.ConfirmCashLogResponse;
+import com.example.hotsix_be.cashlog.dto.response.CashLogIdResponse;
+import com.example.hotsix_be.cashlog.dto.response.ConfirmResponse;
 import com.example.hotsix_be.cashlog.entity.CashLog;
 import com.example.hotsix_be.cashlog.entity.EventType;
 import com.example.hotsix_be.cashlog.exception.CashException;
 import com.example.hotsix_be.cashlog.repository.CashLogRepository;
+import com.example.hotsix_be.hotel.entity.Hotel;
 import com.example.hotsix_be.member.entity.Member;
+import com.example.hotsix_be.member.service.MemberService;
 import com.example.hotsix_be.reservation.entity.Reservation;
 import com.example.hotsix_be.reservation.service.ReservationService;
 import lombok.RequiredArgsConstructor;
@@ -24,22 +27,41 @@ import static com.example.hotsix_be.common.exception.ExceptionCode.INVALID_REQUE
 public class CashLogService {
     private final CashLogRepository cashLogRepository;
     private final ReservationService reservationService;
+    private final MemberService memberService;
 
     public Optional<CashLog> findById(long id) {
         return cashLogRepository.findById(id);
     }
 
-    public ConfirmCashLogResponse findRespById(long id) {
-        CashLog cashLog = findById(id).orElse(null);
+    // TODO ConfirmResponse 가 필요 없어질 경우 같이 삭제
+//    public CashLogConfirmResponse getCashLogConfirmRespById(long id) {
+//        CashLog cashLog = findById(id).orElse(null);
+//
+//        if (cashLog == null) throw new CashException(INVALID_REQUEST);
+//
+//        return CashLogConfirmResponse.of(cashLog);
+//    }
 
-        if (cashLog == null) throw new CashException(INVALID_REQUEST);
+    public ConfirmResponse getConfirmRespById(long id) {
+        CashLog cashLog = findById(id).orElseThrow(() -> new CashException(INVALID_REQUEST));
 
-        return ConfirmCashLogResponse.of(cashLog);
+        Reservation reservation = cashLog.getReservation();
+
+        if (reservation == null) throw new CashException(INVALID_REQUEST);
+
+        Hotel hotel = reservation.getHotel();
+
+        return ConfirmResponse.of(cashLog, reservation, hotel);
+    }
+
+    public CashLogIdResponse getCashLogIdById(long id) {
+        return CashLogIdResponse.of(id);
     }
 
     // 전반적인 입출금
     @Transactional
     public CashLog addCash(Member member, long price, Reservation reservation, EventType eventType) {
+
         CashLog cashLog = CashLog.builder()
                 .member(member)
                 .price(price)
@@ -52,9 +74,7 @@ public class CashLogService {
 
         // 충전 혹은 차감 발생 후 member의 restCash 갱신
         long newRestCash = member.getRestCash() + cashLog.getPrice();
-        member.toBuilder()
-                .restCash(newRestCash)
-                .build();
+        member.updateRestCash(newRestCash);
 
         return cashLog;
     }
@@ -62,14 +82,17 @@ public class CashLogService {
     // 무통장 입금
     @Transactional
     public CashLog addCash(final AddCashRequest addCashRequest, EventType eventType) {
+        Member member = memberService.getMemberByUsername(addCashRequest.getUsername());
+
         return addCash(
-                null,
+                member,
                 addCashRequest.getPrice(),
                 null,
                 eventType
         );
     }
 
+    // TODO 호스트에게 금액 전달하는 로직 만들기
     // 예치금 사용 결제
     @Transactional
     public CashLog payByCashOnly(Reservation reservation) {
@@ -78,6 +101,8 @@ public class CashLogService {
         long payPrice = reservation.getPrice();
 
         if (payPrice > restCash) throw new CashException(INSUFFICIENT_DEPOSIT);
+
+//        reservation.updateIsPaid(true);
 
         return addCash(
                 buyer,
