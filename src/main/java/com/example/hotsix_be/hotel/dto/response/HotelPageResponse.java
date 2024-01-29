@@ -28,6 +28,7 @@ public class HotelPageResponse {
     private final ImagesResponse imagesResponse;
     private final LocalDateTime createdAt;
 
+
     public static HotelPageResponse of(final Hotel hotel) {
 
         return new HotelPageResponse(

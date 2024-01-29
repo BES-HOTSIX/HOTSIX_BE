@@ -13,9 +13,8 @@ public class LoginResponse {
 
     private String refreshToken;
     private String accessToken;
-    private Long memberId;
 
-   public static LoginResponse of(String refreshToken, String accessToken, Long memberId) {
-        return new LoginResponse(refreshToken, accessToken, memberId);
+   public static LoginResponse of(String refreshToken, String accessToken) {
+        return new LoginResponse(refreshToken, accessToken);
     }
 }
