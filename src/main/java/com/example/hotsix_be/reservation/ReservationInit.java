@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -30,36 +31,39 @@ public class ReservationInit implements ApplicationRunner {
                 Hotel lastHotel = hotels.get(hotels.size() - 1);
 
                 Reservation reservation1 = new Reservation(
-                        "2024-01-01",
-                        "2024-01-10",
+                        LocalDate.parse("2024-01-01").atStartOfDay(),
+                        LocalDate.parse("2024-01-10").atStartOfDay(),
                         3,
                         550000,
-                        lastHotel
+                        lastHotel,
+                        true
                 );
                 reservationRepository.save(reservation1);
 
                 Reservation reservation2 = new Reservation(
-                        "2024-01-22",
-                        "2024-01-28",
+                        LocalDate.parse("2024-01-22").atStartOfDay(),
+                        LocalDate.parse("2024-01-28").atStartOfDay(),
                         1,
                         100000,
-                        lastHotel
+                        lastHotel,
+                        true
                 );
                 reservationRepository.save(reservation2);
 
                 Reservation reservation3 = new Reservation(
-                        "2024-02-22",
-                        "2024-02-28",
+                        LocalDate.parse("2024-02-22").atStartOfDay(),
+                        LocalDate.parse("2024-02-28").atStartOfDay(),
                         4,
                         1000000,
-                        lastHotel
+                        lastHotel,
+                        true
                 );
                 reservationRepository.save(reservation3);
 
                 List<Reservation> reservations = reservationRepository.findAll();
                 if (!reservations.isEmpty()) {
                     Reservation reservation = reservations.get(0);
-                    reservation.setCancelDate(LocalDateTime.now());
+                    reservation.updateCancelDate(LocalDateTime.now());
                     reservationRepository.save(reservation);
                 }
             }
