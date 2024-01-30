@@ -12,10 +12,13 @@ public class MemberInfoResponse {
 
     private final String username;
     private final String nickname;
+    private final String imageUrl;
 
     public static MemberInfoResponse of(final Member member) {
         return new MemberInfoResponse(
                 member.getUsername(),
-                member.getNickname());
+                member.getNickname(),
+                member.getImageUrl()
+        );
     }
 }
