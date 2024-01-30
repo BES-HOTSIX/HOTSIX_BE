@@ -1,20 +1,11 @@
 package com.example.hotsix_be.member.entity;
 
 import com.example.hotsix_be.common.entity.DateEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import java.time.LocalDateTime;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "members")
@@ -36,7 +27,7 @@ public class Member extends DateEntity {
     @Column(unique = true)
     private String nickname;
 
-    private Long restCash;
+    private long restCash;
 
     @Enumerated(EnumType.STRING)
     private SocialProvider socialProvider;

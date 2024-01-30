@@ -4,10 +4,7 @@ import com.example.hotsix_be.auth.Auth;
 import com.example.hotsix_be.auth.MemberOnly;
 import com.example.hotsix_be.auth.util.Accessor;
 import com.example.hotsix_be.cashlog.dto.request.AddCashRequest;
-import com.example.hotsix_be.cashlog.dto.response.CashLogConfirmResponse;
-import com.example.hotsix_be.cashlog.dto.response.CashLogIdResponse;
-import com.example.hotsix_be.cashlog.dto.response.ConfirmResponse;
-import com.example.hotsix_be.cashlog.dto.response.TestResponse;
+import com.example.hotsix_be.cashlog.dto.response.*;
 import com.example.hotsix_be.cashlog.entity.CashLog;
 import com.example.hotsix_be.cashlog.entity.EventType;
 import com.example.hotsix_be.cashlog.exception.CashException;
@@ -39,8 +36,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.List;
 
-import static com.example.hotsix_be.common.exception.ExceptionCode.FAIL_APPROVE_PURCHASE;
-import static com.example.hotsix_be.common.exception.ExceptionCode.INVALID_REQUEST;
+import static com.example.hotsix_be.common.exception.ExceptionCode.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -65,29 +61,37 @@ public class CashLogController {
                 null, cashLogDetailResponse));
     }
 
-    @GetMapping("/me") //
+    @GetMapping("/me") // TODO 예약 내역도 추가
     @MemberOnly
     public ResponseEntity<?> showMyCashLogs(
             @PageableDefault(size = 5) final Pageable pageable,
             @Auth final Accessor accessor
     ) {
-        Page<CashLog> cashLogs = cashLogService.findMyPageList(accessor.getMemberId(), pageable);
+        long memberId = accessor.getMemberId();
+
+        Page<CashLog> cashLogs = cashLogService.findMyPageList(memberId, pageable);
 
         List<CashLogConfirmResponse> cashLogConfirmResponses =
                 cashLogs.stream()
                         .map(CashLogConfirmResponse::of)
                         .toList();
 
-        PageImpl<CashLogConfirmResponse> cashLogConfirmResponse =
+        PageImpl<CashLogConfirmResponse> cashLogConfirmPage =
                 new PageImpl<>(
                         cashLogConfirmResponses,
                         pageable,
                         cashLogs.getTotalElements());
 
+        MyCashLogResponse myCashLogResponse = cashLogService.getMyCashLogById(
+                memberId,
+                cashLogConfirmPage
+        );
+
+
         return ResponseEntity.ok(new ResponseDto<>(
                 HttpStatus.OK.value(),
                 "캐시 사용 내역 조회 성공", null,
-                null, cashLogConfirmResponse
+                null, myCashLogResponse
         ));
     }
 
@@ -95,7 +99,7 @@ public class CashLogController {
     @PostMapping("/addCash")
     public ResponseEntity<?> addCash(@RequestBody AddCashRequest addCashRequest) {
 
-        cashLogService.addCash(addCashRequest, EventType.충전__무통장입금); // TODO 여기서부터 시작
+        cashLogService.addCash(addCashRequest, EventType.충전__무통장입금);
 
         return ResponseEntity.ok(
                 new ResponseDto<>(
@@ -106,7 +110,7 @@ public class CashLogController {
         );
     }
 
-    @GetMapping("/payByCash/{reserveId}") // TODO 이미 결제된 예약일 경우 오류 발생시키기
+    @GetMapping("/payByCash/{reserveId}") //
     public ResponseEntity<?> showPayByCash(@PathVariable(value = "reserveId") long reserveId) {
         ReservationDetailResponse reservationDetailResponse = reservationService.findById(reserveId);
 
@@ -124,11 +128,12 @@ public class CashLogController {
 
         if (reservation == null) throw new CashException(INVALID_REQUEST);
 
+        // 이용자 결제
         CashLog cashLog = cashLogService.payByCashOnly(reservation);
 
         CashLogIdResponse cashLogIdResponse = cashLogService.getCashLogIdById(cashLog.getId());
 
-        cashLogService.canPay(reservation, reservation.getPrice());
+        if(!cashLogService.canPay(reservation, reservation.getPrice())) throw new CashException(INSUFFICIENT_DEPOSIT);
 
         return ResponseEntity.ok(
                 new ResponseDto<>(
@@ -140,10 +145,15 @@ public class CashLogController {
     }
 
     // TODO cashLog 의 내용에 따라 다르게 쓰이는 범용 완료 페이지로 만들 예정
-    // TODO 권한이 없는 사용자의 경우 접근을 막아야 한다
+    // TODO 본인 외 접근이 불가능하도록
     @GetMapping("/{cashLogId}/confirm")
-    public ResponseEntity<?> showConfirm(@PathVariable(value = "cashLogId") long cashLogId) {
+    public ResponseEntity<?> showConfirm(
+            @PathVariable(value = "cashLogId") long cashLogId
+    ) {
         ConfirmResponse confirmResponse = cashLogService.getConfirmRespById(cashLogId);
+
+        // 본인이 아닐 경우 접근 불가
+//        if (!accessor.getMemberId().equals(confirmResponse.getMemberId())) throw new BadRequestException(INVALID_REQUEST);
 
         return ResponseEntity.ok(
                 new ResponseDto<>(

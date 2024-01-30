@@ -13,7 +13,9 @@ import static lombok.AccessLevel.PRIVATE;
 @Getter
 @RequiredArgsConstructor(access = PRIVATE)
 public class ConfirmResponse {
-    private final Long reservationId;
+    // 본인 외의 접근을 막을 로직을 위한 memberId
+    private final Long memberId;
+    private final Long reserveId;
     private final String hotelNickname;
     private final Long price;
     private final LocalDateTime checkInDate;
@@ -25,6 +27,7 @@ public class ConfirmResponse {
         if (price < 0) price *= -1;
 
         return new ConfirmResponse(
+                reservation.getMember().getId(),
                 reservation.getId(),
                 hotel.getNickname(),
                 price,

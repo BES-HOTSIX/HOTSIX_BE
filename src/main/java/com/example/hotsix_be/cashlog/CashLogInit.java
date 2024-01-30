@@ -28,7 +28,7 @@ public class CashLogInit implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        if (cashLogRepository.countById(1L) < 20) {
+        if (cashLogRepository.countByMemberId(1L) < 20) {
             Member member = memberRepository.findById(1l).orElseThrow(() -> new BadRequestException(ExceptionCode.NOT_FOUND_MEMBER_BY_ID));
 
             IntStream.rangeClosed(1, 50).forEach(i -> {
