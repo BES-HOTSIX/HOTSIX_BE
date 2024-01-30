@@ -42,4 +42,23 @@ public class ReviewController {
         List<ReviewResponseDTO> reviews = reviewService.getAllReviewsOrderByCreatedAtDesc();
         return ResponseEntity.ok(reviews);
     }
+
+    @PostMapping("/modify/{reviewId}")
+    public ResponseEntity<?> modifyReview(
+            @PathVariable Long reviewId,
+            @Valid @RequestBody ReviewRequestDTO modifiedReviewDTO
+    ) {
+        log.info("Received modify review request for reviewId: {}", reviewId);
+
+        reviewService.modifyReview(reviewId, modifiedReviewDTO);
+
+        return ResponseEntity.ok(
+                new ResponseDto<>(
+                        HttpStatus.OK.value(),
+                        "리뷰가 성공적으로 수정되었습니다.", null,
+                        null, null
+                )
+        );
+    }
 }
+

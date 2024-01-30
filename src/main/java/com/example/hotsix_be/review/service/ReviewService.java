@@ -1,15 +1,18 @@
 package com.example.hotsix_be.review.service;
 
+import com.example.hotsix_be.common.exception.ExceptionCode;
 import com.example.hotsix_be.reservation.repository.ReservationRepository;
 import com.example.hotsix_be.review.dto.request.ReviewRequestDTO;
 import com.example.hotsix_be.review.dto.response.ReviewResponseDTO;
 import com.example.hotsix_be.review.entity.Review;
+import com.example.hotsix_be.review.exception.ReviewException;
 import com.example.hotsix_be.review.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -55,5 +58,23 @@ public class ReviewService {
                 review.getCleanliness(),
                 review.getRating()
         );
+    }
+
+    public void modifyReview(Long reviewId, ReviewRequestDTO modifiedReviewDTO) {
+
+        Optional<Review> optionalReview = reviewRepository.findById(reviewId);
+
+        if (optionalReview.isPresent()) {
+            Review existingReview = optionalReview.get();
+
+            existingReview.setBody(modifiedReviewDTO.getBody());
+            existingReview.setAmenities(modifiedReviewDTO.getAmenities());
+            existingReview.setStaffService(modifiedReviewDTO.getStaffService());
+            existingReview.setCleanliness(modifiedReviewDTO.getCleanliness());
+
+            reviewRepository.save(existingReview);
+        } else {
+            throw new ReviewException(ExceptionCode.NOT_FOUND_REVIEW_ID);
+        }
     }
 }
