@@ -17,7 +17,7 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-@Profile("dev")
+//@Profile("dev")
 @Order(2)
 public class ReservationInit implements ApplicationRunner {
     private final ReservationRepository reservationRepository;

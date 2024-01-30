@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @RequiredArgsConstructor
-@Profile("dev")
+//@Profile("dev")
 @Transactional
 @Order(1)
 public class DataInit implements ApplicationRunner {
