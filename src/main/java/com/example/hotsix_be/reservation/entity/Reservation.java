@@ -6,7 +6,6 @@ import com.example.hotsix_be.member.entity.Member;
 import com.example.hotsix_be.review.entity.Review;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,7 +13,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
-import java.time.LocalDate;
+
 import java.time.LocalDateTime;
 
 
@@ -43,9 +42,7 @@ public class Reservation extends DateEntity {
 
     private long price;
 
-    // TODO 결제 테스트용 임시 필드
-    @Builder.Default
-    private boolean isPaid = false;
+    private boolean isPaid;
 
     @JsonIgnore
     @ManyToOne
@@ -65,20 +62,22 @@ public class Reservation extends DateEntity {
     private Review review;
 
     public Reservation(
-            final String checkInDate,
-            final String checkOutDate,
+            final LocalDateTime checkInDate,
+            final LocalDateTime checkOutDate,
             final int guests,
             final long price,
-            final Hotel hotel
+            final Hotel hotel,
+            final boolean isPaid
     ) {
-        this.checkInDate = LocalDate.parse(checkInDate).atStartOfDay();
-        this.checkOutDate = LocalDate.parse(checkOutDate).atStartOfDay();
+        this.checkInDate = checkInDate;
+        this.checkOutDate = checkOutDate;
         this.guests = guests;
         this.price = price;
         this.hotel = hotel;
+        this.isPaid = isPaid;
     }
 
-    public void setCancelDate(LocalDateTime date) {
+    public void updateCancelDate(LocalDateTime date) {
         this.cancelDate = date;
     }
 
