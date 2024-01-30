@@ -1,22 +1,27 @@
 package com.example.hotsix_be.like.service;
 
 
-import static com.example.hotsix_be.common.exception.ExceptionCode.*;
-
 import com.example.hotsix_be.common.exception.AuthException;
-import com.example.hotsix_be.common.exception.ExceptionCode;
+import com.example.hotsix_be.hotel.dto.response.HotelDetailResponse;
 import com.example.hotsix_be.hotel.entity.Hotel;
 import com.example.hotsix_be.hotel.repository.HotelRepository;
-
 import com.example.hotsix_be.like.dto.LikeStatus;
 import com.example.hotsix_be.like.entity.Like;
 import com.example.hotsix_be.like.repository.LikeRepository;
 import com.example.hotsix_be.member.entity.Member;
 import com.example.hotsix_be.member.repository.MemberRepository;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
+
+import static com.example.hotsix_be.common.exception.ExceptionCode.NOT_FOUND_HOTEL_ID;
+import static com.example.hotsix_be.common.exception.ExceptionCode.NOT_FOUND_MEMBER_BY_ID;
 
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -36,7 +41,7 @@ public class LikeService {
                 .orElseThrow(() -> new AuthException(NOT_FOUND_MEMBER_BY_ID));
 
         Hotel hotel = hotelRepository.findById(hotelId)
-                .orElseThrow(() ->  new AuthException(NOT_FOUND_HOTEL_ID));
+                .orElseThrow(() -> new AuthException(NOT_FOUND_HOTEL_ID));
 
         Like like = likeRepository.findByMemberIdAndHotelId(memberId, hotelId)
                 .orElse(new Like(member, hotel, false)); // 좋아요가 없는 경우
@@ -52,7 +57,7 @@ public class LikeService {
                 .orElseThrow(() -> new AuthException(NOT_FOUND_MEMBER_BY_ID));
 
         Hotel hotel = hotelRepository.findById(hotelId)
-                .orElseThrow(() ->  new AuthException(NOT_FOUND_HOTEL_ID));
+                .orElseThrow(() -> new AuthException(NOT_FOUND_HOTEL_ID));
 
         Optional<Like> likeOpt = likeRepository.findByMemberIdAndHotelId(memberId, hotelId);
         Like like;
@@ -79,4 +84,10 @@ public class LikeService {
         return new LikeStatus(like.isLiked(), hotel.getLikesCount());
     }
 
+    public Page<HotelDetailResponse> findLikedHotelsByMemberId(Long memberId, int page) {
+        Pageable pageable = PageRequest.of(page, 4, Sort.by("id").descending());
+
+        return likeRepository.findLikedHotelsByMemberId(memberId, pageable)
+                .map(HotelDetailResponse::of);
+    }
 }

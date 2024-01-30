@@ -6,6 +6,7 @@ import com.example.hotsix_be.auth.util.Accessor;
 import com.example.hotsix_be.common.dto.ResponseDto;
 import com.example.hotsix_be.hotel.dto.response.HotelDetailResponse;
 import com.example.hotsix_be.hotel.service.HotelService;
+import com.example.hotsix_be.like.service.LikeService;
 import com.example.hotsix_be.member.dto.request.MemberPasswordChangeRequest;
 import com.example.hotsix_be.member.dto.request.MemberRegisterRequest;
 import com.example.hotsix_be.member.dto.response.MemberInfoResponse;
@@ -32,6 +33,7 @@ public class MemberController {
     private final MemberService memberService;
     private final ReservationService reservationService;
     private final HotelService hotelService;
+    private final LikeService likeService;
 
     @PostMapping("/register")
     public ResponseEntity<?> registerMember(@RequestBody MemberRegisterRequest memberRegisterRequest) {
@@ -125,6 +127,23 @@ public class MemberController {
                 new ResponseDto<>(
                         HttpStatus.OK.value(),
                         "예약 조회가 성공적으로 완료되었습니다.", null,
+                        null, hotelDetailResponses
+                )
+        );
+    }
+
+    @GetMapping("/me/likes")
+    @MemberOnly
+    public ResponseEntity<?> getMyLikes(
+            @Auth final Accessor accessor,
+            @RequestParam(value = "page", defaultValue = "0") int page
+    ) {
+        Page<HotelDetailResponse> hotelDetailResponses = likeService.findLikedHotelsByMemberId(accessor.getMemberId(), page);
+
+        return ResponseEntity.ok(
+                new ResponseDto<>(
+                        HttpStatus.OK.value(),
+                        "찜한 숙소 조회가 성공적으로 완료되었습니다.", null,
                         null, hotelDetailResponses
                 )
         );
