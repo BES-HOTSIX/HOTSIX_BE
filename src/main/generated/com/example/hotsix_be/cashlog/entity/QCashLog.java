@@ -40,6 +40,8 @@ public class QCashLog extends EntityPathBase<CashLog> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;
 
+    public final com.example.hotsix_be.withdrawapply.entity.QWithdrawApply withdrawApply;
+
     public QCashLog(String variable) {
         this(CashLog.class, forVariable(variable), INITS);
     }
@@ -60,6 +62,7 @@ public class QCashLog extends EntityPathBase<CashLog> {
         super(type, metadata, inits);
         this.member = inits.isInitialized("member") ? new com.example.hotsix_be.member.entity.QMember(forProperty("member")) : null;
         this.reservation = inits.isInitialized("reservation") ? new com.example.hotsix_be.reservation.entity.QReservation(forProperty("reservation"), inits.get("reservation")) : null;
+        this.withdrawApply = inits.isInitialized("withdrawApply") ? new com.example.hotsix_be.withdrawapply.entity.QWithdrawApply(forProperty("withdrawApply"), inits.get("withdrawApply")) : null;
     }
 
 }

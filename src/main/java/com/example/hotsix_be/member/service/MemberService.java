@@ -1,8 +1,7 @@
 package com.example.hotsix_be.member.service;
 
-import static com.example.hotsix_be.common.exception.ExceptionCode.*;
-
 import com.example.hotsix_be.common.exception.AuthException;
+import com.example.hotsix_be.common.exception.BadRequestException;
 import com.example.hotsix_be.member.dto.request.MemberRegisterRequest;
 import com.example.hotsix_be.member.dto.response.MemberInfoResponse;
 import com.example.hotsix_be.member.entity.Member;
@@ -12,6 +11,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.example.hotsix_be.common.exception.ExceptionCode.NOT_FOUND_MEMBER_BY_ID;
+import static com.example.hotsix_be.common.exception.ExceptionCode.NOT_FOUND_MEMBER_BY_USERNAME;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -19,6 +21,11 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
+
+    // CashLog 에서 캐시 사용 내역 확인을 위해 만든 findById
+    public Member getMemberById(Long id) {
+        return memberRepository.findById(id).orElseThrow(() -> new BadRequestException(NOT_FOUND_MEMBER_BY_ID));
+    }
 
     public void save(MemberRegisterRequest memberRegisterRequest) {
 
