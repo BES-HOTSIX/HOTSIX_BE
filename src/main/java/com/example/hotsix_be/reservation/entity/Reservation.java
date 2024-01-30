@@ -41,6 +41,7 @@ public class Reservation extends DateEntity {
     private int guests;
 
     private long price;
+
     private boolean isPaid;
 
     @JsonIgnore
@@ -78,5 +79,9 @@ public class Reservation extends DateEntity {
 
     public void updateCancelDate(LocalDateTime date) {
         this.cancelDate = date;
+    }
+
+    public void updateIsPaid(boolean isPaid) {
+        this.isPaid = isPaid;
     }
 }

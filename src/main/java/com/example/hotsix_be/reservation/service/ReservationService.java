@@ -11,6 +11,8 @@ import com.example.hotsix_be.reservation.repository.ReservationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 import static com.example.hotsix_be.common.exception.ExceptionCode.NOT_FOUND_HOTEL_ID;
 import static com.example.hotsix_be.common.exception.ExceptionCode.NOT_FOUND_RESERVATION_ID;
 
@@ -29,6 +31,15 @@ public class ReservationService {
 		);
 	}
 
+	// TODO 나중에 위의 메소드와 병합
+	public Optional<Reservation> findOpById(long id) {
+		return reservationRepository.findById(id);
+	}
+
+	public void payDone(Reservation reservation) {
+		reservation.toBuilder()
+				.isPaid(true);
+	}
 	public Reservation save(final Long hotelId, final ReservationInfoRequest reservationInfoRequest) {
 		Hotel hotel = hotelRepository.findById(hotelId).orElseThrow(() -> new HotelException(NOT_FOUND_HOTEL_ID));
 
