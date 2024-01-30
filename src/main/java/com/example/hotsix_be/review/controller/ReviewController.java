@@ -38,8 +38,8 @@ public class ReviewController {
 
     @GetMapping("/all")
     @ResponseBody
-    public ResponseEntity<List<ReviewResponseDTO>> getAllReviews() {
-        List<ReviewResponseDTO> reviews = reviewService.getAllReviews();
+    public ResponseEntity<List<ReviewResponseDTO>> getAllReviewsOrderByCreatedAtDesc() {
+        List<ReviewResponseDTO> reviews = reviewService.getAllReviewsOrderByCreatedAtDesc();
         return ResponseEntity.ok(reviews);
     }
 }

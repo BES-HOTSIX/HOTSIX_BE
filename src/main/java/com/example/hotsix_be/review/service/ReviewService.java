@@ -34,8 +34,8 @@ public class ReviewService {
         reviewRepository.save(review);
     }
 
-    public List<ReviewResponseDTO> getAllReviews() {
-        List<Review> reviews = reviewRepository.findAll();
+    public List<ReviewResponseDTO> getAllReviewsOrderByCreatedAtDesc() {
+        List<Review> reviews = reviewRepository.findAllByOrderByCreatedAtDesc();
 
         // Review 엔터티를 ReviewResponseDTO로 변환하여 반환
         return convertToReviewResponseDTOs(reviews);
