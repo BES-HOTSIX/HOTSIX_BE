@@ -16,6 +16,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -33,6 +35,9 @@ public class DataInit implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime startDate = LocalDateTime.parse("2024-01-01 00:00:00", formatter);
+        LocalDateTime endDate = LocalDateTime.parse("2024-01-10 00:00:00", formatter);
 
         if (memberRepository.count() <= 0 && hotelRepository.count() <= 0) {
             IntStream.rangeClosed(1, 50).forEach(i -> {
@@ -48,7 +53,7 @@ public class DataInit implements ApplicationRunner {
             });
 
             IntStream.rangeClosed(1, 20).forEach(j -> {
-                Reservation reservation = new Reservation("2024-01-01", "2024-01-10", 3, 550000L, hotelRepository.findById(1L).get(), memberRepository.findAll().getLast());
+                Reservation reservation = new Reservation(startDate, endDate, 3, 550000L, hotelRepository.findById(1L).get(), memberRepository.findAll().getLast(), false);
                 reservationRepository.save(reservation);
             });
         }

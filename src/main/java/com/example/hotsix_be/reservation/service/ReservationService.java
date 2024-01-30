@@ -1,5 +1,12 @@
 package com.example.hotsix_be.reservation.service;
 
+import com.example.hotsix_be.common.exception.AuthException;
+import com.example.hotsix_be.hotel.entity.Hotel;
+import com.example.hotsix_be.hotel.exception.HotelException;
+import com.example.hotsix_be.hotel.repository.HotelRepository;
+import com.example.hotsix_be.member.entity.Member;
+import com.example.hotsix_be.member.repository.MemberRepository;
+import com.example.hotsix_be.reservation.dto.request.ReservationInfoRequest;
 import com.example.hotsix_be.reservation.dto.response.ReservationDetailResponse;
 import com.example.hotsix_be.reservation.entity.Reservation;
 import com.example.hotsix_be.reservation.exception.ReservationException;
@@ -9,12 +16,24 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import static com.example.hotsix_be.common.exception.ExceptionCode.NOT_FOUND_RESERVATION_ID;
+import static com.example.hotsix_be.common.exception.ExceptionCode.*;
 
 @Service
 @RequiredArgsConstructor
 public class ReservationService {
     private final ReservationRepository reservationRepository;
+    private final HotelRepository hotelRepository;
+    private final MemberRepository memberRepository;
+
+    public Page<ReservationDetailResponse> findByMemberId(Long memberId, int page) {
+        Pageable pageable = Pageable.ofSize(4).withPage(page);
+
+        return reservationRepository.findByMemberIdOrderByIdDesc(pageable, memberId)
+                .map(reservation -> ReservationDetailResponse.of(
+                        reservation.getHotel(),
+                        reservation
+                ));
+    }
 
     public ReservationDetailResponse findById(Long id) {
         Reservation reservation = reservationRepository.findById(id).orElseThrow(() -> new ReservationException(NOT_FOUND_RESERVATION_ID));
@@ -25,13 +44,20 @@ public class ReservationService {
         );
     }
 
-    public Page<ReservationDetailResponse> findByMemberId(Long memberId, int page) {
-        Pageable pageable = Pageable.ofSize(4).withPage(page);
+    public Reservation save(final Long hotelId, final ReservationInfoRequest reservationInfoRequest, final Long memberId) {
+        Hotel hotel = hotelRepository.findById(hotelId).orElseThrow(() -> new HotelException(NOT_FOUND_HOTEL_ID));
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new AuthException(NOT_FOUND_MEMBER_BY_ID));
 
-        return reservationRepository.findByMemberIdOrderByIdDesc(pageable, memberId)
-                .map(reservation -> ReservationDetailResponse.of(
-                        reservation.getHotel(),
-                        reservation
-                ));
+        final Reservation reservation = new Reservation(
+                reservationInfoRequest.getCheckInDate(),
+                reservationInfoRequest.getCheckOutDate(),
+                reservationInfoRequest.getNumOfGuests(),
+                reservationInfoRequest.getPrice(),
+                hotel,
+                member,
+                reservationInfoRequest.isPaid()
+        );
+
+        return reservationRepository.save(reservation);
     }
 }

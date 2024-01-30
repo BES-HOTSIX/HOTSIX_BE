@@ -17,13 +17,13 @@ public class ReservationDetailResponse {
     private final String hotelDescription;
     private final String hotelPhotoUrl;
     private final String hotelHost;
-    private final String hotelAddress;
     private final LocalDateTime checkInDate;
     private final LocalDateTime checkOutDate;
     private final LocalDateTime createdAt;
     private final LocalDateTime cancelDate;
     private final int numOfGuests;
     private final long paidPrice;
+    private final boolean isPaid;
 
     public static ReservationDetailResponse of(final Hotel hotel, final Reservation reservation) {
         String imageUrl = "";
@@ -37,13 +37,13 @@ public class ReservationDetailResponse {
                 hotel.getDescription(),
                 imageUrl,
                 hotel.getOwner().getUsername(),
-                hotel.getAddress(),
                 reservation.getCheckInDate(),
                 reservation.getCheckOutDate(),
                 reservation.getCreatedAt(),
                 reservation.getCancelDate(),
                 reservation.getGuests(),
-                reservation.getPrice()
+                reservation.getPrice(),
+                reservation.isPaid()
         );
     }
 }

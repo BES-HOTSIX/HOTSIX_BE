@@ -2,6 +2,7 @@ package com.example.hotsix_be.reservation;
 
 import com.example.hotsix_be.hotel.entity.Hotel;
 import com.example.hotsix_be.hotel.repository.HotelRepository;
+import com.example.hotsix_be.member.entity.Member;
 import com.example.hotsix_be.reservation.entity.Reservation;
 import com.example.hotsix_be.reservation.repository.ReservationRepository;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +12,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -28,38 +30,45 @@ public class ReservationInit implements ApplicationRunner {
             List<Hotel> hotels = hotelRepository.findAll();
             if (!hotels.isEmpty()) {
                 Hotel lastHotel = hotels.get(hotels.size() - 1);
+                Member member = lastHotel.getOwner();
 
                 Reservation reservation1 = new Reservation(
-                        "2024-01-01",
-                        "2024-01-10",
+                        LocalDate.parse("2024-01-01").atStartOfDay(),
+                        LocalDate.parse("2024-01-10").atStartOfDay(),
                         3,
                         550000,
-                        lastHotel
+                        lastHotel,
+                        member,
+                        true
                 );
                 reservationRepository.save(reservation1);
 
                 Reservation reservation2 = new Reservation(
-                        "2024-01-22",
-                        "2024-01-28",
+                        LocalDate.parse("2024-01-22").atStartOfDay(),
+                        LocalDate.parse("2024-01-28").atStartOfDay(),
                         1,
                         100000,
-                        lastHotel
+                        lastHotel,
+                        member,
+                        true
                 );
                 reservationRepository.save(reservation2);
 
                 Reservation reservation3 = new Reservation(
-                        "2024-02-22",
-                        "2024-02-28",
+                        LocalDate.parse("2024-02-22").atStartOfDay(),
+                        LocalDate.parse("2024-02-28").atStartOfDay(),
                         4,
                         1000000,
-                        lastHotel
+                        lastHotel,
+                        member,
+                        true
                 );
                 reservationRepository.save(reservation3);
 
                 List<Reservation> reservations = reservationRepository.findAll();
                 if (!reservations.isEmpty()) {
                     Reservation reservation = reservations.get(0);
-                    reservation.setCancelDate(LocalDateTime.now());
+                    reservation.updateCancelDate(LocalDateTime.now());
                     reservationRepository.save(reservation);
                 }
             }

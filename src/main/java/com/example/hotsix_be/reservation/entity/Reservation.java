@@ -14,7 +14,6 @@ import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 
@@ -42,6 +41,7 @@ public class Reservation extends DateEntity {
     private int guests;
 
     private long price;
+    private boolean isPaid;
 
     @JsonIgnore
     @ManyToOne
@@ -61,36 +61,24 @@ public class Reservation extends DateEntity {
     private Review review;
 
     public Reservation(
-            final String checkInDate,
-            final String checkOutDate,
-            final int guests,
-            final long price,
-            final Hotel hotel
-    ) {
-        this.checkInDate = LocalDate.parse(checkInDate).atStartOfDay();
-        this.checkOutDate = LocalDate.parse(checkOutDate).atStartOfDay();
-        this.guests = guests;
-        this.price = price;
-        this.hotel = hotel;
-    }
-
-    public Reservation(
-            final String checkInDate,
-            final String checkOutDate,
+            final LocalDateTime checkInDate,
+            final LocalDateTime checkOutDate,
             final int guests,
             final long price,
             final Hotel hotel,
-            final Member member
+            final Member member,
+            final boolean isPaid
     ) {
-        this.checkInDate = LocalDate.parse(checkInDate).atStartOfDay();
-        this.checkOutDate = LocalDate.parse(checkOutDate).atStartOfDay();
+        this.checkInDate = checkInDate;
+        this.checkOutDate = checkOutDate;
         this.guests = guests;
         this.price = price;
         this.hotel = hotel;
         this.member = member;
+        this.isPaid = isPaid;
     }
 
-    public void setCancelDate(LocalDateTime date) {
+    public void updateCancelDate(LocalDateTime date) {
         this.cancelDate = date;
     }
 }
