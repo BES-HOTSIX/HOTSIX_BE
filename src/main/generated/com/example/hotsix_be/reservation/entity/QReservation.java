@@ -39,6 +39,8 @@ public class QReservation extends EntityPathBase<Reservation> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
+    public final BooleanPath isPaid = createBoolean("isPaid");
+
     public final com.example.hotsix_be.member.entity.QMember member;
 
     public final NumberPath<Long> price = createNumber("price", Long.class);
