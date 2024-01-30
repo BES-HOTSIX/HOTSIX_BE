@@ -35,7 +35,9 @@ public class CashLogService {
     }
 
     // 개인 캐시 사용 내역 페이지의 cashLog 리스트
-    public Page<CashLog> findMyPageList(final Member member,final Pageable pageable) {
+    public Page<CashLog> findMyPageList(final Long memberId,final Pageable pageable) {
+        Member member = memberService.getMemberById(memberId);
+
         Pageable sortedPageable = PageRequest.of(
                 pageable.getPageNumber(),
                 pageable.getPageSize(),

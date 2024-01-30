@@ -1,6 +1,10 @@
 package com.example.hotsix_be.cashlog.controller;
 
+import com.example.hotsix_be.auth.Auth;
+import com.example.hotsix_be.auth.MemberOnly;
+import com.example.hotsix_be.auth.util.Accessor;
 import com.example.hotsix_be.cashlog.dto.request.AddCashRequest;
+import com.example.hotsix_be.cashlog.dto.response.CashLogConfirmResponse;
 import com.example.hotsix_be.cashlog.dto.response.CashLogIdResponse;
 import com.example.hotsix_be.cashlog.dto.response.ConfirmResponse;
 import com.example.hotsix_be.cashlog.dto.response.TestResponse;
@@ -17,6 +21,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,6 +37,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.List;
 
 import static com.example.hotsix_be.common.exception.ExceptionCode.FAIL_APPROVE_PURCHASE;
 import static com.example.hotsix_be.common.exception.ExceptionCode.INVALID_REQUEST;
@@ -56,6 +65,32 @@ public class CashLogController {
                 null, cashLogDetailResponse));
     }
 
+    @GetMapping("/me") //
+    @MemberOnly
+    public ResponseEntity<?> showMyCashLogs(
+            @PageableDefault(size = 5) final Pageable pageable,
+            @Auth final Accessor accessor
+    ) {
+        Page<CashLog> cashLogs = cashLogService.findMyPageList(accessor.getMemberId(), pageable);
+
+        List<CashLogConfirmResponse> cashLogConfirmResponses =
+                cashLogs.stream()
+                        .map(CashLogConfirmResponse::of)
+                        .toList();
+
+        PageImpl<CashLogConfirmResponse> cashLogConfirmResponse =
+                new PageImpl<>(
+                        cashLogConfirmResponses,
+                        pageable,
+                        cashLogs.getTotalElements());
+
+        return ResponseEntity.ok(new ResponseDto<>(
+                HttpStatus.OK.value(),
+                "캐시 사용 내역 조회 성공", null,
+                null, cashLogConfirmResponse
+        ));
+    }
+
     // TODO 무통장 입금 시 어드민이 수리하는 형식으로 수정할 예정
     @PostMapping("/addCash")
     public ResponseEntity<?> addCash(@RequestBody AddCashRequest addCashRequest) {
@@ -76,9 +111,9 @@ public class CashLogController {
         ReservationDetailResponse reservationDetailResponse = reservationService.findById(reserveId);
 
         return ResponseEntity.ok(new ResponseDto<>(
-                        HttpStatus.OK.value(),
-                        "결제창 조회 성공", null,
-                        null, reservationDetailResponse));
+                HttpStatus.OK.value(),
+                "결제창 조회 성공", null,
+                null, reservationDetailResponse));
     }
 
     // 결제창에서 결제하기 버튼을 누를 경우 아래 메소드가 작동
