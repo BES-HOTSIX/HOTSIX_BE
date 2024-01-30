@@ -52,4 +52,17 @@ public class MemberService {
 
         memberRepository.save(member);
     }
+
+    public boolean isExistNickname(String nickname) {
+        return memberRepository.existsByNickname(nickname);
+    }
+
+    public void changeNickname(Long memberId, String nickname) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new AuthException(NOT_FOUND_MEMBER_BY_ID));
+
+        member.changeNickname(nickname);
+
+        memberRepository.save(member);
+    }
 }

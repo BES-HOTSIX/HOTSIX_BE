@@ -74,6 +74,22 @@ public class Reservation extends DateEntity {
         this.hotel = hotel;
     }
 
+    public Reservation(
+            final String checkInDate,
+            final String checkOutDate,
+            final int guests,
+            final long price,
+            final Hotel hotel,
+            final Member member
+    ) {
+        this.checkInDate = LocalDate.parse(checkInDate).atStartOfDay();
+        this.checkOutDate = LocalDate.parse(checkOutDate).atStartOfDay();
+        this.guests = guests;
+        this.price = price;
+        this.hotel = hotel;
+        this.member = member;
+    }
+
     public void setCancelDate(LocalDateTime date) {
         this.cancelDate = date;
     }
