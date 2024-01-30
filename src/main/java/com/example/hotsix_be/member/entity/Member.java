@@ -27,7 +27,7 @@ public class Member extends DateEntity {
     @Column(unique = true)
     private String nickname;
 
-    private long restCash;
+    private Long restCash = 0L;
 
     @Enumerated(EnumType.STRING)
     private SocialProvider socialProvider;
