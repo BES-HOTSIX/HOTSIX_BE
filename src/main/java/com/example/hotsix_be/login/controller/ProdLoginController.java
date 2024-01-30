@@ -10,6 +10,7 @@ import com.example.hotsix_be.common.dto.ResponseDto;
 import com.example.hotsix_be.common.exception.AuthException;
 import com.example.hotsix_be.login.dto.request.LoginRequest;
 import com.example.hotsix_be.login.dto.request.OAuthCodeRequest;
+import com.example.hotsix_be.login.dto.response.AccessTokenResponse;
 import com.example.hotsix_be.login.dto.response.LoginResponse;
 import com.example.hotsix_be.login.service.LoginService;
 import com.example.hotsix_be.member.entity.Member;
@@ -54,13 +55,13 @@ public class ProdLoginController {
                 new ResponseDto<>(
                         HttpStatus.OK.value(),
                         "성공적으로 로그인 되었습니다.", null,
-                        null, loginResponse.getAccessToken()
+                        null, new AccessTokenResponse(loginResponse.getAccessToken())
                 )
         );
     }
 
     @PostMapping("/login/{provider}")
-    public Mono<ResponseEntity<ResponseDto<String>>> OAuthLoginDev(
+    public Mono<ResponseEntity<ResponseDto<AccessTokenResponse>>> OAuthLoginDev(
             @PathVariable String provider,
             @RequestBody OAuthCodeRequest oAuthCodeRequest,
             final HttpServletResponse httpServletResponse
@@ -80,7 +81,7 @@ public class ProdLoginController {
             return Mono.just(ResponseEntity.ok(
                     new ResponseDto<>(
                             HttpStatus.OK.value(),
-                            "성공적으로 로그인 되었습니다.", null, null, loginResponse.getAccessToken()
+                            "성공적으로 로그인 되었습니다.", null, null, new AccessTokenResponse(loginResponse.getAccessToken())
                     )
             ));
         }).onErrorResume(AuthException.class, e ->
