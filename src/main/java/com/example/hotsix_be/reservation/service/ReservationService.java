@@ -36,6 +36,7 @@ public class ReservationService {
 		return reservationRepository.findById(id);
 	}
 
+	// TODO 삭제 or 수정
 	public void payDone(Reservation reservation) {
 		reservation.toBuilder()
 				.isPaid(true);
