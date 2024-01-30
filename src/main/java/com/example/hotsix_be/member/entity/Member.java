@@ -73,4 +73,8 @@ public class Member extends DateEntity {
     public void changeNickname(final String nickname) {
         this.nickname = nickname;
     }
+
+    public void changeImageUrl(final String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
 }

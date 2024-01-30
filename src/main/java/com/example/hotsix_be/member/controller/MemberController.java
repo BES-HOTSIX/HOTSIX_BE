@@ -18,6 +18,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 
 @Log4j2
@@ -172,6 +175,23 @@ public class MemberController {
                 new ResponseDto<>(
                         HttpStatus.OK.value(),
                         "닉네임 변경이 성공적으로 완료되었습니다.", null,
+                        null, null
+                )
+        );
+    }
+
+    @PutMapping("/image")
+    @MemberOnly
+    public ResponseEntity<?> changeImageUrl(
+            @Auth final Accessor accessor,
+            @RequestPart(value = "files", required = false) final List<MultipartFile> multipartFiles
+    ) {
+        memberService.changeImageUrl(accessor.getMemberId(), multipartFiles);
+
+        return ResponseEntity.ok(
+                new ResponseDto<>(
+                        HttpStatus.OK.value(),
+                        "프로필 사진 변경이 성공적으로 완료되었습니다.", null,
                         null, null
                 )
         );
