@@ -30,7 +30,7 @@ public class Member extends DateEntity {
     @Column(unique = true)
     private String nickname;
 
-    private Long restCash;
+    private Long restCash = 0L;
 
     @Enumerated(EnumType.STRING)
     private SocialProvider socialProvider;
@@ -76,5 +76,9 @@ public class Member extends DateEntity {
 
     public void changeImageUrl(final String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public void updateRestCash(Long newRestCash) {
+        this.restCash = newRestCash;
     }
 }

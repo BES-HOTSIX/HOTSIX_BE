@@ -1,23 +1,12 @@
 package com.example.hotsix_be.cashlog.entity;
 
 import com.example.hotsix_be.common.entity.DateEntity;
-import com.example.hotsix_be.hotel.entity.Hotel;
 import com.example.hotsix_be.member.entity.Member;
 import com.example.hotsix_be.reservation.entity.Reservation;
+import com.example.hotsix_be.withdrawapply.entity.WithdrawApply;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -50,4 +39,9 @@ public class CashLog extends DateEntity {
     @JoinColumn(name = "reservation_id")
     private Reservation reservation;
 
+    @JsonIgnore
+    @OneToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "withdrawApply_id")
+    private WithdrawApply withdrawApply;
 }

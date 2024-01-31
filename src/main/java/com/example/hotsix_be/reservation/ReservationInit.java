@@ -16,6 +16,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+
 @Component
 @RequiredArgsConstructor
 @Profile("dev")
@@ -38,7 +39,6 @@ public class ReservationInit implements ApplicationRunner {
                         3,
                         550000,
                         lastHotel,
-                        member,
                         true
                 );
                 reservationRepository.save(reservation1);
@@ -49,7 +49,6 @@ public class ReservationInit implements ApplicationRunner {
                         1,
                         100000,
                         lastHotel,
-                        member,
                         true
                 );
                 reservationRepository.save(reservation2);
@@ -60,7 +59,6 @@ public class ReservationInit implements ApplicationRunner {
                         4,
                         1000000,
                         lastHotel,
-                        member,
                         true
                 );
                 reservationRepository.save(reservation3);

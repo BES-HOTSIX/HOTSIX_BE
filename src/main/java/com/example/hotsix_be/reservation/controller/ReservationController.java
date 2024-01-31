@@ -1,8 +1,5 @@
 package com.example.hotsix_be.reservation.controller;
 
-import com.example.hotsix_be.auth.Auth;
-import com.example.hotsix_be.auth.MemberOnly;
-import com.example.hotsix_be.auth.util.Accessor;
 import com.example.hotsix_be.common.dto.ResponseDto;
 import com.example.hotsix_be.reservation.dto.request.ReservationInfoRequest;
 import com.example.hotsix_be.reservation.dto.response.ReservationCreateResponse;
@@ -31,13 +28,11 @@ public class ReservationController {
     }
 
     @PostMapping("/{hotelId}")
-    @MemberOnly
     public ResponseEntity<?> reserveHotel(
             @PathVariable(value = "hotelId") final Long hotelId,
-            @RequestBody final ReservationInfoRequest reservationInfoRequest,
-            @Auth final Accessor accessor
+            @RequestBody final ReservationInfoRequest reservationInfoRequest
     ) {
-        Reservation reservation = reservationService.save(hotelId, reservationInfoRequest, accessor.getMemberId());
+        Reservation reservation = reservationService.save(hotelId, reservationInfoRequest);
         ReservationCreateResponse reservationCreateResponse = ReservationCreateResponse.of(reservation);
 
         return ResponseEntity.ok(

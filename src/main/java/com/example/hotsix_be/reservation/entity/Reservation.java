@@ -41,6 +41,7 @@ public class Reservation extends DateEntity {
     private int guests;
 
     private long price;
+
     private boolean isPaid;
 
     @JsonIgnore
@@ -66,7 +67,6 @@ public class Reservation extends DateEntity {
             final int guests,
             final long price,
             final Hotel hotel,
-            final Member member,
             final boolean isPaid
     ) {
         this.checkInDate = checkInDate;
@@ -74,11 +74,14 @@ public class Reservation extends DateEntity {
         this.guests = guests;
         this.price = price;
         this.hotel = hotel;
-        this.member = member;
         this.isPaid = isPaid;
     }
 
     public void updateCancelDate(LocalDateTime date) {
         this.cancelDate = date;
+    }
+
+    public void updateIsPaid(boolean isPaid) {
+        this.isPaid = isPaid;
     }
 }
