@@ -133,7 +133,7 @@ public class CashLogController {
 
         CashLogIdResponse cashLogIdResponse = cashLogService.getCashLogIdById(cashLog.getId());
 
-        if(!cashLogService.canPay(reservation, reservation.getPrice())) throw new CashException(INSUFFICIENT_DEPOSIT);
+        if (!cashLogService.canPay(reservation, reservation.getPrice())) throw new CashException(INSUFFICIENT_DEPOSIT);
 
         return ResponseEntity.ok(
                 new ResponseDto<>(

@@ -2,7 +2,10 @@ package com.example.hotsix_be.member.entity;
 
 import com.example.hotsix_be.common.entity.DateEntity;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
@@ -61,6 +64,18 @@ public class Member extends DateEntity {
 
     public boolean isNicknameChanged(final String inputNickname) {
         return !nickname.equals(inputNickname);
+    }
+
+    public void changePassword(final String password) {
+        this.password = password;
+    }
+
+    public void changeNickname(final String nickname) {
+        this.nickname = nickname;
+    }
+
+    public void changeImageUrl(final String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public void updateRestCash(Long newRestCash) {
