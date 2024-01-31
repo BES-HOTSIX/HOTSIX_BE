@@ -102,9 +102,7 @@ public class MemberController {
             @Auth final Accessor accessor,
             @RequestParam(value = "page", defaultValue = "0") int page
     ) {
-
         Page<ReservationDetailResponse> reservationDetailResponses = reservationService.findByMemberIdAndIsPaid(accessor.getMemberId(), page);
-
         return ResponseEntity.ok(
                 new ResponseDto<>(
                         HttpStatus.OK.value(),
