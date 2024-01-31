@@ -1,11 +1,9 @@
 package com.example.hotsix_be.login.service;
 
 
-import static com.example.hotsix_be.common.exception.ExceptionCode.FAIL_TO_GENERATE_RANDOM_NICKNAME;
 import static com.example.hotsix_be.common.exception.ExceptionCode.FAIL_TO_VALIDATE_TOKEN;
 import static com.example.hotsix_be.common.exception.ExceptionCode.INVALID_REFRESH_TOKEN;
 import static com.example.hotsix_be.common.exception.ExceptionCode.PASSWORD_NOT_MATCHED;
-import static org.springframework.http.HttpHeaders.SET_COOKIE;
 
 import com.example.hotsix_be.common.exception.AuthException;
 import com.example.hotsix_be.login.domain.MemberTokens;
@@ -22,6 +20,7 @@ import com.example.hotsix_be.member.repository.MemberRepository;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -34,6 +33,13 @@ import reactor.core.publisher.Mono;
 @Slf4j
 public class LoginService {
 
+    public static final int COOKIE_AGE_SECONDS = 604800;
+
+    @Value("${spring.cookie.domain}")
+    private String cookieDomain;
+
+    @Value("${spring.cookie.same-site}")
+    private String cookieSameSite;
 
     private final RefreshTokenRepository refreshTokenRepository;
 
@@ -141,21 +147,24 @@ public class LoginService {
         throw new AuthException(FAIL_TO_VALIDATE_TOKEN);
     }
 
-    public void removeRefreshTokenProd(final String refreshToken, HttpServletResponse response) {
+    public void sendRefreshTokenCookie(final HttpServletResponse httpServletResponse,
+                                        final LoginResponse loginResponse) {
 
-        refreshTokenRepository.deleteById(refreshToken);
-
-        ResponseCookie deleteCookie = ResponseCookie.from("refresh-token", refreshToken)
-                .httpOnly(true)
-                .path("/")
+        log.info("cookieDomain : {}", cookieDomain);
+        ResponseCookie cookie = ResponseCookie.from("refresh-token", loginResponse.getRefreshToken())
+                .maxAge(COOKIE_AGE_SECONDS)
                 .secure(true)
-                .domain(".hotshare.me")
-                .maxAge(0) // 쿠키의 유효기간을 0으로 설정하여 쿠키를 삭제
+                .httpOnly(true)
+                .sameSite(cookieSameSite)
+                .path("/")
+                .domain(cookieDomain) // 환경별 도메인 사용
                 .build();
-        response.addHeader("Set-Cookie", deleteCookie.toString());
+
+        httpServletResponse.addHeader("Set-Cookie", cookie.toString());
     }
 
-    public void removeRefreshTokenDev(final String refreshToken, HttpServletResponse response) {
+
+    public void removeRefreshToken(final String refreshToken, HttpServletResponse response) {
 
         refreshTokenRepository.deleteById(refreshToken);
 
@@ -165,6 +174,7 @@ public class LoginService {
                 .secure(true)
                 .sameSite("None")
                 .maxAge(0) // 쿠키의 유효기간을 0으로 설정하여 쿠키를 삭제
+                .domain(cookieDomain) // 환경별 도메인 사용
                 .build();
         response.addHeader("Set-Cookie", deleteCookie.toString());
     }
