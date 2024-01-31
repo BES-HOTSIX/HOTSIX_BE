@@ -103,7 +103,7 @@ public class MemberController {
             @RequestParam(value = "page", defaultValue = "0") int page
     ) {
 
-        Page<ReservationDetailResponse> reservationDetailResponses = reservationService.findByMemberId(accessor.getMemberId(), page);
+        Page<ReservationDetailResponse> reservationDetailResponses = reservationService.findByMemberIdAndIsPaid(accessor.getMemberId(), page);
 
         return ResponseEntity.ok(
                 new ResponseDto<>(
