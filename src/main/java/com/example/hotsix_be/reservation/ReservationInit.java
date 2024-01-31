@@ -38,6 +38,7 @@ public class ReservationInit implements ApplicationRunner {
 
             if (!hotels.isEmpty()) {
                 Hotel lastHotel = hotels.get(hotels.size() - 1);
+//                Member member = lastHotel.getOwner();  // 주영님 부분
 
                 Reservation reservation1 = new Reservation(
                         LocalDate.parse("2024-01-01").atStartOfDay(),
