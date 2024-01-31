@@ -1,5 +1,8 @@
 package com.example.hotsix_be.reservation.controller;
 
+import com.example.hotsix_be.auth.Auth;
+import com.example.hotsix_be.auth.MemberOnly;
+import com.example.hotsix_be.auth.util.Accessor;
 import com.example.hotsix_be.common.dto.ResponseDto;
 import com.example.hotsix_be.reservation.dto.request.ReservationInfoRequest;
 import com.example.hotsix_be.reservation.dto.response.ReservationCreateResponse;
@@ -18,8 +21,12 @@ public class ReservationController {
 	private final ReservationService reservationService;
 
 	@GetMapping("/detail/{reserveId}")
-	public ResponseEntity<?> getReservationDetail(@PathVariable(value = "reserveId") final Long reserveId) {
-		ReservationDetailResponse reservationDetailResponse = reservationService.findById(reserveId);
+	@MemberOnly
+	public ResponseEntity<?> getReservationDetail(
+			@PathVariable(value = "reserveId") final Long reserveId,
+			@Auth final Accessor accessor
+	) {
+		ReservationDetailResponse reservationDetailResponse = reservationService.findById(reserveId, accessor.getMemberId());
 
 		return ResponseEntity.ok(new ResponseDto<>(
 				HttpStatus.OK.value(),
@@ -28,11 +35,13 @@ public class ReservationController {
 	}
 
 	@PostMapping("/{hotelId}")
+	@MemberOnly
 	public ResponseEntity<?> reserveHotel(
 			@PathVariable(value = "hotelId") final Long hotelId,
-			@RequestBody final ReservationInfoRequest reservationInfoRequest
+			@RequestBody final ReservationInfoRequest reservationInfoRequest,
+			@Auth final Accessor accessor
 	) {
-		Reservation reservation = reservationService.save(hotelId, reservationInfoRequest);
+		Reservation reservation = reservationService.save(hotelId, reservationInfoRequest, accessor.getMemberId());
 		ReservationCreateResponse reservationCreateResponse = ReservationCreateResponse.of(reservation);
 
 		return ResponseEntity.ok(
