@@ -2,6 +2,7 @@ package com.example.hotsix_be.reservation;
 
 import com.example.hotsix_be.hotel.entity.Hotel;
 import com.example.hotsix_be.hotel.repository.HotelRepository;
+import com.example.hotsix_be.member.entity.Member;
 import com.example.hotsix_be.reservation.entity.Reservation;
 import com.example.hotsix_be.reservation.repository.ReservationRepository;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,7 @@ public class ReservationInit implements ApplicationRunner {
             List<Hotel> hotels = hotelRepository.findAll();
             if (!hotels.isEmpty()) {
                 Hotel lastHotel = hotels.get(hotels.size() - 1);
+                Member member = lastHotel.getOwner();
 
                 Reservation reservation1 = new Reservation(
                         LocalDate.parse("2024-01-01").atStartOfDay(),
