@@ -21,11 +21,11 @@ public class ReservationDetailResponse {
     private final LocalDateTime checkOutDate;
     private final LocalDateTime createdAt;
     private final LocalDateTime cancelDate;
-    private final int numOfGuests;
-    private final long paidPrice;
+    private final Long numOfGuests;
+    private final Long paidPrice;
     private final boolean isPaid;
 
-    public static ReservationDetailResponse of(final Hotel hotel, final Reservation reservation) {
+	public static ReservationDetailResponse of(final Hotel hotel, final Reservation reservation) {
         String imageUrl = "";
         if (!hotel.getImages().isEmpty()) {
             imageUrl = hotel.getImages().get(0).getUrl(); // 첫 번째 이미지의 URL을 가져옵니다.

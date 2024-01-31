@@ -8,9 +8,9 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class ReservationInfoRequest {
-	private int numOfGuests;
+	private Long numOfGuests;
 	private LocalDateTime checkInDate;
 	private LocalDateTime checkOutDate;
-	private long price;
+	private Long price;
 	private boolean isPaid;
 }
