@@ -32,13 +32,12 @@ public class ReservationInit implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        if (reservationRepository.count() == 0) {
+        if (reservationRepository.count() == 20) {
             List<Hotel> hotels = hotelRepository.findAll();
             Member member = memberRepository.findById(1L).orElseThrow(() -> new AuthException(NOT_FOUND_MEMBER_BY_ID));
 
             if (!hotels.isEmpty()) {
                 Hotel lastHotel = hotels.get(hotels.size() - 1);
-//                Member member = lastHotel.getOwner();  // 주영님 부분
 
                 Reservation reservation1 = new Reservation(
                         LocalDate.parse("2024-01-01").atStartOfDay(),
@@ -75,7 +74,7 @@ public class ReservationInit implements ApplicationRunner {
 
                 List<Reservation> reservations = reservationRepository.findAll();
                 if (!reservations.isEmpty()) {
-                    Reservation reservation = reservations.get(0);
+                    Reservation reservation = reservations.get(20);
                     reservation.updateCancelDate(LocalDateTime.now());
                     reservationRepository.save(reservation);
                 }
