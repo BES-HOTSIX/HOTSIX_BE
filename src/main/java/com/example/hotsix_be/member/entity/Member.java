@@ -1,30 +1,14 @@
 package com.example.hotsix_be.member.entity;
 
-import static jakarta.persistence.EnumType.STRING;
-import static jakarta.persistence.GenerationType.IDENTITY;
-
 import com.example.hotsix_be.common.entity.DateEntity;
-import com.example.hotsix_be.login.domain.RefreshToken;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
-import java.time.LocalDateTime;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "members")
@@ -46,7 +30,7 @@ public class Member extends DateEntity {
     @Column(unique = true)
     private String nickname;
 
-    private Long restCash;
+    private Long restCash = 0L;
 
     @Enumerated(EnumType.STRING)
     private SocialProvider socialProvider;
@@ -82,4 +66,19 @@ public class Member extends DateEntity {
         return !nickname.equals(inputNickname);
     }
 
+    public void changePassword(final String password) {
+        this.password = password;
+    }
+
+    public void changeNickname(final String nickname) {
+        this.nickname = nickname;
+    }
+
+    public void changeImageUrl(final String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public void updateRestCash(Long newRestCash) {
+        this.restCash = newRestCash;
+    }
 }

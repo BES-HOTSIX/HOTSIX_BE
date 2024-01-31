@@ -15,32 +15,32 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/reserve")
 public class ReservationController {
-	private final ReservationService reservationService;
+    private final ReservationService reservationService;
 
-	@GetMapping("/detail/{reserveId}")
-	public ResponseEntity<?> getReservationDetail(@PathVariable(value = "reserveId") final Long reserveId) {
-		ReservationDetailResponse reservationDetailResponse = reservationService.findById(reserveId);
+    @GetMapping("/detail/{reserveId}")
+    public ResponseEntity<?> getReservationDetail(@PathVariable(value = "reserveId") final Long reserveId) {
+        ReservationDetailResponse reservationDetailResponse = reservationService.findById(reserveId);
 
-		return ResponseEntity.ok(new ResponseDto<>(
-				HttpStatus.OK.value(),
-				"예약 상세 조회 성공", null,
-				null, reservationDetailResponse));
-	}
+        return ResponseEntity.ok(new ResponseDto<>(
+                HttpStatus.OK.value(),
+                "예약 상세 조회 성공", null,
+                null, reservationDetailResponse));
+    }
 
-	@PostMapping("/{hotelId}")
-	public ResponseEntity<?> reserveHotel(
-			@PathVariable(value = "hotelId") final Long hotelId,
-			@RequestBody final ReservationInfoRequest reservationInfoRequest
-	) {
-		Reservation reservation = reservationService.save(hotelId, reservationInfoRequest);
-		ReservationCreateResponse reservationCreateResponse = ReservationCreateResponse.of(reservation);
+    @PostMapping("/{hotelId}")
+    public ResponseEntity<?> reserveHotel(
+            @PathVariable(value = "hotelId") final Long hotelId,
+            @RequestBody final ReservationInfoRequest reservationInfoRequest
+    ) {
+        Reservation reservation = reservationService.save(hotelId, reservationInfoRequest);
+        ReservationCreateResponse reservationCreateResponse = ReservationCreateResponse.of(reservation);
 
-		return ResponseEntity.ok(
-				new ResponseDto<>(
-						HttpStatus.OK.value(),
-						"예약 내역이 생성되었습니다.", null,
-						null, reservationCreateResponse
-				)
-		);
-	}
+        return ResponseEntity.ok(
+                new ResponseDto<>(
+                        HttpStatus.OK.value(),
+                        "예약 내역이 생성되었습니다.", null,
+                        null, reservationCreateResponse
+                )
+        );
+    }
 }

@@ -1,14 +1,13 @@
 package com.example.hotsix_be.hotel.dto.response;
 
-import static lombok.AccessLevel.PRIVATE;
-
 import com.example.hotsix_be.hotel.entity.Hotel;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Set;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+import static lombok.AccessLevel.PRIVATE;
 
 @Getter
 @RequiredArgsConstructor(access = PRIVATE)
@@ -30,7 +29,6 @@ public class HotelPageResponse {
 
 
     public static HotelPageResponse of(final Hotel hotel) {
-
         return new HotelPageResponse(
                 hotel.getId(),
                 hotel.getHotelType(),

@@ -7,4 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface HotelRepository extends JpaRepository<Hotel, Long> {
     Page<Hotel> findAllByOrderByCreatedAtDesc(Pageable sortedPageable);
+
+    Page<Hotel> findByOwnerIdOrderByIdDesc(Pageable pageable, Long memberId);
 }
