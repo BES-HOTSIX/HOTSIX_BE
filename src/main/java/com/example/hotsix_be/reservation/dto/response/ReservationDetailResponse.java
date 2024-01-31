@@ -12,36 +12,38 @@ import static lombok.AccessLevel.PRIVATE;
 @Getter
 @RequiredArgsConstructor(access = PRIVATE)
 public class ReservationDetailResponse {
-	private final String hotelNickname;
-	private final String hotelDescription;
-	private final String hotelPhotoUrl;
-	private final String hotelHost;
-	private final LocalDateTime checkInDate;
-	private final LocalDateTime checkOutDate;
-	private final LocalDateTime createdAt;
-	private final LocalDateTime cancelDate;
-	private final int numOfGuests;
-	private final long paidPrice;
-	private final boolean isPaid;
+    private final Long id;
+    private final String hotelNickname;
+    private final String hotelDescription;
+    private final String hotelPhotoUrl;
+    private final String hotelHost;
+    private final LocalDateTime checkInDate;
+    private final LocalDateTime checkOutDate;
+    private final LocalDateTime createdAt;
+    private final LocalDateTime cancelDate;
+    private final int numOfGuests;
+    private final long paidPrice;
+    private final boolean isPaid;
 
-	public static ReservationDetailResponse of(final Hotel hotel, final Reservation reservation) {
-		String imageUrl = "";
-		if (!hotel.getImages().isEmpty()) {
-			imageUrl = hotel.getImages().get(0).getUrl(); // 첫 번째 이미지의 URL을 가져옵니다.
-		}
+    public static ReservationDetailResponse of(final Hotel hotel, final Reservation reservation) {
+        String imageUrl = "";
+        if (!hotel.getImages().isEmpty()) {
+            imageUrl = hotel.getImages().get(0).getUrl(); // 첫 번째 이미지의 URL을 가져옵니다.
+        }
 
-		return new ReservationDetailResponse(
-				hotel.getNickname(),
-				hotel.getDescription(),
-				imageUrl,
-				hotel.getOwner().getUsername(),
-				reservation.getCheckInDate(),
-				reservation.getCheckOutDate(),
-				reservation.getCreatedAt(),
-				reservation.getCancelDate(),
-				reservation.getGuests(),
-				reservation.getPrice(),
-				reservation.isPaid()
-		);
-	}
+        return new ReservationDetailResponse(
+                reservation.getId(),
+                hotel.getNickname(),
+                hotel.getDescription(),
+                imageUrl,
+                hotel.getOwner().getUsername(),
+                reservation.getCheckInDate(),
+                reservation.getCheckOutDate(),
+                reservation.getCreatedAt(),
+                reservation.getCancelDate(),
+                reservation.getGuests(),
+                reservation.getPrice(),
+                reservation.isPaid()
+        );
+    }
 }

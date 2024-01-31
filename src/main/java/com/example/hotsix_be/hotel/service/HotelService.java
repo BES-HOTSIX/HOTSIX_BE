@@ -127,4 +127,11 @@ public class HotelService {
 
         hotelRepository.delete(hotel);
     }
+
+    public Page<HotelDetailResponse> findByMemberId(Long memberId, int page) {
+        Pageable pageable = Pageable.ofSize(10).withPage(page);
+
+        return hotelRepository.findByOwnerIdOrderByIdDesc(pageable, memberId)
+                .map(HotelDetailResponse::of);
+    }
 }
