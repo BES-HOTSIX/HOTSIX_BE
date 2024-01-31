@@ -53,7 +53,7 @@ public class Review extends DateEntity {
     private Reservation reservation;
 
     @Builder
-    public Review(String body, Double amenities, Double staffService, Double cleanliness, Double rating, Long hotelId, Long memberId, Reservation reservation) {
+    public Review(String body, Double amenities, Double staffService, Double cleanliness, Double rating, Hotel hotel, Member member, Reservation reservation) {
         this.body = body;
         this.amenities = amenities;
         this.staffService = staffService;

@@ -35,8 +35,8 @@ public class ReviewInit {
                 4.0,
                 3.0,
                 4.0,
-                1L,
-                1L,
+                null,
+                null,
                 null
         );
 

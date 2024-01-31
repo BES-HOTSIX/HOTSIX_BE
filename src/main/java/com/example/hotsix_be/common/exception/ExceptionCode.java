@@ -30,6 +30,7 @@ public enum ExceptionCode {
     INVALID_RESERVATION_REQUEST(7002, "요청에 해당하는 예약 내역을 불러올 수 없습니다."),
 
     NOT_FOUND_REVIEW_ID(8001, "해당 ID의 리뷰를 찾을 수 없습니다."),
+    NOT_FOUND_REVIEW_USERNAME(8001, "해당 username의 리뷰를 찾을 수 없습니다."),
 
     INVALID_AUTHORIZATION_CODE(9001, "유효하지 않은 인증 코드입니다."),
     NOT_SUPPORTED_OAUTH_SERVICE(9002, "해당 OAuth 서비스는 제공하지 않습니다."),
