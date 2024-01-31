@@ -1,6 +1,7 @@
 package com.example.hotsix_be.reservation.dto.response;
 
 import com.example.hotsix_be.hotel.entity.Hotel;
+import com.example.hotsix_be.member.entity.Member;
 import com.example.hotsix_be.reservation.entity.Reservation;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -21,11 +22,12 @@ public class ReservationDetailResponse {
     private final LocalDateTime checkOutDate;
     private final LocalDateTime createdAt;
     private final LocalDateTime cancelDate;
-    private final int numOfGuests;
-    private final long paidPrice;
+    private final Long numOfGuests;
+    private final Long paidPrice;
     private final boolean isPaid;
+	private final Long memberId;
 
-    public static ReservationDetailResponse of(final Hotel hotel, final Reservation reservation) {
+	public static ReservationDetailResponse of(final Hotel hotel, final Reservation reservation, final Member member) {
         String imageUrl = "";
         if (!hotel.getImages().isEmpty()) {
             imageUrl = hotel.getImages().get(0).getUrl(); // 첫 번째 이미지의 URL을 가져옵니다.
@@ -43,7 +45,8 @@ public class ReservationDetailResponse {
                 reservation.getCancelDate(),
                 reservation.getGuests(),
                 reservation.getPrice(),
-                reservation.isPaid()
+                reservation.isPaid(),
+				member.getId()
         );
     }
 }
