@@ -36,10 +36,12 @@ public class ReviewController {
             return ResponseEntity.ok(reviews);
         }
 
-    @DeleteMapping("/delete/{reviewId}")
-    public ResponseEntity<?> deleteReview(@PathVariable Long reviewId) {
-        reviewService.deleteReview(reviewId);
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> deleteReview(@PathVariable Long id) {
+        reviewService.deleteReview(id);
         return ResponseEntity.ok(new ResponseDto<>(HttpStatus.OK.value(), "리뷰가 성공적으로 삭제되었습니다.", null, null, null));
     }
+
+
     }
     

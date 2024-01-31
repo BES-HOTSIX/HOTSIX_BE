@@ -1,16 +1,23 @@
 package com.example.hotsix_be.review;
 
 import com.example.hotsix_be.review.dto.request.ReviewRequestDTO;
+import com.example.hotsix_be.review.repository.ReviewRepository;
 import com.example.hotsix_be.review.service.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.transaction.annotation.Transactional;
 
 @Configuration
 public class ReviewInit {
 
+    @Autowired
+    @Lazy
+    private ReviewInit self;
+    @Autowired
+    private ReviewRepository reviewRepository;
     private final ReviewService reviewService;
 
     @Autowired
@@ -21,10 +28,17 @@ public class ReviewInit {
     @Bean
     public ApplicationRunner initReview() {
         return args -> {
+            if (isInitialDataAdded()) return;
             for (int i = 0; i < 10; i++) {
-                work1();
+                self.work1();
             }
         };
+    }
+
+    private boolean isInitialDataAdded() {
+        // Review 엔터티가 존재하는지 확인
+        Long reviewCount = reviewRepository.count();
+        return reviewCount > 0;
     }
 
     @Transactional
@@ -35,8 +49,8 @@ public class ReviewInit {
                 4.0,
                 3.0,
                 4.0,
-                1L,
-                1L,
+                null,
+                null,
                 null
         );
 

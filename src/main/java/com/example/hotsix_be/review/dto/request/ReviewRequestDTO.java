@@ -17,11 +17,11 @@ public class ReviewRequestDTO {
     private final Double cleanliness;
     private final Double rating;
 
-    private final Long hotel;
-    private final Long member;
+    private final Hotel hotel;
+    private final Member member;
     private final Reservation reservation;
 
-    public ReviewRequestDTO(String body, Double amenities, Double staffService, Double cleanliness, Double rating, Long hotel, Long member, Reservation reservation) {
+    public ReviewRequestDTO(String body, Double amenities, Double staffService, Double cleanliness, Double rating, Hotel hotel, Member member, Reservation reservation) {
 
         this.body = body;
         this.amenities = amenities;

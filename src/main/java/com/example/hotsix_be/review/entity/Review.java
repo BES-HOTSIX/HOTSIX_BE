@@ -46,16 +46,14 @@ public class Review extends DateEntity {
 
 
     @Builder
-    public Review(String body, Double amenities, Double staffService, Double cleanliness, Double rating, Long hotelId, Long memberId, Reservation reservation) {
+    public Review(String body, Double amenities, Double staffService, Double cleanliness, Double rating, Hotel hotel, Member member, Reservation reservation) {
         this.body = body;
         this.amenities = amenities;
         this.staffService = staffService;
         this.cleanliness = cleanliness;
         this.rating = rating;
-
-        // hotelId와 memberId를 사용하여 hotel과 member를 설정
-        this.hotel = Hotel.builder().id(hotelId).build();
-        this.member = Member.builder().id(memberId).build();
+        this.hotel = hotel;
+        this.member = member;
         this.reservation = reservation;
     }
     }
