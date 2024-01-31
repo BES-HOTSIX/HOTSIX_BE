@@ -117,8 +117,8 @@ public class CashLogController {
     public ResponseEntity<?> showPayByCash(
             @PathVariable(value = "reserveId") long reserveId,
             @Auth Accessor accessor
-
     ) {
+        // 이 메소드에서 로그인한 사용자가 예약한 본인인지도 확인
         ReservationDetailResponse reservationDetailResponse = reservationService.findById(reserveId, accessor.getMemberId());
 
         return ResponseEntity.ok(new ResponseDto<>(
