@@ -189,7 +189,7 @@ public class CashLogController {
         }
 
         // 체크
-        if (!cashLogService.canPay(orderId, Long.parseLong(amount))) throw new CashException(INVALID_REQUEST);
+//        if (!cashLogService.canPay(orderId, Long.parseLong(amount))) throw new CashException(INVALID_REQUEST);
 
         JSONObject obj = new JSONObject();
         obj.put("orderId", orderId);
@@ -219,6 +219,7 @@ public class CashLogController {
         int code = connection.getResponseCode();
         boolean isSuccess = code == 200 ? true : false;
 
+        log.debug(String.valueOf(code));
         // 결제 승인 완료
         if (isSuccess) {
             cashLogService.payByTossPayments(Long.parseLong(orderId.split("__", 2)[1]), Long.parseLong(amount));
