@@ -10,7 +10,6 @@ import com.example.hotsix_be.cashlog.entity.EventType;
 import com.example.hotsix_be.cashlog.exception.CashException;
 import com.example.hotsix_be.cashlog.service.CashLogService;
 import com.example.hotsix_be.common.dto.ResponseDto;
-import com.example.hotsix_be.member.entity.Member;
 import com.example.hotsix_be.member.service.MemberService;
 import com.example.hotsix_be.reservation.dto.response.ReservationDetailResponse;
 import com.example.hotsix_be.reservation.entity.Reservation;
@@ -120,12 +119,7 @@ public class CashLogController {
             @Auth Accessor accessor
 
     ) {
-        Reservation reservation = reservationService.findOpById(reserveId).orElseThrow(() -> new CashException(INVALID_REQUEST));
-
-        Member member = memberService.getMemberById(accessor.getMemberId());
-        if (member != reservation.getMember()) throw new CashException(INVALID_REQUEST);
-
-        ReservationDetailResponse reservationDetailResponse = reservationService.findById(reserveId);
+        ReservationDetailResponse reservationDetailResponse = reservationService.findById(reserveId, accessor.getMemberId());
 
         return ResponseEntity.ok(new ResponseDto<>(
                 HttpStatus.OK.value(),

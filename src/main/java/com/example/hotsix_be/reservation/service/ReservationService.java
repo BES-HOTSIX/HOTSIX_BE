@@ -34,7 +34,7 @@ public class ReservationService {
                 .map(reservation -> ReservationDetailResponse.of(
                         reservation.getHotel(),
                         reservation,
-						reservation.getMember()	// 주영님 부분 에러 때문에 임시로.
+						reservation.getMember()
                 ));
     }
 
