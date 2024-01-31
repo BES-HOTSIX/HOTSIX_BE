@@ -88,7 +88,6 @@ public class CashLogService {
 
         cashLogRepository.save(cashLog);
 
-
         // 충전 혹은 차감 발생 후 member의 restCash 갱신
         Long newRestCash = member.getRestCash() + cashLog.getPrice();
         member.updateRestCash(newRestCash);
@@ -159,6 +158,7 @@ public class CashLogService {
             addCash(buyer, useCash * -1, reservation, EventType.사용__예치금_결제);
         }
 
+        // TODO 삭제 or 수정
         reservationService.payDone(reservation);
     }
 

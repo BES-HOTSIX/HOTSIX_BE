@@ -10,6 +10,7 @@ import com.example.hotsix_be.cashlog.entity.EventType;
 import com.example.hotsix_be.cashlog.exception.CashException;
 import com.example.hotsix_be.cashlog.service.CashLogService;
 import com.example.hotsix_be.common.dto.ResponseDto;
+import com.example.hotsix_be.member.service.MemberService;
 import com.example.hotsix_be.reservation.dto.response.ReservationDetailResponse;
 import com.example.hotsix_be.reservation.entity.Reservation;
 import com.example.hotsix_be.reservation.service.ReservationService;
@@ -45,6 +46,7 @@ import static com.example.hotsix_be.common.exception.ExceptionCode.*;
 public class CashLogController {
     private final CashLogService cashLogService;
     private final ReservationService reservationService;
+    private final MemberService memberService;
 
     @GetMapping("/detail/{cashLogId}")
     public ResponseEntity<?> getTestCashLog(@PathVariable(value = "cashLogId") long id) {
@@ -110,9 +112,14 @@ public class CashLogController {
         );
     }
 
-    @GetMapping("/payByCash/{reserveId}") //
-    public ResponseEntity<?> showPayByCash(@PathVariable(value = "reserveId") long reserveId) {
-        ReservationDetailResponse reservationDetailResponse = reservationService.findById(reserveId);
+    @GetMapping("/payByCash/{reserveId}")
+    @MemberOnly
+    public ResponseEntity<?> showPayByCash(
+            @PathVariable(value = "reserveId") long reserveId,
+            @Auth Accessor accessor
+
+    ) {
+        ReservationDetailResponse reservationDetailResponse = reservationService.findById(reserveId, accessor.getMemberId());
 
         return ResponseEntity.ok(new ResponseDto<>(
                 HttpStatus.OK.value(),
@@ -123,10 +130,9 @@ public class CashLogController {
     // 결제창에서 결제하기 버튼을 누를 경우 아래 메소드가 작동
     // 이미 생성되어있는 임시 예약
     @PostMapping("/payByCash/{reserveId}")
+    @MemberOnly
     public ResponseEntity<?> payByCash(@PathVariable(value = "reserveId") long reserveId) {
-        Reservation reservation = reservationService.findOpById(reserveId).orElse(null);
-
-        if (reservation == null) throw new CashException(INVALID_REQUEST);
+        Reservation reservation = reservationService.findOpById(reserveId).orElseThrow(() -> new CashException(INVALID_REQUEST));
 
         // 이용자 결제
         CashLog cashLog = cashLogService.payByCashOnly(reservation);
