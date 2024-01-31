@@ -1,15 +1,15 @@
 package com.example.hotsix_be.login.controller;
 
-import static com.example.hotsix_be.common.exception.ExceptionCode.NOT_SUPPORTED_OAUTH_SERVICE;
-import static org.springframework.http.HttpHeaders.SET_COOKIE;
+import static com.example.hotsix_be.common.exception.ExceptionCode.*;
+
 
 import com.example.hotsix_be.auth.Auth;
 import com.example.hotsix_be.auth.MemberOnly;
 import com.example.hotsix_be.auth.util.Accessor;
 import com.example.hotsix_be.common.dto.ResponseDto;
 import com.example.hotsix_be.common.exception.AuthException;
-import com.example.hotsix_be.login.dto.request.LoginRequest;
 import com.example.hotsix_be.login.dto.request.OAuthCodeRequest;
+import com.example.hotsix_be.login.dto.request.LoginRequest;
 import com.example.hotsix_be.login.dto.response.AccessTokenResponse;
 import com.example.hotsix_be.login.dto.response.LoginResponse;
 import com.example.hotsix_be.login.service.LoginService;
@@ -18,7 +18,7 @@ import com.example.hotsix_be.member.service.MemberService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Profile;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
@@ -34,22 +34,22 @@ import reactor.core.publisher.Mono;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@Profile("prod")
-public class ProdLoginController {
-
-    public static final int COOKIE_AGE_SECONDS = 604800;
+public class LoginController {
 
     private final LoginService loginService;
     private final MemberService memberService;
 
     @PostMapping("/login")
-    public ResponseEntity<?> loginProd(@RequestBody LoginRequest loginRequest, final HttpServletResponse response) {
+    public ResponseEntity<?> login(@RequestBody final LoginRequest loginRequest,
+                                   final HttpServletResponse response) {
 
         Member member = memberService.getMemberByUsername(loginRequest.getUsername());
 
         LoginResponse loginResponse = loginService.login(loginRequest, member);
 
-        sendRefreshTokenCookieProd(response, loginResponse);
+        loginService.sendRefreshTokenCookie(response, loginResponse);
+
+     new AccessTokenResponse(loginResponse.getAccessToken());
 
         return ResponseEntity.ok(
                 new ResponseDto<>(
@@ -61,10 +61,10 @@ public class ProdLoginController {
     }
 
     @PostMapping("/login/{provider}")
-    public Mono<ResponseEntity<ResponseDto<AccessTokenResponse>>> OAuthLoginDev(
+    public Mono<ResponseEntity<ResponseDto<AccessTokenResponse>>> OAuthLogin(
             @PathVariable String provider,
             @RequestBody OAuthCodeRequest oAuthCodeRequest,
-            final HttpServletResponse httpServletResponse
+            final HttpServletResponse response
     ) {
         String code = oAuthCodeRequest.getCode();
         String state = oAuthCodeRequest.getState();
@@ -77,7 +77,7 @@ public class ProdLoginController {
         };
 
         return loginResponseMono.flatMap(loginResponse -> {
-            sendRefreshTokenCookieProd(httpServletResponse, loginResponse);
+            loginService.sendRefreshTokenCookie(response, loginResponse);
             return Mono.just(ResponseEntity.ok(
                     new ResponseDto<>(
                             HttpStatus.OK.value(),
@@ -112,10 +112,10 @@ public class ProdLoginController {
 
     @DeleteMapping("/user/logout")
     @MemberOnly
-    public ResponseEntity<Void> logoutProd(
+    public ResponseEntity<Void> logout(
             @Auth final Accessor accessor,
             @CookieValue("refresh-token") final String refreshToken, HttpServletResponse response) {
-        loginService.removeRefreshTokenProd(refreshToken, response);
+        loginService.removeRefreshToken(refreshToken, response);
         return ResponseEntity.noContent().build();
     }
 
@@ -126,17 +126,4 @@ public class ProdLoginController {
         return ResponseEntity.noContent().build();
     }
 
-    private void sendRefreshTokenCookieProd(final HttpServletResponse response,
-                                           final LoginResponse loginResponse) {
-        final ResponseCookie cookie = ResponseCookie.from("refresh-token", loginResponse.getRefreshToken())
-                .maxAge(COOKIE_AGE_SECONDS)
-                .domain(".hotshare.me")
-                .secure(true)
-                .httpOnly(true)
-                .path("/")
-                .build();
-        response.addHeader(SET_COOKIE, cookie.toString());
-    }
-
 }
-
