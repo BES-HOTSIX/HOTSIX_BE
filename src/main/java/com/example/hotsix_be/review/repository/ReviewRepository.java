@@ -7,9 +7,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ReviewRepository extends JpaRepository<Review, Long> {
-
-
     List<Review> findAllByOrderByCreatedAtDesc();
-
-    Optional<Review> findByUsername(String username);
+    Optional<Review> findById(Long id);
 }

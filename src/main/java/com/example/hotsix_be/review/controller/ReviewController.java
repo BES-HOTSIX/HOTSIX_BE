@@ -1,5 +1,4 @@
 package com.example.hotsix_be.review.controller;
-
 import com.example.hotsix_be.common.dto.ResponseDto;
 import com.example.hotsix_be.review.dto.request.ReviewRequestDTO;
 import com.example.hotsix_be.review.dto.response.ReviewResponseDTO;
@@ -10,23 +9,17 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
-
 @Log4j2
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/review")
 public class ReviewController {
-
     private final ReviewService reviewService;
-
     @PostMapping("/add")
     public ResponseEntity<?> addReview(@Valid @RequestBody ReviewRequestDTO reviewRequestDTO) {
         log.info("Received review request: {}", reviewRequestDTO);
-
         reviewService.addReview(reviewRequestDTO);
-
         return ResponseEntity.ok(
                 new ResponseDto<>(
                         HttpStatus.OK.value(),
@@ -38,26 +31,15 @@ public class ReviewController {
 
     @GetMapping("/all")
     @ResponseBody
-    public ResponseEntity<List<ReviewResponseDTO>> getAllReviewsOrderByCreatedAtDesc() {
-        List<ReviewResponseDTO> reviews = reviewService.getAllReviewsOrderByCreatedAtDesc();
-        return ResponseEntity.ok(reviews);
+        public ResponseEntity<List<ReviewResponseDTO>> getAllReviewsOrderByCreatedAtDesc() {
+            List<ReviewResponseDTO> reviews = reviewService.getAllReviewsOrderByCreatedAtDesc();
+            return ResponseEntity.ok(reviews);
+        }
+
+    @DeleteMapping("/delete/{reviewId}")
+    public ResponseEntity<?> deleteReview(@PathVariable Long reviewId) {
+        reviewService.deleteReview(reviewId);
+        return ResponseEntity.ok(new ResponseDto<>(HttpStatus.OK.value(), "리뷰가 성공적으로 삭제되었습니다.", null, null, null));
     }
-
-    @PostMapping("/modify/{reviewId}")
-    public ResponseEntity<?> modifyReview(
-            @PathVariable Long reviewId,
-            @Valid @RequestBody ReviewRequestDTO modifiedReviewDTO
-    ) {
-        log.info("Received modify review request for reviewId: {}", reviewId);
-
-        reviewService.modifyReview(reviewId, modifiedReviewDTO);
-
-        return ResponseEntity.ok(
-                new ResponseDto<>(
-                        HttpStatus.OK.value(),
-                        "리뷰가 성공적으로 수정되었습니다.", null,
-                        null, null
-                )
-        );
     }
-}
+    

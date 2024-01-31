@@ -1,5 +1,4 @@
 package com.example.hotsix_be.review.dto.request;
-
 import com.example.hotsix_be.hotel.entity.Hotel;
 import com.example.hotsix_be.member.entity.Member;
 import com.example.hotsix_be.reservation.entity.Reservation;
@@ -11,17 +10,19 @@ import lombok.Setter;
 @Setter
 public class ReviewRequestDTO {
 
+
     private final String body;
     private final Double amenities;
     private final Double staffService;
     private final Double cleanliness;
     private final Double rating;
 
-    private final Hotel hotel;
-    private final Member member;
+    private final Long hotel;
+    private final Long member;
     private final Reservation reservation;
 
-    public ReviewRequestDTO(String body, Double amenities, Double staffService, Double cleanliness, Double rating, Hotel hotel, Member member, Reservation reservation) {
+    public ReviewRequestDTO(String body, Double amenities, Double staffService, Double cleanliness, Double rating, Long hotel, Long member, Reservation reservation) {
+
         this.body = body;
         this.amenities = amenities;
         this.staffService = staffService;

@@ -21,8 +21,8 @@ public class ReviewInit {
     @Bean
     public ApplicationRunner initReview() {
         return args -> {
-            for (int i = 0; i < 50; i++) {
-                work1(); // 리뷰를 생성하는 work1 메서드를 50번 호출합니다.
+            for (int i = 0; i < 10; i++) {
+                work1();
             }
         };
     }
@@ -35,8 +35,8 @@ public class ReviewInit {
                 4.0,
                 3.0,
                 4.0,
-                null,
-                null,
+                1L,
+                1L,
                 null
         );
 
