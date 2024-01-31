@@ -33,8 +33,7 @@ public class ReservationService {
         return reservationRepository.findByMemberIdOrderByIdDesc(pageable, memberId)
                 .map(reservation -> ReservationDetailResponse.of(
                         reservation.getHotel(),
-                        reservation,
-						reservation.getMember()
+                        reservation
                 ));
     }
 
@@ -46,8 +45,7 @@ public class ReservationService {
 
 		return ReservationDetailResponse.of(
 				reservation.getHotel(),
-				reservation,
-				reservation.getMember()
+				reservation
 		);
 	}
 
