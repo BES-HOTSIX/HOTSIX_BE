@@ -38,9 +38,9 @@ public class Reservation extends DateEntity {
     @Column(name = "cancel_date")
     private LocalDateTime cancelDate;
 
-    private int guests;
+    private Long guests = 0L;
 
-    private long price;
+    private Long price = 0L;
 
     private boolean isPaid;
 
@@ -64,17 +64,19 @@ public class Reservation extends DateEntity {
     public Reservation(
             final LocalDateTime checkInDate,
             final LocalDateTime checkOutDate,
-            final int guests,
-            final long price,
+            final Long guests,
+            final Long price,
+            final boolean isPaid,
             final Hotel hotel,
-            final boolean isPaid
+            final Member member
     ) {
         this.checkInDate = checkInDate;
         this.checkOutDate = checkOutDate;
         this.guests = guests;
         this.price = price;
-        this.hotel = hotel;
         this.isPaid = isPaid;
+        this.hotel = hotel;
+        this.member = member;
     }
 
     public void updateCancelDate(LocalDateTime date) {
