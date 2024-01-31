@@ -44,10 +44,6 @@ public class ReservationService {
 		if (!memberId.equals(reservation.getMember().getId()))
 			throw new AuthException(INVALID_AUTHORITY);
 
-		// 경환님과 같이 사용하는 함수라 문제 발생... 나눠야함
-//		if (!reservation.isPaid())
-//			throw new ReservationException(NOT_FOUND_RESERVATION_ID);
-
 		return ReservationDetailResponse.of(
 				reservation.getHotel(),
 				reservation,
