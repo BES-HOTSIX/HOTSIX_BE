@@ -33,7 +33,7 @@ public class QReservation extends EntityPathBase<Reservation> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
-    public final NumberPath<Integer> guests = createNumber("guests", Integer.class);
+    public final NumberPath<Long> guests = createNumber("guests", Long.class);
 
     public final com.example.hotsix_be.hotel.entity.QHotel hotel;
 
