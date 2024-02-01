@@ -9,14 +9,13 @@ import com.example.hotsix_be.reservation.repository.ReservationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
-import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -37,8 +36,8 @@ public class DataInit implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) throws Exception {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        LocalDateTime startDate = LocalDateTime.parse("2024-01-01 00:00:00", formatter);
-        LocalDateTime endDate = LocalDateTime.parse("2024-01-10 00:00:00", formatter);
+        LocalDate startDate = LocalDate.parse("2024-01-01");
+        LocalDate endDate = LocalDate.parse("2024-01-10");
 
         if (memberRepository.count() <= 0 && hotelRepository.count() <= 0) {
             IntStream.rangeClosed(1, 50).forEach(i -> {
