@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -22,6 +23,7 @@ import static com.example.hotsix_be.common.exception.ExceptionCode.*;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ReservationService {
 	private final ReservationRepository reservationRepository;
 	private final HotelRepository hotelRepository;
@@ -37,7 +39,7 @@ public class ReservationService {
                 ));
     }
 
-	public ReservationDetailResponse findById(Long reserveId, Long memberId) {
+	public ReservationDetailResponse findById(final Long reserveId, final Long memberId) {
 		Reservation reservation = reservationRepository.findById(reserveId).orElseThrow(() -> new ReservationException(NOT_FOUND_RESERVATION_ID));
 
 		if (!memberId.equals(reservation.getMember().getId()))
@@ -59,7 +61,8 @@ public class ReservationService {
                 .isPaid(true);
     }
 
-	public Reservation save(final Long hotelId, final ReservationInfoRequest reservationInfoRequest, Long memberId) {
+	@Transactional
+	public Reservation save(final Long hotelId, final ReservationInfoRequest reservationInfoRequest, final Long memberId) {
 		Hotel hotel = hotelRepository.findById(hotelId).orElseThrow(() -> new HotelException(NOT_FOUND_HOTEL_ID));
 
 		Member member = memberRepository.findById(memberId).orElseThrow(() -> new AuthException(INVALID_AUTHORITY));
