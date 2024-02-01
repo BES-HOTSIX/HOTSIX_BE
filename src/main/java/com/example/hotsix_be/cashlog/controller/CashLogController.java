@@ -49,7 +49,7 @@ public class CashLogController {
     private final MemberService memberService;
 
     @GetMapping("/detail/{cashLogId}")
-    public ResponseEntity<?> getTestCashLog(@PathVariable(value = "cashLogId") long id) {
+    public ResponseEntity<?> getTestCashLog(@PathVariable(value = "cashLogId") final Long id) {
         CashLog cashLog = cashLogService.findById(id).orElse(null);
 
         if (cashLog == null) throw new CashException(INVALID_REQUEST);
@@ -69,7 +69,7 @@ public class CashLogController {
             @PageableDefault(size = 5) final Pageable pageable,
             @Auth final Accessor accessor
     ) {
-        long memberId = accessor.getMemberId();
+        Long memberId = accessor.getMemberId();
 
         Page<CashLog> cashLogs = cashLogService.findMyPageList(memberId, pageable);
 
@@ -99,7 +99,7 @@ public class CashLogController {
 
     // TODO 무통장 입금 시 어드민이 수리하는 형식으로 수정할 예정
     @PostMapping("/addCash")
-    public ResponseEntity<?> addCash(@RequestBody AddCashRequest addCashRequest) {
+    public ResponseEntity<?> addCash(@RequestBody final AddCashRequest addCashRequest) {
 
         cashLogService.addCash(addCashRequest, EventType.충전__무통장입금);
 
@@ -115,8 +115,8 @@ public class CashLogController {
     @GetMapping("/payByCash/{reserveId}")
     @MemberOnly
     public ResponseEntity<?> showPayByCash(
-            @PathVariable(value = "reserveId") long reserveId,
-            @Auth Accessor accessor
+            @PathVariable(value = "reserveId") final Long reserveId,
+            @Auth final Accessor accessor
     ) {
         // 이 메소드에서 로그인한 사용자가 예약한 본인인지도 확인
         ReservationDetailResponse reservationDetailResponse = reservationService.findById(reserveId, accessor.getMemberId());
@@ -131,7 +131,7 @@ public class CashLogController {
     // 이미 생성되어있는 임시 예약
     @PostMapping("/payByCash/{reserveId}")
     @MemberOnly
-    public ResponseEntity<?> payByCash(@PathVariable(value = "reserveId") long reserveId) {
+    public ResponseEntity<?> payByCash(@PathVariable(value = "reserveId") final Long reserveId) {
         Reservation reservation = reservationService.findOpById(reserveId).orElseThrow(() -> new CashException(INVALID_REQUEST));
 
         // 이용자 결제
@@ -154,11 +154,11 @@ public class CashLogController {
     // TODO 본인 외 접근이 불가능하도록
     @GetMapping("/{cashLogId}/confirm")
     public ResponseEntity<?> showConfirm(
-            @PathVariable(value = "cashLogId") long cashLogId
+            @PathVariable(value = "cashLogId") final Long cashLogId
     ) {
         ConfirmResponse confirmResponse = cashLogService.getConfirmRespById(cashLogId);
 
-        // 본인이 아닐 경우 접근 불가
+        // TODO 본인이 아닐 경우 접근 불가
 //        if (!accessor.getMemberId().equals(confirmResponse.getMemberId())) throw new BadRequestException(INVALID_REQUEST);
 
         return ResponseEntity.ok(
@@ -172,10 +172,10 @@ public class CashLogController {
 
     // TODO 토스페이먼츠 완성해야함
     @PostMapping("/confirm")
-    public ResponseEntity<JSONObject> confirmPayment(@RequestBody String jsonBody) throws Exception {
+    public ResponseEntity<?> confirmPayment(@RequestBody final String jsonBody) throws Exception {
 
         JSONParser parser = new JSONParser();
-        String orderId;
+        String orderId; // orderId = reservationId + "__HotShare"
         String amount;
         String paymentKey;
         try {
@@ -189,7 +189,7 @@ public class CashLogController {
         }
 
         // 체크
-//        if (!cashLogService.canPay(orderId, Long.parseLong(amount))) throw new CashException(INVALID_REQUEST);
+        if (!cashLogService.canPay(orderId, Long.parseLong(amount))) throw new CashException(INVALID_REQUEST);
 
         JSONObject obj = new JSONObject();
         obj.put("orderId", orderId);
@@ -219,13 +219,14 @@ public class CashLogController {
         int code = connection.getResponseCode();
         boolean isSuccess = code == 200 ? true : false;
 
-        log.debug(String.valueOf(code));
+
         // 결제 승인 완료
         if (isSuccess) {
-            cashLogService.payByTossPayments(Long.parseLong(orderId.split("__", 2)[1]), Long.parseLong(amount));
-        } else {
+            Long cashLogId = cashLogService.payByTossPayments(Long.parseLong(orderId.split("__", 2)[0]), Long.parseLong(amount)).getId();
+        } else { // TODO 여기부터 시작, cashLogIdResponse와 jsonObject 둘 다 담는 response 만들 것
             throw new CashException(FAIL_APPROVE_PURCHASE);
         }
+
 
         InputStream responseStream = isSuccess ? connection.getInputStream() : connection.getErrorStream();
 
@@ -233,6 +234,12 @@ public class CashLogController {
         JSONObject jsonObject = (JSONObject) parser.parse(reader);
         responseStream.close();
 
-        return ResponseEntity.status(code).body(jsonObject);
+        return ResponseEntity.ok(
+                new ResponseDto<>(
+                        HttpStatus.OK.value(),
+                        "토스페이먼츠 결제가 완료되었습니다", null,
+                        null, jsonObject
+                )
+        );
     }
 }

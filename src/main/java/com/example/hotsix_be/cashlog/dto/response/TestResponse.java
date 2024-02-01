@@ -11,7 +11,7 @@ import static lombok.AccessLevel.PRIVATE;
 public class TestResponse {
     private final String eventType;
     private final Long price;
-//    private final long memberId;
+//    private final Long memberId;
     private final Long reservationId;
 
     public static TestResponse of(final CashLog cashLog) {

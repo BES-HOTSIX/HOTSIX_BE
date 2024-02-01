@@ -22,7 +22,11 @@ public class ConfirmResponse {
     private final LocalDateTime checkOutDate;
 
     // TODO 복합결제의 경우 cashLog 어떻게 생성할지 생각해두기
-    public static ConfirmResponse of(final CashLog cashLog, Reservation reservation, Hotel hotel) {
+    public static ConfirmResponse of(
+            final CashLog cashLog,
+            final Reservation reservation,
+            final Hotel hotel
+    ) {
         Long price = cashLog.getPrice();
         if (price < 0) price *= -1;
 
