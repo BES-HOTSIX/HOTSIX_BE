@@ -1,9 +1,15 @@
 package com.example.hotsix_be.review.dto.response;
+import com.example.hotsix_be.hotel.entity.Hotel;
 import com.example.hotsix_be.member.entity.Member;
+import com.example.hotsix_be.review.entity.Review;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+
+import static lombok.AccessLevel.PRIVATE;
+
 @Getter
-@Setter
+@RequiredArgsConstructor(access = PRIVATE)
 public class ReviewResponseDTO {
 
     private final Long id;
@@ -15,14 +21,15 @@ public class ReviewResponseDTO {
     private final Double rating;
 
 
-    public ReviewResponseDTO(Long id, Member member, String body, Double amenities, Double staffService, Double cleanliness, Double rating) {
-        this.id = id;
-        this.member = member;
-        this.body = body;
-        this.amenities = amenities;
-        this.staffService = staffService;
-        this.cleanliness = cleanliness;
-        this.rating = rating;
+    public static ReviewResponseDTO of(final Review review) {
+        return new ReviewResponseDTO (
+                review.getId(),
+                review.getMember(),
+                review.getBody(),
+                review.getAmenities(),
+                review.getStaffService(),
+                review.getCleanliness(),
+                review.getRating()
+        );
     }
-
 }

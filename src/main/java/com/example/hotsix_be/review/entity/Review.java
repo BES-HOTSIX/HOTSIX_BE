@@ -3,6 +3,7 @@ import com.example.hotsix_be.common.entity.DateEntity;
 import com.example.hotsix_be.hotel.entity.Hotel;
 import com.example.hotsix_be.member.entity.Member;
 import com.example.hotsix_be.reservation.entity.Reservation;
+import com.example.hotsix_be.review.dto.request.ReviewRequestDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
@@ -10,7 +11,6 @@ import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 @Getter
-@Setter
 @SuperBuilder(toBuilder = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
@@ -28,6 +28,7 @@ public class Review extends DateEntity {
     private Double amenities;
 
     private Double staffService;
+
     private Double cleanliness;
     @JsonIgnore
     @ManyToOne
@@ -44,16 +45,27 @@ public class Review extends DateEntity {
     @JoinColumn(name = "reservation_id")
     private Reservation reservation;
 
-
-    @Builder
-    public Review(String body, Double amenities, Double staffService, Double cleanliness, Double rating, Hotel hotel, Member member, Reservation reservation) {
+    public Review(
+            final String body,
+            final Double rating,
+            final Double amenities,
+            final Double staffService,
+            final Double cleanliness,
+            Hotel hotel){
         this.body = body;
+        this.rating = rating;
         this.amenities = amenities;
         this.staffService = staffService;
         this.cleanliness = cleanliness;
-        this.rating = rating;
         this.hotel = hotel;
-        this.member = member;
-        this.reservation = reservation;
     }
+
+    public void update(final ReviewRequestDTO reviewRequestDTO, Hotel hotel) {
+        this.body = reviewRequestDTO.getBody();
+        this.rating = reviewRequestDTO.getRating();
+        this.amenities = reviewRequestDTO.getAmenities();
+        this.staffService = reviewRequestDTO.getStaffService();
+        this.cleanliness = reviewRequestDTO.getCleanliness();
+        this.hotel = hotel;
     }
+}
