@@ -8,7 +8,7 @@ import static com.example.hotsix_be.common.exception.ExceptionCode.PASSWORD_NOT_
 import com.example.hotsix_be.common.exception.AuthException;
 import com.example.hotsix_be.login.domain.MemberTokens;
 import com.example.hotsix_be.login.domain.RefreshToken;
-import com.example.hotsix_be.login.dto.kakao.KakaoPropertiesDto;
+import com.example.hotsix_be.login.dto.kakao.KakaoProperties;
 import com.example.hotsix_be.login.dto.naver.Response;
 import com.example.hotsix_be.login.dto.request.LoginRequest;
 import com.example.hotsix_be.login.dto.response.LoginResponse;
@@ -79,7 +79,7 @@ public class LoginService {
                     return kakaoOAuthService.getMemberInfo(accessToken);
                 })
                 .map(userInfo -> {
-                    KakaoPropertiesDto properties = userInfo.getProperties();
+                    KakaoProperties properties = userInfo.getProperties();
 
                     final Member member = kakaoOAuthService.registerMember(properties);
                     final MemberTokens memberTokens = jwtProvider.generateLoginToken(member.getId().toString());
@@ -148,7 +148,7 @@ public class LoginService {
     }
 
     public void sendRefreshTokenCookie(final HttpServletResponse httpServletResponse,
-                                        final LoginResponse loginResponse) {
+                                       final LoginResponse loginResponse) {
 
         log.info("cookieDomain : {}", cookieDomain);
         ResponseCookie cookie = ResponseCookie.from("refresh-token", loginResponse.getRefreshToken())
@@ -164,7 +164,7 @@ public class LoginService {
     }
 
 
-    public void removeRefreshToken(final String refreshToken, HttpServletResponse response) {
+    public void removeRefreshToken(final String refreshToken, final HttpServletResponse response) {
 
         refreshTokenRepository.deleteById(refreshToken);
 

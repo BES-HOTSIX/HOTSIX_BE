@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = PRIVATE)
-public class LikeRequestDto {
+public class LikeRequest {
 
     private Long hotelId;
 }

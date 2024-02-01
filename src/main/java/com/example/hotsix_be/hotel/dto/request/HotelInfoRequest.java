@@ -1,16 +1,20 @@
 package com.example.hotsix_be.hotel.dto.request;
 
+import static lombok.AccessLevel.PRIVATE;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 @Getter
-@Setter
+@AllArgsConstructor
+@NoArgsConstructor(access = PRIVATE)
 public class HotelInfoRequest {
 
     @NotBlank(message = "호텔 유형을 선택해주셔야 합니다.")

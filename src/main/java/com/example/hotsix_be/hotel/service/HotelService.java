@@ -25,7 +25,7 @@ import static com.example.hotsix_be.common.exception.ExceptionCode.NOT_FOUND_HOT
 import static com.example.hotsix_be.common.exception.ExceptionCode.NOT_FOUND_MEMBER_BY_ID;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class HotelService {
 
@@ -33,6 +33,7 @@ public class HotelService {
     private final HotelRepository hotelRepository;
     private final MemberRepository memberRepository;
 
+    @Transactional
     public Hotel save(final HotelInfoRequest hotelInfoRequest, final List<MultipartFile> multipartFiles,
                       final Long memberId) {
 
@@ -62,6 +63,7 @@ public class HotelService {
     }
 
 
+    @Transactional
     public void modifyHotel(final Long hotelId, final HotelUpdateRequest hotelUpdateRequest,
                             final List<MultipartFile> newImages, final List<String> deleteImagesUrl) {
 
@@ -84,7 +86,8 @@ public class HotelService {
         uploadedNewImages.forEach(hotel::addImage);
     }
 
-    private void deleteImages(List<String> deletedImagesUrl) {
+
+    private void deleteImages(final List<String> deletedImagesUrl) {
         for (String imageUrl : deletedImagesUrl) {
             String imageId = imageService.getImageIdAndDeleteImage(
                     imageUrl); // ImageRepository 이미지 삭제 및 S3 버켓 이미지 ID 반환
@@ -92,7 +95,6 @@ public class HotelService {
         }
     }
 
-    @Transactional(readOnly = true)
     public Page<Hotel> findPageList(final Pageable pageable) {
         Pageable sortedPageable = PageRequest.of(
                 pageable.getPageNumber(),
@@ -106,14 +108,14 @@ public class HotelService {
                 .orElseThrow(() -> new HotelException(NOT_FOUND_HOTEL_ID));
     }
 
-    @Transactional(readOnly = true)
-    public HotelDetailResponse findById(Long id) {
+
+    public HotelDetailResponse findById(final Long id) {
         return HotelDetailResponse.of(
                 hotelRepository.findById(id).orElseThrow(() -> new HotelException(NOT_FOUND_HOTEL_ID)));
     }
 
-
-    public void deleteHotel(Long hotelId) {
+    @Transactional
+    public void deleteHotel(final Long hotelId) {
         Hotel hotel = hotelRepository.findById(hotelId)
                 .orElseThrow(() -> new HotelException(NOT_FOUND_HOTEL_ID));
 
@@ -128,7 +130,7 @@ public class HotelService {
         hotelRepository.delete(hotel);
     }
 
-    public Page<HotelDetailResponse> findByMemberId(Long memberId, int page) {
+    public Page<HotelDetailResponse> findByMemberId(final Long memberId, final int page) {
         Pageable pageable = Pageable.ofSize(10).withPage(page);
 
         return hotelRepository.findByOwnerIdOrderByIdDesc(pageable, memberId)

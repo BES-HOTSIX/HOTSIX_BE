@@ -79,10 +79,9 @@ public class HotelController {
     public ResponseEntity<?> updateHotel(@PathVariable("hotelId") final Long hotelId,
                                          @RequestPart("hotelInfo") @Valid final HotelUpdateRequest hotelUpdateRequest,
                                          @RequestPart(value = "files", required = false) final List<MultipartFile> newImages,
-                                         @RequestParam(value = "deletedImages", required = false) List<String> deletedImagesUrl,
+                                         @RequestParam(value = "deletedImages", required = false) final List<String> deletedImagesUrl,
                                          @Auth final Accessor accessor
     ) {
-
 
         hotelService.modifyHotel(hotelId, hotelUpdateRequest, newImages, deletedImagesUrl);
 
