@@ -14,7 +14,10 @@ import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Table(name = "reservations")
@@ -30,10 +33,10 @@ public class Reservation extends DateEntity {
     private Long id;
 
     @Column(name = "check_in_date")
-    private LocalDateTime checkInDate;
+    private LocalDate checkInDate;
 
     @Column(name = "check_out_date")
-    private LocalDateTime checkOutDate;
+    private LocalDate checkOutDate;
 
     @Column(name = "cancel_date")
     private LocalDateTime cancelDate;
@@ -62,8 +65,8 @@ public class Reservation extends DateEntity {
     private Review review;
 
     public Reservation(
-            final LocalDateTime checkInDate,
-            final LocalDateTime checkOutDate,
+            final LocalDate checkInDate,
+            final LocalDate checkOutDate,
             final Long guests,
             final Long price,
             final boolean isPaid,
@@ -85,5 +88,21 @@ public class Reservation extends DateEntity {
 
     public void updateIsPaid(boolean isPaid) {
         this.isPaid = isPaid;
+    }
+
+    public List<LocalDate> getReservedDateRange() {
+        List<LocalDate> reservedDates = new ArrayList<>();
+
+        if (this.checkOutDate.isBefore(LocalDate.now()))
+            return reservedDates;
+
+        LocalDate date = this.checkInDate;
+
+        while (!date.isAfter(this.checkOutDate)) {
+            reservedDates.add(date);
+            date = date.plusDays(1);
+        }
+
+        return reservedDates;
     }
 }

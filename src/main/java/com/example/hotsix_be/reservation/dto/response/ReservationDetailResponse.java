@@ -5,6 +5,7 @@ import com.example.hotsix_be.reservation.entity.Reservation;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import static lombok.AccessLevel.PRIVATE;
@@ -17,8 +18,8 @@ public class ReservationDetailResponse {
     private final String hotelDescription;
     private final String hotelPhotoUrl;
     private final String hotelHost;
-    private final LocalDateTime checkInDate;
-    private final LocalDateTime checkOutDate;
+    private final LocalDate checkInDate;
+    private final LocalDate checkOutDate;
     private final LocalDateTime createdAt;
     private final LocalDateTime cancelDate;
     private final Long numOfGuests;
