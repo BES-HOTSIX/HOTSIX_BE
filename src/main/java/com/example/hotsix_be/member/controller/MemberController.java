@@ -13,6 +13,9 @@ import com.example.hotsix_be.member.dto.response.MemberInfoResponse;
 import com.example.hotsix_be.member.service.MemberService;
 import com.example.hotsix_be.reservation.dto.response.ReservationDetailResponse;
 import com.example.hotsix_be.reservation.service.ReservationService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
@@ -98,8 +101,12 @@ public class MemberController {
 
     @GetMapping("/me/reservations")
     @MemberOnly
+    @Operation(security = {
+            @SecurityRequirement(name = "Authorization"),
+            @SecurityRequirement(name = "refreshToken")
+    })
     public ResponseEntity<?> getMyReservations(
-            @Auth final Accessor accessor,
+            @Parameter(hidden = true) @Auth final Accessor accessor,
             @RequestParam(value = "page", defaultValue = "0") int page
     ) {
         Page<ReservationDetailResponse> reservationDetailResponses = reservationService.findByMemberIdAndIsPaid(accessor.getMemberId(), page);
