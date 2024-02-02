@@ -25,7 +25,7 @@ public class ReviewService {
     private final HotelRepository hotelRepository;
 
     @Transactional
-    public void addReview(final ReviewRequestDTO reviewRequestDTO, final Long hotelId) {
+    public ReviewResponseDTO addReview(final ReviewRequestDTO reviewRequestDTO, final Long hotelId) {
         Hotel hotel = hotelRepository.findById(hotelId).orElseThrow(() -> new HotelException(NOT_FOUND_HOTEL_ID));
 
         Review review = new Review(
@@ -37,6 +37,7 @@ public class ReviewService {
                 hotel
         );
         reviewRepository.save(review);
+        return ReviewResponseDTO.of(review);
     }
 
     public List<ReviewResponseDTO> getReviewsOrderByCreatedAtDesc(final Long hotelId) {

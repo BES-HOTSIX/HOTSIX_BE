@@ -47,16 +47,16 @@ public class Review extends DateEntity {
 
     public Review(
             final String body,
-            final Double rating,
             final Double amenities,
             final Double staffService,
             final Double cleanliness,
+            final Double rating,
             Hotel hotel){
         this.body = body;
-        this.rating = rating;
         this.amenities = amenities;
         this.staffService = staffService;
         this.cleanliness = cleanliness;
+        this.rating = rating;
         this.hotel = hotel;
     }
 

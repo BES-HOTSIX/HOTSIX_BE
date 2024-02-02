@@ -25,8 +25,8 @@ public class ReviewRequestDTO {
 
 
     public Double getRating() {
-        double rating = (amenities + staffService + cleanliness) / 3;
-        return Math.round(rating * 100.0) / 100.0;
+        this.rating = (this.amenities + this.staffService + this.cleanliness) / 3.0;
+        return Math.round(this.rating * 100.0) / 100.0;
     }
 
 }
