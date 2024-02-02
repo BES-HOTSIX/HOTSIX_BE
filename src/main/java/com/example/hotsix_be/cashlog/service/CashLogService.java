@@ -1,10 +1,7 @@
 package com.example.hotsix_be.cashlog.service;
 
 import com.example.hotsix_be.cashlog.dto.request.AddCashRequest;
-import com.example.hotsix_be.cashlog.dto.response.CashLogConfirmResponse;
-import com.example.hotsix_be.cashlog.dto.response.CashLogIdResponse;
-import com.example.hotsix_be.cashlog.dto.response.ConfirmResponse;
-import com.example.hotsix_be.cashlog.dto.response.MyCashLogResponse;
+import com.example.hotsix_be.cashlog.dto.response.*;
 import com.example.hotsix_be.cashlog.entity.CashLog;
 import com.example.hotsix_be.cashlog.entity.EventType;
 import com.example.hotsix_be.cashlog.exception.CashException;
@@ -13,20 +10,22 @@ import com.example.hotsix_be.hotel.entity.Hotel;
 import com.example.hotsix_be.member.entity.Member;
 import com.example.hotsix_be.member.service.MemberService;
 import com.example.hotsix_be.reservation.entity.Reservation;
+import com.example.hotsix_be.reservation.exception.ReservationException;
 import com.example.hotsix_be.reservation.service.ReservationService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
-import static com.example.hotsix_be.common.exception.ExceptionCode.INSUFFICIENT_DEPOSIT;
-import static com.example.hotsix_be.common.exception.ExceptionCode.INVALID_REQUEST;
+import static com.example.hotsix_be.common.exception.ExceptionCode.*;
 
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
+@Slf4j
 public class CashLogService {
     private final CashLogRepository cashLogRepository;
     private final ReservationService reservationService;
@@ -37,7 +36,7 @@ public class CashLogService {
     }
 
     // 개인 캐시 사용 내역 페이지의 cashLog 리스트
-    public Page<CashLog> findMyPageList(final Long memberId,final Pageable pageable) {
+    public Page<CashLog> findMyPageList(final Long memberId, final Pageable pageable) {
         Member member = memberService.getMemberById(memberId);
 
         Pageable sortedPageable = PageRequest.of(
@@ -65,7 +64,11 @@ public class CashLogService {
     }
 
     public CashLogIdResponse getCashLogIdById(final Long id) {
-        return CashLogIdResponse.of(id);
+        return CashLogIdResponse.of(id, null);
+    }
+
+    public CashLogIdResponse getCashLogIdById(final Long id, final TossPaymentResponse tossPaymentResponse) {
+        return CashLogIdResponse.of(id, tossPaymentResponse);
     }
 
     public MyCashLogResponse getMyCashLogById(final Long id, PageImpl<CashLogConfirmResponse> cashLogConfirmPage) {
@@ -76,13 +79,14 @@ public class CashLogService {
 
     // 전반적인 입출금
     @Transactional
-    public CashLog addCash(final Member member, final Long price, final Reservation reservation, final EventType eventType) {
+    public CashLog addCash(final Member member, final Long price, final String orderId, final Reservation reservation, final EventType eventType) {
 
         CashLog cashLog = CashLog.builder()
                 .member(member)
                 .price(price)
                 // reservation 이 null 일 경우 충전, null 이 아닐 경우 예약, 환불, 정산(예약취소)
                 .reservation(reservation)
+                .orderId(orderId)
                 .eventType(eventType)
                 .build();
 
@@ -104,6 +108,7 @@ public class CashLogService {
                 member,
                 addCashRequest.getPrice(),
                 null,
+                null,
                 eventType
         );
     }
@@ -120,47 +125,55 @@ public class CashLogService {
         addCash(
                 owner,
                 payPrice,
+                null,
                 reservation,
                 EventType.정산__예치금
-                );
+        );
 
         // TODO 테스트를 용이하게 하기 위해 결제 완료 상태 업데이트 메소드 비활성화해둠
-//        reservation.updateIsPaid(true);
+        reservation.updateIsPaid(true);
 
         return addCash(
                 buyer,
                 payPrice * -1,
+                null, // TODO UUID를 일반 결제에도 적용시켜야할까
                 reservation,
                 EventType.사용__예치금_결제
         );
     }
 
-    // 복합 결제 및 토스페이먼츠 결제 // TODO payByTossPayments 엔드포인트 만들기
+    // 복합 결제 및 토스페이먼츠 결제
     @Transactional
-    public CashLog payByTossPayments(final Long reservationId, final Long pgPayPrice) {
-        Reservation reservation = reservationService.findOpById(reservationId).orElse(null);
-
-        if (reservation == null) throw new CashException(INVALID_REQUEST);
-
+    public CashLog payByTossPayments(
+            final TossPaymentResponse tossPaymentResponse,
+            final Reservation reservation,
+            final Long pgPayPrice
+    ) {
         Member buyer = reservation.getMember();
         Long restCash = buyer.getRestCash();
         Long payPrice = reservation.getPrice();
+        String orderId = tossPaymentResponse.getOrderId();
 
+        // TODO 복합 결제 관련 미완성 로직
         Long useCash = payPrice - pgPayPrice;
-        addCash(buyer, pgPayPrice, reservation, EventType.충전__토스페이먼츠);
-        CashLog cashLog = addCash(buyer, pgPayPrice * -1, reservation, EventType.사용__예치금_결제);
 
+        addCash(buyer, pgPayPrice, orderId, reservation, EventType.충전__토스페이먼츠);
+        CashLog cashLog = addCash(
+                buyer,
+                pgPayPrice * -1
+                , orderId,
+                reservation,
+                EventType.사용__예치금_결제
+        );
+
+        // TODO 복합 결제 관련 미완성 로직
         if (useCash > 0) {
             if (useCash > restCash) {
                 throw new CashException(INSUFFICIENT_DEPOSIT);
             }
 
-            addCash(buyer, useCash * -1, reservation, EventType.사용__예치금_결제);
+            addCash(buyer, useCash * -1, orderId, reservation, EventType.사용__예치금_결제);
         }
-
-        // TODO 삭제 or 수정
-        reservationService.payDone(reservation);
-
         return cashLog;
     }
 
@@ -176,12 +189,11 @@ public class CashLogService {
         return price <= restCash + pgPayPrice;
     }
 
-    // orderId = order.getCreateDate() + "__" + order.getId();
-    public boolean canPay(final String orderId, final Long pgPayPrice) {
-        Reservation reservation = reservationService.findOpById(Long.parseLong(orderId.split("__", 2)[0])).orElse(null);
+    public boolean canPay(final Long reservationId, final Long pgPayPrice) {
+        Reservation reservation = reservationService.findOpById(reservationId).orElseThrow(() -> new ReservationException(NOT_FOUND_RESERVATION_ID));
 
-        // 잘못된 방식의 접근으로 생성된 예약 객체가 없을 경우
-        if (reservation == null) throw new CashException(INVALID_REQUEST);
+        // 프론트에서 넘어온 price 와 실제 price 가 일치하는 지 확인
+        if (!reservation.getPrice().equals(pgPayPrice)) throw new CashException(PRICE_NOT_MATCH);
 
         return canPay(reservation, pgPayPrice);
     }

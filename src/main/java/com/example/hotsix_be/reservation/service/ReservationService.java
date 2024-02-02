@@ -49,14 +49,8 @@ public class ReservationService {
 		);
 	}
 
-	// TODO 나중에 위의 메소드와 병합
 	public Optional<Reservation> findOpById(long id) {
 		return reservationRepository.findById(id);
-	}
-
-	public void payDone(Reservation reservation) {
-		reservation.toBuilder()
-				.isPaid(true);
 	}
 
 	public Reservation save(final Long hotelId, final ReservationInfoRequest reservationInfoRequest, Long memberId) {

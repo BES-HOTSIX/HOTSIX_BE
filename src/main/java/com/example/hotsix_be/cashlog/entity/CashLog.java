@@ -27,6 +27,8 @@ public class CashLog extends DateEntity {
 
     private Long price;
 
+    private String orderId; // toss 결제 시 발생 TODO 일반 결제에도 발생하도록 수정 예정
+
     @JsonIgnore
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
