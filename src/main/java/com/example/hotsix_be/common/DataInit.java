@@ -56,7 +56,7 @@ public class DataInit implements ApplicationRunner {
                 String sql = "INSERT INTO reservations (check_in_date, check_out_date, guests, price, hotel_id, member_id, is_paid) " +
                         "VALUES (?, ?, ?, ?, (SELECT id FROM hotels WHERE id = ?), (SELECT id FROM members ORDER BY id DESC LIMIT 1), ?)";
 
-                jdbcTemplate.update(sql, startDate, endDate, 3 + j, 550000L, 1L, false);
+                jdbcTemplate.update(sql, startDate, endDate, 3 + j, 550000L, 1L, true);
             });
         }
     }

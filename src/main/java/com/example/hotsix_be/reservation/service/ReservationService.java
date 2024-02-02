@@ -31,10 +31,10 @@ public class ReservationService {
 	private final HotelRepository hotelRepository;
 	private final MemberRepository memberRepository;
 
-    public Page<ReservationDetailResponse> findByMemberId(Long memberId, int page) {
+    public Page<ReservationDetailResponse> findByMemberIdAndIsPaid(Long memberId, int page) {
         Pageable pageable = Pageable.ofSize(4).withPage(page);
 
-        return reservationRepository.findByMemberIdOrderByIdDesc(pageable, memberId)
+        return reservationRepository.findByMemberIdAndIsPaidTrueOrderByIdDesc(pageable, memberId)
                 .map(reservation -> ReservationDetailResponse.of(
                         reservation.getHotel(),
                         reservation

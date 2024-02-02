@@ -8,6 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
-    Page<Reservation> findByMemberIdOrderByIdDesc(Pageable pageable, Long memberId);
+    Page<Reservation> findByMemberIdAndIsPaidTrueOrderByIdDesc(Pageable pageable, Long memberId);
     List<Reservation> findAllByHotelIdAndIsPaidTrue(Long hotelId);
 }

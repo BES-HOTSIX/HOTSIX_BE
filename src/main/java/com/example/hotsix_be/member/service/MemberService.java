@@ -65,6 +65,7 @@ public class MemberService {
         memberRepository.save(member);
     }
 
+    @Transactional(readOnly = true)
     public boolean isExistNickname(String nickname) {
         return memberRepository.existsByNickname(nickname);
     }

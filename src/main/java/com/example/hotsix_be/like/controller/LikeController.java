@@ -1,22 +1,16 @@
 package com.example.hotsix_be.like.controller;
 
 
-
 import com.example.hotsix_be.auth.Auth;
 import com.example.hotsix_be.auth.MemberOnly;
 import com.example.hotsix_be.auth.util.Accessor;
-import com.example.hotsix_be.like.dto.request.LikeRequestDto;
 import com.example.hotsix_be.like.dto.LikeStatus;
+import com.example.hotsix_be.like.dto.request.LikeRequestDto;
 import com.example.hotsix_be.like.dto.response.LikeStatusResponse;
 import com.example.hotsix_be.like.service.LikeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/likes")
@@ -47,5 +41,4 @@ public class LikeController {
             return ResponseEntity.badRequest().build();
         }
     }
-
 }
