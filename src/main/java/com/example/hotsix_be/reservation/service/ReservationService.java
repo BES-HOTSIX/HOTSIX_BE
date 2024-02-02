@@ -26,16 +26,15 @@ public class ReservationService {
 	private final ReservationRepository reservationRepository;
 	private final HotelRepository hotelRepository;
 	private final MemberRepository memberRepository;
+    public Page<ReservationDetailResponse> findByMemberIdAndIsPaid(Long memberId, int page) {
+        Pageable pageable = Pageable.ofSize(4).withPage(page);
 
-	public Page<ReservationDetailResponse> findByMemberId(Long memberId, int page) {
-		Pageable pageable = Pageable.ofSize(4).withPage(page);
-
-		return reservationRepository.findByMemberIdOrderByIdDesc(pageable, memberId)
-				.map(reservation -> ReservationDetailResponse.of(
-						reservation.getHotel(),
-						reservation
-				));
-	}
+        return reservationRepository.findByMemberIdAndIsPaidTrueOrderByIdDesc(pageable, memberId)
+                .map(reservation -> ReservationDetailResponse.of(
+                        reservation.getHotel(),
+                        reservation
+                ));
+    }
 
 	public ReservationDetailResponse findById(Long reserveId, Long memberId) {
 		Reservation reservation = reservationRepository.findById(reserveId).orElseThrow(() -> new ReservationException(NOT_FOUND_RESERVATION_ID));
