@@ -26,9 +26,9 @@ public class QReservation extends EntityPathBase<Reservation> {
 
     public final DateTimePath<java.time.LocalDateTime> cancelDate = createDateTime("cancelDate", java.time.LocalDateTime.class);
 
-    public final DateTimePath<java.time.LocalDateTime> checkInDate = createDateTime("checkInDate", java.time.LocalDateTime.class);
+    public final DatePath<java.time.LocalDate> checkInDate = createDate("checkInDate", java.time.LocalDate.class);
 
-    public final DateTimePath<java.time.LocalDateTime> checkOutDate = createDateTime("checkOutDate", java.time.LocalDateTime.class);
+    public final DatePath<java.time.LocalDate> checkOutDate = createDate("checkOutDate", java.time.LocalDate.class);
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
