@@ -40,5 +40,4 @@ public class SpringDocConfig {
                                         .bearerFormat("JWT")));
     }
 
-
 }
