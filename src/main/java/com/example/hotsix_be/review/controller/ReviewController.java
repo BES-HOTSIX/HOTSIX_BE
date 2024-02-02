@@ -54,6 +54,12 @@ public class ReviewController {
         return ResponseEntity.ok(new ResponseDto<>(HttpStatus.OK.value(), "리뷰가 성공적으로 삭제되었습니다.", null, null, null));
     }
 
+    @GetMapping("/detail/{id}")
+    public ResponseEntity<ReviewResponseDTO> getReviewDetails(@PathVariable final Long id) {
+        ReviewResponseDTO review = reviewService.getReviewDetails(id);
+        return ResponseEntity.ok(review);
+    }
+
     @PutMapping("/modify/{id}")
     public ResponseEntity<?> modifyReview(
             @PathVariable Long id,
@@ -61,12 +67,12 @@ public class ReviewController {
     ) {
         log.info("Received modify review request for reviewId: {}", id);
 
-        Long hotelId = modifiedReviewDTO.getHotelId();
+//        Long hotelId = modifiedReviewDTO.getHotelId();
+//
+//        Hotel hotel = hotelRepository.findById(hotelId)
+//                .orElseThrow(() -> new HotelException(NOT_FOUND_HOTEL_ID));
 
-        Hotel hotel = hotelRepository.findById(hotelId)
-                .orElseThrow(() -> new HotelException(NOT_FOUND_HOTEL_ID));
-
-        reviewService.modifyReview(id, modifiedReviewDTO, hotel);
+        reviewService.modifyReview(id, modifiedReviewDTO);
 
         return ResponseEntity.ok(
                 new ResponseDto<>(

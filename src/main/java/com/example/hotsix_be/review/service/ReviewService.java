@@ -1,4 +1,5 @@
 package com.example.hotsix_be.review.service;
+import com.example.hotsix_be.hotel.dto.response.HotelDetailResponse;
 import com.example.hotsix_be.hotel.entity.Hotel;
 import com.example.hotsix_be.hotel.exception.HotelException;
 import com.example.hotsix_be.hotel.repository.HotelRepository;
@@ -45,12 +46,12 @@ public class ReviewService {
     }
 
     @Transactional
-    public void modifyReview(final Long id, final @Valid ReviewRequestDTO reviewUpdateRequest, Hotel hotel) {
+    public void modifyReview(final Long id, final @Valid ReviewRequestDTO reviewUpdateRequest) {
 
         Review review = reviewRepository.findById(id)
                 .orElseThrow(() -> new ReviewException(NOT_FOUND_REVIEW_ID));
 
-        review.update(reviewUpdateRequest, hotel);
+        review.update(reviewUpdateRequest);
     }
 
     @Transactional
@@ -59,4 +60,9 @@ public class ReviewService {
     }
 
 
+
+    public ReviewResponseDTO getReviewDetails(Long id) {
+        return ReviewResponseDTO.of(
+                reviewRepository.findById(id).orElseThrow(() -> new ReviewException(NOT_FOUND_REVIEW_ID)));
+    }
 }

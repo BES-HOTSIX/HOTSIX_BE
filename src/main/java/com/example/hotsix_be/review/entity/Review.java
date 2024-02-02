@@ -60,7 +60,7 @@ public class Review extends DateEntity {
         this.hotel = hotel;
     }
 
-    public void update(final ReviewRequestDTO reviewRequestDTO, Hotel hotel) {
+    public void update(final ReviewRequestDTO reviewRequestDTO) {
         this.body = reviewRequestDTO.getBody();
         this.rating = reviewRequestDTO.getRating();
         this.amenities = reviewRequestDTO.getAmenities();
