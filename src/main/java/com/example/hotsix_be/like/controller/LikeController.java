@@ -1,7 +1,6 @@
 package com.example.hotsix_be.like.controller;
 
 
-
 import com.example.hotsix_be.auth.Auth;
 import com.example.hotsix_be.auth.MemberOnly;
 import com.example.hotsix_be.auth.util.Accessor;
@@ -11,12 +10,7 @@ import com.example.hotsix_be.like.dto.response.LikeStatusResponse;
 import com.example.hotsix_be.like.service.LikeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/likes")
@@ -27,7 +21,8 @@ public class LikeController {
 
     @GetMapping("/status")
     @MemberOnly
-    public ResponseEntity<LikeStatusResponse> getLikeStatus(@Auth final Accessor accessor, @RequestParam final Long hotelId) {
+    public ResponseEntity<LikeStatusResponse> getLikeStatus(@Auth final Accessor accessor,
+                                                            @RequestParam final Long hotelId) {
         try {
             LikeStatus likeStatus = likeService.getLikeStatus(accessor.getMemberId(), hotelId);
             return ResponseEntity.ok(LikeStatusResponse.of(likeStatus.isLiked(), likeStatus.getLikesCount()));
@@ -39,7 +34,8 @@ public class LikeController {
     // 좋아요 상태 토글
     @PostMapping("/toggle")
     @MemberOnly
-    public ResponseEntity<LikeStatusResponse> toggleLike(@Auth final Accessor accessor, @RequestBody final LikeRequest likeRequest) {
+    public ResponseEntity<LikeStatusResponse> toggleLike(@Auth final Accessor accessor,
+                                                         @RequestBody final LikeRequest likeRequest) {
         try {
             LikeStatus likeStatus = likeService.toggleLike(accessor.getMemberId(), likeRequest.getHotelId());
             return ResponseEntity.ok(LikeStatusResponse.of(likeStatus.isLiked(), likeStatus.getLikesCount()));
@@ -47,5 +43,4 @@ public class LikeController {
             return ResponseEntity.badRequest().build();
         }
     }
-
 }

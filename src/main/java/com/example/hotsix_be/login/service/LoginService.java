@@ -34,12 +34,10 @@ import reactor.core.publisher.Mono;
 public class LoginService {
 
     public static final int COOKIE_AGE_SECONDS = 604800;
+    public static final String COOKIE_SAME_SITE = "Strict";
 
     @Value("${spring.cookie.domain}")
     private String cookieDomain;
-
-    @Value("${spring.cookie.same-site}")
-    private String cookieSameSite;
 
     private final RefreshTokenRepository refreshTokenRepository;
 
@@ -155,7 +153,7 @@ public class LoginService {
                 .maxAge(COOKIE_AGE_SECONDS)
                 .secure(true)
                 .httpOnly(true)
-                .sameSite(cookieSameSite)
+                .sameSite(COOKIE_SAME_SITE)
                 .path("/")
                 .domain(cookieDomain) // 환경별 도메인 사용
                 .build();
