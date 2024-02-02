@@ -40,8 +40,8 @@ public class ReservationInit implements ApplicationRunner {
                 Hotel lastHotel = hotels.get(hotels.size() - 1);
 
                 Reservation reservation1 = new Reservation(
-                        LocalDate.parse("2024-01-01").atStartOfDay(),
-                        LocalDate.parse("2024-01-10").atStartOfDay(),
+                        LocalDate.parse("2024-01-01"),
+                        LocalDate.parse("2024-01-10"),
                         3L,
                         550000L,
                         true,
@@ -51,8 +51,8 @@ public class ReservationInit implements ApplicationRunner {
                 reservationRepository.save(reservation1);
 
                 Reservation reservation2 = new Reservation(
-                        LocalDate.parse("2024-01-22").atStartOfDay(),
-                        LocalDate.parse("2024-01-28").atStartOfDay(),
+                        LocalDate.parse("2024-01-22"),
+                        LocalDate.parse("2024-01-28"),
                         1L,
                         100000L,
                         true,
@@ -62,8 +62,8 @@ public class ReservationInit implements ApplicationRunner {
                 reservationRepository.save(reservation2);
 
                 Reservation reservation3 = new Reservation(
-                        LocalDate.parse("2024-02-22").atStartOfDay(),
-                        LocalDate.parse("2024-02-28").atStartOfDay(),
+                        LocalDate.parse("2024-02-22"),
+                        LocalDate.parse("2024-02-28"),
                         4L,
                         1000000L,
                         true,

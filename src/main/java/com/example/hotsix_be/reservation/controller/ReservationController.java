@@ -7,6 +7,7 @@ import com.example.hotsix_be.common.dto.ResponseDto;
 import com.example.hotsix_be.reservation.dto.request.ReservationInfoRequest;
 import com.example.hotsix_be.reservation.dto.response.ReservationCreateResponse;
 import com.example.hotsix_be.reservation.dto.response.ReservationDetailResponse;
+import com.example.hotsix_be.reservation.dto.response.ReservedDatesOfHotelResponse;
 import com.example.hotsix_be.reservation.entity.Reservation;
 import com.example.hotsix_be.reservation.exception.ReservationException;
 import com.example.hotsix_be.reservation.service.ReservationService;
@@ -58,4 +59,19 @@ public class ReservationController {
                 )
         );
     }
+
+	@GetMapping("/reservedDates/{hotelId}")
+	public ResponseEntity<?> getReservedDatesOfHotel(
+			@PathVariable(value = "hotelId") final Long hotelId
+	) {
+		ReservedDatesOfHotelResponse reservedDatesOfHotelResponse = reservationService.findAllByHotelIdAndIsPaidTrue(hotelId);
+
+		return ResponseEntity.ok(
+				new ResponseDto<>(
+						HttpStatus.OK.value(),
+						"해당 숙소의 예약된 날짜를 모두 불러왔습니다.", null,
+						null, reservedDatesOfHotelResponse
+				)
+		);
+	}
 }
