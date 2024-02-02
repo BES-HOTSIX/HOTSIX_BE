@@ -6,7 +6,7 @@ import com.example.hotsix_be.reservation.entity.Reservation;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import static lombok.AccessLevel.PRIVATE;
 
@@ -18,8 +18,8 @@ public class ConfirmResponse {
     private final Long reserveId;
     private final String hotelNickname;
     private final Long price;
-    private final LocalDateTime checkInDate;
-    private final LocalDateTime checkOutDate;
+    private final LocalDate checkInDate;
+    private final LocalDate checkOutDate;
 
     // TODO 복합결제의 경우 cashLog 어떻게 생성할지 생각해두기
     public static ConfirmResponse of(final CashLog cashLog, Reservation reservation, Hotel hotel) {

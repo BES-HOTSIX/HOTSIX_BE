@@ -89,4 +89,20 @@ public class Reservation extends DateEntity {
     public void updateIsPaid(boolean isPaid) {
         this.isPaid = isPaid;
     }
+
+    public List<LocalDate> getReservedDateRange() {
+        List<LocalDate> reservedDates = new ArrayList<>();
+
+        if (this.checkOutDate.isBefore(LocalDate.now()))
+            return reservedDates;
+
+        LocalDate date = this.checkInDate;
+
+        while (!date.isAfter(this.checkOutDate)) {
+            reservedDates.add(date);
+            date = date.plusDays(1);
+        }
+
+        return reservedDates;
+    }
 }

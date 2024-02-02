@@ -8,6 +8,7 @@ import com.example.hotsix_be.member.entity.Member;
 import com.example.hotsix_be.member.repository.MemberRepository;
 import com.example.hotsix_be.reservation.dto.request.ReservationInfoRequest;
 import com.example.hotsix_be.reservation.dto.response.ReservationDetailResponse;
+import com.example.hotsix_be.reservation.dto.response.ReservedDatesOfHotelResponse;
 import com.example.hotsix_be.reservation.entity.Reservation;
 import com.example.hotsix_be.reservation.exception.ReservationException;
 import com.example.hotsix_be.reservation.repository.ReservationRepository;
@@ -17,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 import static com.example.hotsix_be.common.exception.ExceptionCode.*;
@@ -79,4 +81,12 @@ public class ReservationService {
 
         return reservationRepository.save(reservation);
     }
+
+	public ReservedDatesOfHotelResponse findAllByHotelIdAndIsPaidTrue(final Long hotelId) {
+		List<Reservation> reservations = reservationRepository.findAllByHotelIdAndIsPaidTrue(hotelId);
+
+		return ReservedDatesOfHotelResponse.of(
+				reservations
+		);
+	}
 }
