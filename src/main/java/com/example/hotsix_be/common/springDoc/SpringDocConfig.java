@@ -36,13 +36,8 @@ public class SpringDocConfig {
                                 new SecurityScheme()
                                         .type(SecurityScheme.Type.HTTP)
                                         .in(SecurityScheme.In.HEADER)
-                                        .scheme("bearer")
-                                        .bearerFormat("JWT"))
-                        .addSecuritySchemes("refreshToken",
-                                new SecurityScheme()
-                                        .type(SecurityScheme.Type.APIKEY)
-                                        .in(SecurityScheme.In.COOKIE)
-                                        .name("refresh-token")));
+                                        .scheme("Bearer")
+                                        .bearerFormat("JWT")));
     }
 
 
