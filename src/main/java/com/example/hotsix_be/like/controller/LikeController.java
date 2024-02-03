@@ -7,6 +7,7 @@ import com.example.hotsix_be.auth.util.Accessor;
 import com.example.hotsix_be.like.dto.request.LikeRequest;
 import com.example.hotsix_be.like.dto.LikeStatus;
 import com.example.hotsix_be.like.dto.response.LikeStatusResponse;
+import com.example.hotsix_be.like.openapi.LikeApi;
 import com.example.hotsix_be.like.service.LikeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/likes")
 @RestController
-public class LikeController {
+public class LikeController implements LikeApi {
 
     private final LikeService likeService;
 

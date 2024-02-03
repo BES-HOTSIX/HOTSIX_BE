@@ -1,26 +1,24 @@
 package com.example.hotsix_be.login.controller;
 
-import static com.example.hotsix_be.common.exception.ExceptionCode.*;
-
+import static com.example.hotsix_be.common.exception.ExceptionCode.NOT_SUPPORTED_OAUTH_SERVICE;
 
 import com.example.hotsix_be.auth.Auth;
 import com.example.hotsix_be.auth.MemberOnly;
 import com.example.hotsix_be.auth.util.Accessor;
 import com.example.hotsix_be.common.dto.ResponseDto;
 import com.example.hotsix_be.common.exception.AuthException;
-import com.example.hotsix_be.login.dto.request.OAuthCodeRequest;
 import com.example.hotsix_be.login.dto.request.LoginRequest;
+import com.example.hotsix_be.login.dto.request.OAuthCodeRequest;
 import com.example.hotsix_be.login.dto.response.AccessTokenResponse;
 import com.example.hotsix_be.login.dto.response.LoginResponse;
+import com.example.hotsix_be.login.openapi.LoginApi;
 import com.example.hotsix_be.login.service.LoginService;
 import com.example.hotsix_be.member.entity.Member;
 import com.example.hotsix_be.member.service.MemberService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -34,13 +32,13 @@ import reactor.core.publisher.Mono;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-public class LoginController {
+public class LoginController implements LoginApi {
 
     private final LoginService loginService;
     private final MemberService memberService;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody final LoginRequest loginRequest,
+    public ResponseEntity<ResponseDto<AccessTokenResponse>> login(@RequestBody final LoginRequest loginRequest,
                                    final HttpServletResponse response) {
 
         Member member = memberService.getMemberByUsername(loginRequest.getUsername());
@@ -95,7 +93,7 @@ public class LoginController {
     }
 
     @PostMapping("/token")
-    public ResponseEntity<?> extendLogin(
+    public ResponseEntity<ResponseDto<?>> extendLogin(
             @CookieValue("refresh-token") final String refreshToken,
             @RequestHeader("Authorization") final String authorizationHeader
     ) {
