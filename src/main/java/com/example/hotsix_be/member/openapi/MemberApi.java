@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
-@Tag(name = "Member", description = "회원 관리 API")
+@Tag(name = "Member", description = "회원 관련 API")
 public interface MemberApi {
 
     @Operation(
@@ -32,15 +32,7 @@ public interface MemberApi {
     )
     @ApiResponse(
             responseCode = "201",
-            description = "회원 가입 성공",
-            content = @Content(
-            schema = @Schema(implementation = ResponseDto.class)
-    )
-    )
-    @Parameter(
-            name = "memberRegisterRequest",
-            description = "가입할 회원 정보",
-            required = false
+            description = "회원 가입 성공"
     )
     @PostMapping("/register")
     public ResponseEntity<?> registerMember(@RequestBody MemberRegisterRequest memberRegisterRequest);
@@ -52,19 +44,11 @@ public interface MemberApi {
     )
     @ApiResponse(
             responseCode = "200",
-            description = "회원 조회 성공",
-            content = @Content(
-                    schema = @Schema(implementation = ResponseDto.class)
-            )
-    )
-    @Parameter(
-            name = "accessor",
-            description = "회원 를 가진 Accessor 객체",
-            required = false
+            description = "회원 조회 성공"
     )
     @GetMapping("/info")
     @MemberOnly
-    public ResponseEntity<?> getMemberInfo(@Auth final Accessor accessor);
+    public ResponseEntity<?> getMemberInfo(@Auth @Parameter(hidden = true) final Accessor accessor);
 
     @PutMapping("/password")
     @MemberOnly

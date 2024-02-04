@@ -30,22 +30,17 @@ public interface LikeApi {
             responseCode = "200",
             description = "찜 조회 성공",
             content = @Content(
-            schema = @Schema(implementation = LikeStatusResponse.class)
-    )
-    )
-    @Parameter(
-            name = "accessor",
-            description = "회원 id를 가진 Accessor 객체",
-            required = false
+                    schema = @Schema(implementation = LikeStatusResponse.class)
+            )
     )
     @Parameter(
             name = "hotelId",
             description = "찜 상태를 조회할 호텔 id",
-            required = false
+            required = true
     )
     @GetMapping("/status")
     @MemberOnly
-    public ResponseEntity<LikeStatusResponse> getLikeStatus(@Auth final Accessor accessor,
+    public ResponseEntity<LikeStatusResponse> getLikeStatus(@Auth @Parameter(hidden = true) final Accessor accessor,
                                                             @RequestParam final Long hotelId);
 
     // 좋아요 상태 토글
@@ -58,17 +53,12 @@ public interface LikeApi {
             responseCode = "200",
             description = "찜 상태 토글 성공",
             content = @Content(
-            schema = @Schema(implementation = LikeStatusResponse.class)
-    )
-    )
-    @Parameter(
-            name = "accessor",
-            description = "회원 id를 가진 Accessor 객체",
-            required = false
+                    schema = @Schema(implementation = LikeStatusResponse.class)
+            )
     )
     @PostMapping("/toggle")
     @MemberOnly
-    public ResponseEntity<LikeStatusResponse> toggleLike(@Auth final Accessor accessor,
+    public ResponseEntity<LikeStatusResponse> toggleLike(@Auth @Parameter(hidden = true) final Accessor accessor,
                                                          @RequestBody final LikeRequest likeRequest);
 
 }

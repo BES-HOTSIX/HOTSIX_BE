@@ -10,15 +10,15 @@ import lombok.Setter;
 @Setter
 public class MemberRegisterRequest {
 
-    @Schema(description = "아이디", example = "Test1")
+    @Schema(description = "아이디", example = "test51")
     @NotBlank
     private String username;
 
-    @Schema(description = "비밀번호", example = "Test1")
+    @Schema(description = "비밀번호", example = "test51")
     @NotBlank
     private String password;
 
-    @Schema(description = "닉네임", example = "테스트1")
+    @Schema(description = "닉네임", example = "테스트51")
     @NotBlank
     private String nickname;
 }

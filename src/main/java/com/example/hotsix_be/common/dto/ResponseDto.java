@@ -23,7 +23,7 @@ public class ResponseDto<T> {
     @Schema(description = "성공 메시지", example = "성공적으로 요청이 처리되었습니다.")
     private String success;
 
-    @Schema(description = "에러 메시지")
+    @Schema(description = "에러 메시지" , example = "")
     private String error;
 
     @Schema(description = "리스트 데이터")

@@ -8,6 +8,7 @@ import com.example.hotsix_be.hotel.entity.Hotel;
 import com.example.hotsix_be.hotel.exception.HotelException;
 import com.example.hotsix_be.hotel.repository.HotelRepository;
 import com.example.hotsix_be.image.entity.Image;
+import com.example.hotsix_be.image.entity.ImageType;
 import com.example.hotsix_be.image.service.ImageService;
 import com.example.hotsix_be.member.entity.Member;
 import com.example.hotsix_be.member.repository.MemberRepository;
@@ -37,7 +38,7 @@ public class HotelService {
     public Hotel save(final HotelInfoRequest hotelInfoRequest, final List<MultipartFile> multipartFiles,
                       final Long memberId) {
 
-        List<Image> newImages = imageService.uploadImages(multipartFiles, "ACCOMODATION",
+        List<Image> newImages = imageService.uploadImages(multipartFiles, ImageType.ACCOMMODATION.name(),
                 hotelInfoRequest.getNickname());
 
         Member member = memberRepository.findById(memberId)

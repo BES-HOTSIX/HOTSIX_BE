@@ -60,8 +60,8 @@ public class LoginController implements LoginApi {
 
     @PostMapping("/login/{provider}")
     public Mono<ResponseEntity<ResponseDto<AccessTokenResponse>>> OAuthLogin(
-            @PathVariable String provider,
-            @RequestBody OAuthCodeRequest oAuthCodeRequest,
+            @PathVariable final String provider,
+            @RequestBody final OAuthCodeRequest oAuthCodeRequest,
             final HttpServletResponse response
     ) {
         String code = oAuthCodeRequest.getCode();
@@ -93,7 +93,7 @@ public class LoginController implements LoginApi {
     }
 
     @PostMapping("/token")
-    public ResponseEntity<ResponseDto<?>> extendLogin(
+    public ResponseEntity<ResponseDto<String>> extendLogin(
             @CookieValue("refresh-token") final String refreshToken,
             @RequestHeader("Authorization") final String authorizationHeader
     ) {

@@ -8,6 +8,7 @@ import com.example.hotsix_be.like.dto.response.LikeStatusResponse;
 import com.example.hotsix_be.login.dto.request.LoginRequest;
 import com.example.hotsix_be.login.dto.request.OAuthCodeRequest;
 import com.example.hotsix_be.login.dto.response.AccessTokenResponse;
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -33,24 +34,11 @@ public interface LoginApi {
     )
     @ApiResponse(
             responseCode = "200",
-            description = "로그인 성공",
-            content = @Content(
-            schema = @Schema(implementation = ResponseDto.class)
-    )
-    )
-    @Parameter(
-            name = "loginRequest",
-            description = "로그인 할 회원 정보",
-            required = false
-    )
-    @Parameter(
-            name = "response",
-            description = "HttpServletResponse 객체",
-            required = false
+            description = "로그인 성공"
     )
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody final LoginRequest loginRequest,
-                                   final HttpServletResponse response);
+    public ResponseEntity<ResponseDto<AccessTokenResponse>> login(@RequestBody final LoginRequest loginRequest,
+                                                                  final HttpServletResponse response);
 
 
     @Operation(
@@ -61,24 +49,9 @@ public interface LoginApi {
             responseCode = "200",
             description = "소셜 로그인 성공"
     )
-    @Parameter(
-            name = "provider",
-            description = "소셜 로그인 제공 업체",
-            required = false
-    )
-    @Parameter(
-            name = "oAuthCodeRequest",
-            description = "소셜 로그인 요청을 위한 code",
-            required = false
-    )
-    @Parameter(
-            name = "response",
-            description = "HttpServletResponse 객체",
-            required = false
-    )
     @PostMapping("/login/{provider}")
     public Mono<ResponseEntity<ResponseDto<AccessTokenResponse>>> OAuthLogin(
-            @PathVariable String provider,
+            @PathVariable final String provider,
             @RequestBody OAuthCodeRequest oAuthCodeRequest,
             final HttpServletResponse response
     );
@@ -90,25 +63,12 @@ public interface LoginApi {
     )
     @ApiResponse(
             responseCode = "200",
-            description = "엑세스 토큰 갱신 성공",
-            content = @Content(
-            schema = @Schema(implementation = ResponseDto.class)
-    )
-    )
-    @Parameter(
-            name = "refresh-token",
-            description = "리프레시 토큰",
-            required = false
-    )
-    @Parameter(
-            name = "Authorization",
-            description = "Authorization 헤더",
-            required = false
+            description = "엑세스 토큰 갱신 성공"
     )
     @PostMapping("/token")
-    public ResponseEntity<?> extendLogin(
-            @CookieValue("refresh-token") final String refreshToken,
-            @RequestHeader("Authorization") final String authorizationHeader
+    public ResponseEntity<ResponseDto<String>> extendLogin(
+            @CookieValue("refresh-token") @Parameter(hidden = true) final String refreshToken,
+            @RequestHeader("Authorization")  final String authorizationHeader
     );
 
 
@@ -118,38 +78,24 @@ public interface LoginApi {
     )
     @ApiResponse(
             responseCode = "200",
-            description = "로그아웃 성공",
-            content = @Content(
-            schema = @Schema(implementation = ResponseDto.class)
-    )
-    )
-    @Parameter(
-            name = "refresh-token",
-            description = "리프레시 토큰",
-            required = false
-    )
-    @Parameter(
-            name = "response",
-            description = "HttpServletResponse 객체",
-            required = false
+            description = "로그아웃 성공"
     )
     @DeleteMapping("/user/logout")
     @MemberOnly
     public ResponseEntity<Void> logout(
-            @Auth final Accessor accessor,
-            @CookieValue("refresh-token") final String refreshToken, HttpServletResponse response);
+            @Auth @Parameter(hidden = true) final Accessor accessor,
+            @CookieValue("refresh-token") @Parameter(hidden = true) final String refreshToken, HttpServletResponse response);
 
 
     @Operation(
             summary = "회원 탈퇴",
             description = "회원 탈퇴을 위한 API"
     )
-    @Parameter(
-            name = "accessor",
-            description = "회원 id를 가진 Accessor 객체",
-            required = false
+    @ApiResponse(
+            responseCode = "200",
+            description = "회원 탈퇴 성공"
     )
     @DeleteMapping("/account")
     @MemberOnly
-    public ResponseEntity<Void> deleteAccount(@Auth final Accessor accessor);
+    public ResponseEntity<Void> deleteAccount(@Auth @Parameter(hidden = true) final Accessor accessor);
 }
