@@ -5,11 +5,9 @@ import com.example.hotsix_be.auth.MemberOnly;
 import com.example.hotsix_be.auth.util.Accessor;
 import com.example.hotsix_be.common.dto.EmptyResponse;
 import com.example.hotsix_be.common.dto.ResponseDto;
-import com.example.hotsix_be.like.dto.response.LikeStatusResponse;
 import com.example.hotsix_be.login.dto.request.LoginRequest;
 import com.example.hotsix_be.login.dto.request.OAuthCodeRequest;
 import com.example.hotsix_be.login.dto.response.AccessTokenResponse;
-import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -79,7 +77,7 @@ public interface LoginApi {
     @ApiResponse(responseCode = "500", description = "서버 에러",
             content = @Content(schema = @Schema(implementation = EmptyResponse.class)))
     @PostMapping("/token")
-    public ResponseEntity<ResponseDto<String>> extendLogin(
+    public ResponseEntity<ResponseDto<AccessTokenResponse>> extendLogin(
             @CookieValue("refresh-token") @Parameter(hidden = true) final String refreshToken,
             @RequestHeader("Authorization") final String authorizationHeader
     );

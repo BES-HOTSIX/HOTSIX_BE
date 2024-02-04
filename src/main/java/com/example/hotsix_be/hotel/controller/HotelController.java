@@ -12,12 +12,14 @@ import com.example.hotsix_be.hotel.entity.Hotel;
 import com.example.hotsix_be.hotel.openapi.HotelApi;
 import com.example.hotsix_be.hotel.service.HotelService;
 import jakarta.validation.Valid;
+import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -47,7 +49,7 @@ public class HotelController implements HotelApi {
                 new ResponseDto<>(
                         HttpStatus.OK.value(),
                         "성공적으로 등록되었습니다.", null,
-                        null,  null
+                        null, null
                 )
         );
     }
@@ -113,6 +115,30 @@ public class HotelController implements HotelApi {
                         HttpStatus.OK.value(),
                         "성공적으로 삭제되었습니다.", null,
                         null, null
+                )
+        );
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<ResponseDto<PageImpl<HotelPageResponse>>> getHotelsByDistrictAndDate(
+            @RequestParam String district,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+            @PageableDefault(size = 9) Pageable pageable) {
+        Page<Hotel> hotelsByDistrictAndDate = hotelService.getHotelsByDistrictAndDate(district, startDate, endDate,
+                pageable);
+
+        List<HotelPageResponse> hotelByDistrictAndDateResponse = hotelsByDistrictAndDate.stream()
+                .map(HotelPageResponse::of).toList();
+
+        PageImpl<HotelPageResponse> hotelPageResponse = new PageImpl<>(hotelByDistrictAndDateResponse, pageable,
+                hotelsByDistrictAndDate.getTotalElements());
+
+        return ResponseEntity.ok(
+                new ResponseDto<>(
+                        HttpStatus.OK.value(),
+                        "성공적으로 검색이 완료되었습니다.", null,
+                        null, hotelPageResponse
                 )
         );
     }

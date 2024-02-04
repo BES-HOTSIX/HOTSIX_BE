@@ -93,7 +93,7 @@ public class LoginController implements LoginApi {
     }
 
     @PostMapping("/token")
-    public ResponseEntity<ResponseDto<String>> extendLogin(
+    public ResponseEntity<ResponseDto<AccessTokenResponse>> extendLogin(
             @CookieValue("refresh-token") final String refreshToken,
             @RequestHeader("Authorization") final String authorizationHeader
     ) {
@@ -103,7 +103,7 @@ public class LoginController implements LoginApi {
                 new ResponseDto<>(
                         HttpStatus.OK.value(),
                         "엑세스 토큰이 재발급 되었습니다.", null,
-                        null, renewalAccessToken
+                        null, new AccessTokenResponse(renewalAccessToken)
                 )
         );
     }

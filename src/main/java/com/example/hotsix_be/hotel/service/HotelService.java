@@ -12,6 +12,7 @@ import com.example.hotsix_be.image.entity.ImageType;
 import com.example.hotsix_be.image.service.ImageService;
 import com.example.hotsix_be.member.entity.Member;
 import com.example.hotsix_be.member.repository.MemberRepository;
+import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
@@ -136,5 +137,9 @@ public class HotelService {
 
         return hotelRepository.findByOwnerIdOrderByIdDesc(pageable, memberId)
                 .map(HotelDetailResponse::of);
+    }
+
+    public Page<Hotel> getHotelsByDistrictAndDate(String district, LocalDate startDate, LocalDate endDate, Pageable pageable) {
+        return hotelRepository.findAllByDistrictAndDate(pageable, district, startDate, endDate);
     }
 }
