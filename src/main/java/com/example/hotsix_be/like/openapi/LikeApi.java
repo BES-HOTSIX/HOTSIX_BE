@@ -3,6 +3,7 @@ package com.example.hotsix_be.like.openapi;
 import com.example.hotsix_be.auth.Auth;
 import com.example.hotsix_be.auth.MemberOnly;
 import com.example.hotsix_be.auth.util.Accessor;
+import com.example.hotsix_be.common.dto.EmptyResponse;
 import com.example.hotsix_be.common.dto.ResponseDto;
 import com.example.hotsix_be.like.dto.LikeStatus;
 import com.example.hotsix_be.like.dto.request.LikeRequest;
@@ -33,6 +34,10 @@ public interface LikeApi {
                     schema = @Schema(implementation = LikeStatusResponse.class)
             )
     )
+    @ApiResponse(responseCode = "400", description = "찜 조회 실패",
+            content = @Content(schema = @Schema(implementation = EmptyResponse.class)))
+    @ApiResponse(responseCode = "500", description = "서버 에러",
+            content = @Content(schema = @Schema(implementation = EmptyResponse.class)))
     @Parameter(
             name = "hotelId",
             description = "찜 상태를 조회할 호텔 id",
@@ -56,6 +61,10 @@ public interface LikeApi {
                     schema = @Schema(implementation = LikeStatusResponse.class)
             )
     )
+    @ApiResponse(responseCode = "400", description = "찜 상태 토글 실패",
+            content = @Content(schema = @Schema(implementation = EmptyResponse.class)))
+    @ApiResponse(responseCode = "500", description = "서버 에러",
+            content = @Content(schema = @Schema(implementation = EmptyResponse.class)))
     @PostMapping("/toggle")
     @MemberOnly
     public ResponseEntity<LikeStatusResponse> toggleLike(@Auth @Parameter(hidden = true) final Accessor accessor,

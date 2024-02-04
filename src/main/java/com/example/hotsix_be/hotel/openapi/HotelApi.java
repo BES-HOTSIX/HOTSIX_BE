@@ -13,7 +13,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -60,9 +59,13 @@ public interface HotelApi {
             responseCode = "201",
             description = "숙소 등록 성공"
     )
+    @ApiResponse(responseCode = "400", description = "숙소 등록 실패",
+            content = @Content(schema = @Schema(implementation = EmptyResponse.class)))
+    @ApiResponse(responseCode = "500", description = "서버 에러",
+            content = @Content(schema = @Schema(implementation = EmptyResponse.class)))
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @MemberOnly
-    public ResponseEntity<ResponseDto<EmptyResponse>> registerHotel(
+    public ResponseEntity<ResponseDto<?>> registerHotel(
             @RequestPart("hotelInfo") @Parameter(schema = @Schema(type = "string", format = "binary")) @Valid final HotelInfoRequest hotelInfoRequest,
             @RequestPart(value = "files", required = false) final List<MultipartFile> multipartFiles,
             @Auth @Parameter(hidden = true) final Accessor accessor);
@@ -76,6 +79,10 @@ public interface HotelApi {
             responseCode = "200",
             description = "모든 숙소 조회 성공"
     )
+    @ApiResponse(responseCode = "400", description = "모든 숙소 조회 실패",
+            content = @Content(schema = @Schema(implementation = EmptyResponse.class)))
+    @ApiResponse(responseCode = "500", description = "서버 에러",
+            content = @Content(schema = @Schema(implementation = EmptyResponse.class)))
     @GetMapping
     public ResponseEntity<ResponseDto<PageImpl<HotelPageResponse>>> getHotels(
             @PageableDefault(size = 9) final Pageable pageable);
@@ -89,6 +96,10 @@ public interface HotelApi {
             responseCode = "200",
             description = "숙소 조회 성공"
     )
+    @ApiResponse(responseCode = "400", description = "숙소 조회 실패",
+            content = @Content(schema = @Schema(implementation = EmptyResponse.class)))
+    @ApiResponse(responseCode = "500", description = "서버 에러",
+            content = @Content(schema = @Schema(implementation = EmptyResponse.class)))
     @GetMapping("/{hotelId}")
     public ResponseEntity<ResponseDto<HotelDetailResponse>> getHotel(
             @PathVariable(value = "hotelId") final Long hotelId);
@@ -118,13 +129,17 @@ public interface HotelApi {
             responseCode = "200",
             description = "숙소 수정 성공"
     )
+    @ApiResponse(responseCode = "400", description = "숙소 수정 실패",
+            content = @Content(schema = @Schema(implementation = EmptyResponse.class)))
+    @ApiResponse(responseCode = "500", description = "서버 에러",
+            content = @Content(schema = @Schema(implementation = EmptyResponse.class)))
     @PutMapping(value = "/{hotelId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @MemberOnly
-    public ResponseEntity<ResponseDto<EmptyResponse>> updateHotel(@PathVariable("hotelId") final Long hotelId,
-                                                                  @RequestPart("hotelInfo") @Parameter(schema = @Schema(type = "string", format = "binary")) @Valid final HotelUpdateRequest hotelUpdateRequest,
-                                                                  @RequestPart(value = "files", required = false) final List<MultipartFile> newImages,
-                                                                  @RequestParam(value = "deletedImages", required = false) final List<String> deletedImagesUrl,
-                                                                  @Auth @Parameter(hidden = true) final Accessor accessor
+    public ResponseEntity<ResponseDto<?>> updateHotel(@PathVariable("hotelId") final Long hotelId,
+                                                      @RequestPart("hotelInfo") @Parameter(schema = @Schema(type = "string", format = "binary")) @Valid final HotelUpdateRequest hotelUpdateRequest,
+                                                      @RequestPart(value = "files", required = false) final List<MultipartFile> newImages,
+                                                      @RequestParam(value = "deletedImages", required = false) final List<String> deletedImagesUrl,
+                                                      @Auth @Parameter(hidden = true) final Accessor accessor
     );
 
 
@@ -136,8 +151,12 @@ public interface HotelApi {
             responseCode = "200",
             description = "숙소 삭제 성공"
     )
+    @ApiResponse(responseCode = "400", description = "숙소 삭제 실패",
+            content = @Content(schema = @Schema(implementation = EmptyResponse.class)))
+    @ApiResponse(responseCode = "500", description = "서버 에러",
+            content = @Content(schema = @Schema(implementation = EmptyResponse.class)))
     @DeleteMapping("/{hotelId}")
     @MemberOnly
-    public ResponseEntity<ResponseDto<EmptyResponse>> deleteHotel(@PathVariable("hotelId") final Long hotelId,
-                                                                  @Auth @Parameter(hidden = true) final Accessor accessor);
+    public ResponseEntity<ResponseDto<?>> deleteHotel(@PathVariable("hotelId") final Long hotelId,
+                                                      @Auth @Parameter(hidden = true) final Accessor accessor);
 }

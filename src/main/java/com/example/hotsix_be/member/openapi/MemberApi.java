@@ -3,6 +3,7 @@ package com.example.hotsix_be.member.openapi;
 import com.example.hotsix_be.auth.Auth;
 import com.example.hotsix_be.auth.MemberOnly;
 import com.example.hotsix_be.auth.util.Accessor;
+import com.example.hotsix_be.common.dto.EmptyResponse;
 import com.example.hotsix_be.common.dto.ResponseDto;
 import com.example.hotsix_be.member.dto.request.MemberPasswordChangeRequest;
 import com.example.hotsix_be.member.dto.request.MemberRegisterRequest;
@@ -34,6 +35,10 @@ public interface MemberApi {
             responseCode = "201",
             description = "회원 가입 성공"
     )
+    @ApiResponse(responseCode = "400", description = "회원 가입 실패",
+            content = @Content(schema = @Schema(implementation = EmptyResponse.class)))
+    @ApiResponse(responseCode = "500", description = "서버 에러",
+            content = @Content(schema = @Schema(implementation = EmptyResponse.class)))
     @PostMapping("/register")
     public ResponseEntity<?> registerMember(@RequestBody MemberRegisterRequest memberRegisterRequest);
 
@@ -46,6 +51,10 @@ public interface MemberApi {
             responseCode = "200",
             description = "회원 조회 성공"
     )
+    @ApiResponse(responseCode = "400", description = "회원 조회 실패",
+            content = @Content(schema = @Schema(implementation = EmptyResponse.class)))
+    @ApiResponse(responseCode = "500", description = "서버 에러",
+            content = @Content(schema = @Schema(implementation = EmptyResponse.class)))
     @GetMapping("/info")
     @MemberOnly
     public ResponseEntity<?> getMemberInfo(@Auth @Parameter(hidden = true) final Accessor accessor);

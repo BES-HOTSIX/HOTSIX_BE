@@ -3,6 +3,7 @@ package com.example.hotsix_be.login.openapi;
 import com.example.hotsix_be.auth.Auth;
 import com.example.hotsix_be.auth.MemberOnly;
 import com.example.hotsix_be.auth.util.Accessor;
+import com.example.hotsix_be.common.dto.EmptyResponse;
 import com.example.hotsix_be.common.dto.ResponseDto;
 import com.example.hotsix_be.like.dto.response.LikeStatusResponse;
 import com.example.hotsix_be.login.dto.request.LoginRequest;
@@ -36,6 +37,10 @@ public interface LoginApi {
             responseCode = "200",
             description = "로그인 성공"
     )
+    @ApiResponse(responseCode = "400", description = "로그인 실패",
+            content = @Content(schema = @Schema(implementation = EmptyResponse.class)))
+    @ApiResponse(responseCode = "500", description = "서버 에러",
+            content = @Content(schema = @Schema(implementation = EmptyResponse.class)))
     @PostMapping("/login")
     public ResponseEntity<ResponseDto<AccessTokenResponse>> login(@RequestBody final LoginRequest loginRequest,
                                                                   final HttpServletResponse response);
@@ -49,6 +54,10 @@ public interface LoginApi {
             responseCode = "200",
             description = "소셜 로그인 성공"
     )
+    @ApiResponse(responseCode = "400", description = "소셜 로그인 실패",
+            content = @Content(schema = @Schema(implementation = EmptyResponse.class)))
+    @ApiResponse(responseCode = "500", description = "서버 에러",
+            content = @Content(schema = @Schema(implementation = EmptyResponse.class)))
     @PostMapping("/login/{provider}")
     public Mono<ResponseEntity<ResponseDto<AccessTokenResponse>>> OAuthLogin(
             @PathVariable final String provider,
@@ -65,10 +74,14 @@ public interface LoginApi {
             responseCode = "200",
             description = "엑세스 토큰 갱신 성공"
     )
+    @ApiResponse(responseCode = "400", description = "엑세스 토큰 갱신 실패",
+            content = @Content(schema = @Schema(implementation = EmptyResponse.class)))
+    @ApiResponse(responseCode = "500", description = "서버 에러",
+            content = @Content(schema = @Schema(implementation = EmptyResponse.class)))
     @PostMapping("/token")
     public ResponseEntity<ResponseDto<String>> extendLogin(
             @CookieValue("refresh-token") @Parameter(hidden = true) final String refreshToken,
-            @RequestHeader("Authorization")  final String authorizationHeader
+            @RequestHeader("Authorization") final String authorizationHeader
     );
 
 
@@ -80,11 +93,14 @@ public interface LoginApi {
             responseCode = "200",
             description = "로그아웃 성공"
     )
+    @ApiResponse(responseCode = "400", description = "로그아웃 실패")
+    @ApiResponse(responseCode = "500", description = "서버 에러")
     @DeleteMapping("/user/logout")
     @MemberOnly
     public ResponseEntity<Void> logout(
             @Auth @Parameter(hidden = true) final Accessor accessor,
-            @CookieValue("refresh-token") @Parameter(hidden = true) final String refreshToken, HttpServletResponse response);
+            @CookieValue("refresh-token") @Parameter(hidden = true) final String refreshToken,
+            HttpServletResponse response);
 
 
     @Operation(
@@ -95,6 +111,8 @@ public interface LoginApi {
             responseCode = "200",
             description = "회원 탈퇴 성공"
     )
+    @ApiResponse(responseCode = "400", description = "회원 탈퇴 실패")
+    @ApiResponse(responseCode = "500", description = "서버 에러")
     @DeleteMapping("/account")
     @MemberOnly
     public ResponseEntity<Void> deleteAccount(@Auth @Parameter(hidden = true) final Accessor accessor);

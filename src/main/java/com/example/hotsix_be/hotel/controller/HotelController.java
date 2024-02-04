@@ -3,7 +3,6 @@ package com.example.hotsix_be.hotel.controller;
 import com.example.hotsix_be.auth.Auth;
 import com.example.hotsix_be.auth.MemberOnly;
 import com.example.hotsix_be.auth.util.Accessor;
-import com.example.hotsix_be.common.dto.EmptyResponse;
 import com.example.hotsix_be.common.dto.ResponseDto;
 import com.example.hotsix_be.hotel.dto.request.HotelInfoRequest;
 import com.example.hotsix_be.hotel.dto.request.HotelUpdateRequest;
@@ -12,9 +11,6 @@ import com.example.hotsix_be.hotel.dto.response.HotelPageResponse;
 import com.example.hotsix_be.hotel.entity.Hotel;
 import com.example.hotsix_be.hotel.openapi.HotelApi;
 import com.example.hotsix_be.hotel.service.HotelService;
-import io.swagger.v3.oas.annotations.Hidden;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -40,7 +36,7 @@ public class HotelController implements HotelApi {
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @MemberOnly
-    public ResponseEntity<ResponseDto<EmptyResponse>> registerHotel(
+    public ResponseEntity<ResponseDto<?>> registerHotel(
             @RequestPart("hotelInfo") @Valid final HotelInfoRequest hotelInfoRequest,
             @RequestPart(value = "files", required = false) final List<MultipartFile> multipartFiles,
             @Auth final Accessor accessor) {
@@ -51,7 +47,7 @@ public class HotelController implements HotelApi {
                 new ResponseDto<>(
                         HttpStatus.OK.value(),
                         "성공적으로 등록되었습니다.", null,
-                        null, new EmptyResponse()
+                        null,  null
                 )
         );
     }
@@ -86,11 +82,11 @@ public class HotelController implements HotelApi {
 
     @PutMapping(value = "/{hotelId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @MemberOnly
-    public ResponseEntity<ResponseDto<EmptyResponse>> updateHotel(@PathVariable("hotelId") final Long hotelId,
-                                                                  @RequestPart("hotelInfo") @Valid final HotelUpdateRequest hotelUpdateRequest,
-                                                                  @RequestPart(value = "files", required = false) final List<MultipartFile> newImages,
-                                                                  @RequestParam(value = "deletedImages", required = false) final List<String> deletedImagesUrl,
-                                                                  @Auth final Accessor accessor
+    public ResponseEntity<ResponseDto<?>> updateHotel(@PathVariable("hotelId") final Long hotelId,
+                                                      @RequestPart("hotelInfo") @Valid final HotelUpdateRequest hotelUpdateRequest,
+                                                      @RequestPart(value = "files", required = false) final List<MultipartFile> newImages,
+                                                      @RequestParam(value = "deletedImages", required = false) final List<String> deletedImagesUrl,
+                                                      @Auth final Accessor accessor
     ) {
 
         hotelService.modifyHotel(hotelId, hotelUpdateRequest, newImages, deletedImagesUrl);
@@ -99,15 +95,15 @@ public class HotelController implements HotelApi {
                 new ResponseDto<>(
                         HttpStatus.OK.value(),
                         "성공적으로 수정되었습니다.", null,
-                        null, new EmptyResponse()
+                        null, null
                 )
         );
     }
 
     @DeleteMapping("/{hotelId}")
     @MemberOnly
-    public ResponseEntity<ResponseDto<EmptyResponse>> deleteHotel(@PathVariable("hotelId") final Long hotelId,
-                                                                  @Auth final Accessor accessor) {
+    public ResponseEntity<ResponseDto<?>> deleteHotel(@PathVariable("hotelId") final Long hotelId,
+                                                      @Auth final Accessor accessor) {
 
         log.info("memberId = {}", accessor.getMemberId());
         hotelService.deleteHotel(hotelId);
@@ -116,7 +112,7 @@ public class HotelController implements HotelApi {
                 new ResponseDto<>(
                         HttpStatus.OK.value(),
                         "성공적으로 삭제되었습니다.", null,
-                        null, new EmptyResponse()
+                        null, null
                 )
         );
     }
