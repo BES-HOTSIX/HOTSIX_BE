@@ -1,8 +1,5 @@
 package com.example.hotsix_be.login.service;
 
-
-import static com.example.hotsix_be.member.entity.SocialProvider.*;
-
 import com.example.hotsix_be.login.dto.kakao.KakaoProperties;
 import com.example.hotsix_be.login.dto.kakao.KakaoTokenResponse;
 import com.example.hotsix_be.login.dto.kakao.KakaoUserInfo;
@@ -14,6 +11,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+
+import static com.example.hotsix_be.member.entity.SocialProvider.KAKAO;
 
 @Component
 public class KakaoOauthService {
