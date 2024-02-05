@@ -105,7 +105,7 @@ public class ImageService {
         return image.getImageId();
     }
 
-    private Image findImageByUrl(String imageUrl) {
+    private Image findImageByUrl(final String imageUrl) {
         return imageRepository.findByUrl(imageUrl)
                 .orElseThrow(() -> new ImageException(IMAGE_NOT_FOUND));
     }
