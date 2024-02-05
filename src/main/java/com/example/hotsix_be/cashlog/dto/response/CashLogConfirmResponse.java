@@ -7,6 +7,8 @@ import com.example.hotsix_be.withdrawapply.entity.WithdrawApply;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.time.LocalDateTime;
+
 import static lombok.AccessLevel.PRIVATE;
 
 @Getter
@@ -18,7 +20,7 @@ public class CashLogConfirmResponse {
     private final Long memberId;
     private final Long reservationId;
     private final Long withdrawApplyId;
-
+    private final LocalDateTime createdAt;
     public static CashLogConfirmResponse of(final CashLog cashLog) {
         Reservation reservation = cashLog.getReservation();
         WithdrawApply withdrawApply = cashLog.getWithdrawApply();
@@ -34,7 +36,8 @@ public class CashLogConfirmResponse {
                 cashLog.getPrice(),
                 memberId,
                 reservationId,
-                withdrawApplyId
+                withdrawApplyId,
+                cashLog.getCreatedAt()
         );
     }
 }
