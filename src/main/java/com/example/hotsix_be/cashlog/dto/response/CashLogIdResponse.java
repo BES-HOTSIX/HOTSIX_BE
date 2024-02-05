@@ -9,10 +9,12 @@ import static lombok.AccessLevel.PRIVATE;
 @RequiredArgsConstructor(access = PRIVATE)
 public class CashLogIdResponse {
     private final Long cashLogId;
+    private final TossPaymentResponse tossPaymentResponse;
 
-    public static CashLogIdResponse of(final long cashLogId) {
+    public static CashLogIdResponse of(final Long cashLogId, final TossPaymentResponse tossPaymentResponse) {
         return new CashLogIdResponse(
-                cashLogId
+                cashLogId,
+                tossPaymentResponse
         );
     }
 }
