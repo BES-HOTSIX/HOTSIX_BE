@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = PRIVATE)
 @AllArgsConstructor
-public class KakaoPropertiesDto {
+public class KakaoProperties {
     private String nickname;
     private String profile_image;
     private String thumbnail_image;

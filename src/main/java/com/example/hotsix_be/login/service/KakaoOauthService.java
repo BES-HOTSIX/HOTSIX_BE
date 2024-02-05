@@ -1,18 +1,16 @@
 package com.example.hotsix_be.login.service;
 
-
-import com.example.hotsix_be.login.dto.kakao.KakaoPropertiesDto;
-import com.example.hotsix_be.login.dto.kakao.KakaoTokenResponseDto;
-import com.example.hotsix_be.login.dto.kakao.KakaoUserInfoDto;
+import com.example.hotsix_be.login.dto.kakao.KakaoProperties;
+import com.example.hotsix_be.login.dto.kakao.KakaoTokenResponse;
+import com.example.hotsix_be.login.dto.kakao.KakaoUserInfo;
 import com.example.hotsix_be.member.entity.Member;
 import com.example.hotsix_be.member.repository.MemberRepository;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-
-import java.util.Optional;
 
 import static com.example.hotsix_be.member.entity.SocialProvider.KAKAO;
 
@@ -21,8 +19,6 @@ public class KakaoOauthService {
 
 
     private static final String PROPERTIES_PATH = "${oauth2.provider.kakao.";
-    private static final String PROVIDER_NAME = "kakao";
-    private static final String SECURE_RESOURCE = "secure_resource";
 
     private static final String GRANT_TYPE = "authorization_code";
 
@@ -53,7 +49,7 @@ public class KakaoOauthService {
     }
 
 
-    public Mono<KakaoTokenResponseDto> getToken(String code) {
+    public Mono<KakaoTokenResponse> getToken(final String code) {
         String uri = tokenUri + "?grant_type=" + GRANT_TYPE + "&client_id=" + clientId + "&client_secret" + clientSecret
                 + "&redirect_uri=" + redirectUri
                 + "&code=" + code;
@@ -61,22 +57,22 @@ public class KakaoOauthService {
         return webClient.get()
                 .uri(uri)
                 .retrieve()
-                .bodyToMono(KakaoTokenResponseDto.class);
+                .bodyToMono(KakaoTokenResponse.class);
 
     }
 
-    public Mono<KakaoUserInfoDto> getMemberInfo(String token) {
+    public Mono<KakaoUserInfo> getMemberInfo(final String token) {
 
         return webClient.get()
                 .uri(userUri)
                 .header("Authorization", "Bearer " + token)
                 .retrieve()
-                .bodyToFlux(KakaoUserInfoDto.class)
+                .bodyToFlux(KakaoUserInfo.class)
                 .next(); // Flux 스트림의 첫 번째 항목을 반환
     }
 
     @Transactional
-    public Member registerMember(KakaoPropertiesDto properties) {
+    public Member registerMember(final KakaoProperties properties) {
         String nickname = properties.getNickname();
         String profileImageUrl = properties.getProfile_image();
 
