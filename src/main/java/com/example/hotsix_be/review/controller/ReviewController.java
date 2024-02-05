@@ -1,9 +1,5 @@
 package com.example.hotsix_be.review.controller;
 import com.example.hotsix_be.common.dto.ResponseDto;
-import com.example.hotsix_be.hotel.entity.Hotel;
-import com.example.hotsix_be.hotel.exception.HotelException;
-import com.example.hotsix_be.hotel.repository.HotelRepository;
-import com.example.hotsix_be.member.service.MemberService;
 import com.example.hotsix_be.review.dto.request.ReviewRequestDTO;
 import com.example.hotsix_be.review.dto.response.ReviewResponseDTO;
 import com.example.hotsix_be.review.service.ReviewService;
@@ -16,22 +12,20 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static com.example.hotsix_be.common.exception.ExceptionCode.NOT_FOUND_HOTEL_ID;
-
 @Log4j2
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/review")
 public class ReviewController {
     private final ReviewService reviewService;
-    private final HotelRepository hotelRepository;
 
-    @PostMapping("/add/{hotelId}")
+    @PostMapping("/add/{hotelId}/{reservationId}")
     public ResponseEntity<?> addReview(@Valid @RequestBody final ReviewRequestDTO reviewRequestDTO,
-                                       @PathVariable final Long hotelId) {
+                                       @PathVariable final Long hotelId,
+                                       @PathVariable final Long reservationId) {
 
         log.info("Received review request: {}", reviewRequestDTO);
-        reviewService.addReview(reviewRequestDTO, hotelId);
+        reviewService.addReview(reviewRequestDTO, hotelId, reservationId);
         return ResponseEntity.ok(
                 new ResponseDto<>(
                         HttpStatus.OK.value(),

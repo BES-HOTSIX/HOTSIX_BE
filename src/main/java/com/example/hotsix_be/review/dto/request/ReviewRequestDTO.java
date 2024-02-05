@@ -21,7 +21,7 @@ public class ReviewRequestDTO {
 
     private Double rating;
 
-    private Long hotelId;
+    //private Long hotelId;
 
 
     public Double getRating() {

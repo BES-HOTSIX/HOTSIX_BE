@@ -19,7 +19,7 @@ public class ReviewResponseDTO {
     private final Double staffService;
     private final Double cleanliness;
     private final Double rating;
-    private final Hotel hotel;
+
 
 
     public static ReviewResponseDTO of(final Review review) {
@@ -30,8 +30,7 @@ public class ReviewResponseDTO {
                 review.getAmenities(),
                 review.getStaffService(),
                 review.getCleanliness(),
-                review.getRating(),
-                review.getHotel()
+                review.getRating()
         );
     }
 }
