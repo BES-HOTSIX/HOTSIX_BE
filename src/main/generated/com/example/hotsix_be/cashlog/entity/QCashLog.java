@@ -33,6 +33,8 @@ public class QCashLog extends EntityPathBase<CashLog> {
 
     public final com.example.hotsix_be.member.entity.QMember member;
 
+    public final StringPath orderId = createString("orderId");
+
     public final NumberPath<Long> price = createNumber("price", Long.class);
 
     public final com.example.hotsix_be.reservation.entity.QReservation reservation;
