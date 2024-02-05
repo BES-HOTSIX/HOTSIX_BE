@@ -72,7 +72,7 @@ public class HotelService {
         List<Image> uploadedNewImages = new ArrayList<>();
 
         if (newImages != null && !newImages.isEmpty()) {
-            uploadedNewImages = imageService.uploadImages(newImages, "ACCOMODATION",
+            uploadedNewImages = imageService.uploadImages(newImages, ImageType.ACCOMMODATION.name(),
                     hotelUpdateRequest.getNickname());
         } // 새로운 사진이 있을 경우 업로드
 
