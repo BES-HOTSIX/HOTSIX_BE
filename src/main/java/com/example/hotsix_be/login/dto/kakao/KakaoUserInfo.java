@@ -10,13 +10,13 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = PRIVATE)
 @AllArgsConstructor
-public class KakaoUserInfoDto {
+public class KakaoUserInfo {
 
     private Long id;
 
     private String connected_at;
 
-    private KakaoPropertiesDto properties;
+    private KakaoProperties properties;
 
     private Map<String, Object> kakao_account;
 }

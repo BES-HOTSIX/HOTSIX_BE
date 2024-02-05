@@ -3,12 +3,11 @@ package com.example.hotsix_be.login.service;
 import static com.example.hotsix_be.member.entity.SocialProvider.NAVER;
 
 import com.example.hotsix_be.login.dto.naver.Response;
-import com.example.hotsix_be.login.dto.naver.NaverTokenResponseDto;
-import com.example.hotsix_be.login.dto.naver.NaverUserInfoDto;
+import com.example.hotsix_be.login.dto.naver.NaverTokenResponse;
+import com.example.hotsix_be.login.dto.naver.NaverUserInfo;
 import com.example.hotsix_be.member.entity.Member;
 import com.example.hotsix_be.member.repository.MemberRepository;
 import java.util.Optional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,7 +47,7 @@ public class NaverOauthService {
         this.userUri = userUri;
     }
 
-    public Mono<NaverTokenResponseDto> getToken(String code, String state) {
+    public Mono<NaverTokenResponse> getToken(final String code, final String state) {
         String uri =
                 tokenUri + "?grant_type=" + GRANT_TYPE + "&client_id=" + clientId + "&client_secret=" + clientSecret
                         + "&redirect_uri=" + redirectUri
@@ -57,21 +56,21 @@ public class NaverOauthService {
         return webClient.get()
                 .uri(uri)
                 .retrieve()
-                .bodyToMono(NaverTokenResponseDto.class);
+                .bodyToMono(NaverTokenResponse.class);
     }
 
-    public Mono<NaverUserInfoDto> getMemberInfo(String token) {
+    public Mono<NaverUserInfo> getMemberInfo(final String token) {
 
         return webClient.get()
                 .uri(userUri)
                 .header("Authorization", "Bearer " + token)
                 .retrieve()
-                .bodyToFlux(NaverUserInfoDto.class)
+                .bodyToFlux(NaverUserInfo.class)
                 .next(); // Flux 스트림의 첫 번째 항목을 반환
     }
 
     @Transactional
-    public Member registerMember(Response response) {
+    public Member registerMember(final Response response) {
         String nickname = response.getNickname();
         String profileImageUrl = response.getProfile_image();
 
