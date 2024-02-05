@@ -15,11 +15,14 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.persistence.PersistenceContext;
 import jakarta.validation.Valid;
+import java.time.LocalDate;
 import java.util.List;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -159,4 +162,27 @@ public interface HotelApi {
     @MemberOnly
     public ResponseEntity<ResponseDto<?>> deleteHotel(@PathVariable("hotelId") final Long hotelId,
                                                       @Auth @Parameter(hidden = true) final Accessor accessor);
+
+    @Operation(
+            summary = "지역 및 날짜로 숙소 조회",
+            description = "지역과 날짜를 기준으로 숙소를 조회하기 위한 API"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "지역 및 날짜로 숙소 조회 성공"
+    )
+    @ApiResponse(responseCode = "400", description = "지역 및 날짜로 숙소 조회 실패",
+            content = @Content(schema = @Schema(implementation = EmptyResponse.class)))
+    @ApiResponse(responseCode = "500", description = "서버 에러",
+            content = @Content(schema = @Schema(implementation = EmptyResponse.class)))
+    @Parameter(name = "district", required = true, example = "서울")
+    @Parameter(name = "startDate", required = true, example = "2024-03-06")
+    @Parameter(name = "endDate", required = true, example = "2024-03-07")
+    @GetMapping("/search")
+    public ResponseEntity<ResponseDto<PageImpl<HotelPageResponse>>> getHotelsByDistrictAndDate(
+            @RequestParam String district,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+            @PageableDefault(size = 9) Pageable pageable);
+
 }
