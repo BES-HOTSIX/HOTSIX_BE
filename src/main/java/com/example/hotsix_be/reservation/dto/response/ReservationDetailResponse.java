@@ -25,6 +25,7 @@ public class ReservationDetailResponse {
     private final Long numOfGuests;
     private final Long paidPrice;
     private final boolean isPaid;
+    private final Long hotelId;
 
 	public static ReservationDetailResponse of(final Hotel hotel, final Reservation reservation) {
         String imageUrl = "";
@@ -44,7 +45,8 @@ public class ReservationDetailResponse {
                 reservation.getCancelDate(),
                 reservation.getGuests(),
                 reservation.getPrice(),
-                reservation.isPaid()
+                reservation.isPaid(),
+                hotel.getId()
         );
     }
 }
