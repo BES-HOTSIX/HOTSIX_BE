@@ -10,6 +10,7 @@ import com.example.hotsix_be.like.service.LikeService;
 import com.example.hotsix_be.member.dto.request.MemberPasswordChangeRequest;
 import com.example.hotsix_be.member.dto.request.MemberRegisterRequest;
 import com.example.hotsix_be.member.dto.response.MemberInfoResponse;
+import com.example.hotsix_be.member.openapi.MemberApi;
 import com.example.hotsix_be.member.service.MemberService;
 import com.example.hotsix_be.reservation.dto.response.ReservationDetailResponse;
 import com.example.hotsix_be.reservation.service.ReservationService;
@@ -31,7 +32,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/members")
-public class MemberController {
+public class MemberController implements MemberApi {
 
     private final MemberService memberService;
     private final ReservationService reservationService;
@@ -39,7 +40,7 @@ public class MemberController {
     private final LikeService likeService;
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerMember(@RequestBody MemberRegisterRequest memberRegisterRequest) {
+    public ResponseEntity<ResponseDto<?>> registerMember(@RequestBody MemberRegisterRequest memberRegisterRequest) {
 
         log.info("memberRegisterRequest: " + memberRegisterRequest.getNickname());
 
@@ -47,7 +48,7 @@ public class MemberController {
 
         return ResponseEntity.ok(
                 new ResponseDto<>(
-                        HttpStatus.OK.value(),
+                        HttpStatus.CREATED.value(),
                         "회원가입이 성공적으로 완료되었습니다.", null,
                         null, null
                 )
@@ -56,7 +57,7 @@ public class MemberController {
 
     @GetMapping("/info")
     @MemberOnly
-    public ResponseEntity<?> getMemberInfo(@Auth final Accessor accessor) {
+    public ResponseEntity<ResponseDto<MemberInfoResponse>> getMemberInfo(@Auth final Accessor accessor) {
 
         MemberInfoResponse memberInfo = memberService.getMemberInfo(accessor.getMemberId());
 
@@ -71,7 +72,7 @@ public class MemberController {
 
     @PutMapping("/password")
     @MemberOnly
-    public ResponseEntity<?> changePassword(
+    public ResponseEntity<ResponseDto<?>> changePassword(
             @RequestBody MemberPasswordChangeRequest memberPasswordChangeRequest,
             @Auth final Accessor accessor
     ) {
@@ -105,7 +106,7 @@ public class MemberController {
             @SecurityRequirement(name = "Authorization"),
             @SecurityRequirement(name = "refreshToken")
     })
-    public ResponseEntity<?> getMyReservations(
+    public ResponseEntity<ResponseDto<Page<ReservationDetailResponse>>> getMyReservations(
             @Parameter(hidden = true) @Auth final Accessor accessor,
             @RequestParam(value = "page", defaultValue = "0") int page
     ) {
@@ -121,7 +122,7 @@ public class MemberController {
 
     @GetMapping("/me/hotels")
     @MemberOnly
-    public ResponseEntity<?> getMyHotels(
+    public ResponseEntity<ResponseDto<Page<HotelDetailResponse>>> getMyHotels(
             @Auth final Accessor accessor,
             @RequestParam(value = "page", defaultValue = "0") int page
     ) {
@@ -139,7 +140,7 @@ public class MemberController {
 
     @GetMapping("/me/likes")
     @MemberOnly
-    public ResponseEntity<?> getMyLikes(
+    public ResponseEntity<ResponseDto<Page<HotelDetailResponse>>> getMyLikes(
             @Auth final Accessor accessor,
             @RequestParam(value = "page", defaultValue = "0") int page
     ) {
@@ -155,7 +156,7 @@ public class MemberController {
     }
 
     @GetMapping("/nickname/exists")
-    public ResponseEntity<?> isExistNickname(@RequestParam("nickname") String nickname) {
+    public ResponseEntity<ResponseDto<?>> isExistNickname(@RequestParam("nickname") String nickname) {
         boolean isExist = memberService.isExistNickname(nickname);
 
         if (isExist) {
@@ -179,7 +180,7 @@ public class MemberController {
 
     @PutMapping("/nickname")
     @MemberOnly
-    public ResponseEntity<?> changeNickName(
+    public ResponseEntity<ResponseDto<?>> changeNickName(
             @Auth final Accessor accessor,
             @RequestParam("nickname") String nickname
     ) {
@@ -206,7 +207,7 @@ public class MemberController {
 
     @PutMapping("/image")
     @MemberOnly
-    public ResponseEntity<?> changeImageUrl(
+    public ResponseEntity<ResponseDto<?>> changeImageUrl(
             @Auth final Accessor accessor,
             @RequestPart(value = "files", required = false) final List<MultipartFile> multipartFiles
     ) {
