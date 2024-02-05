@@ -106,7 +106,7 @@ public class CashLogController {
 
     @GetMapping("/payByCash/{reserveId}")
     @MemberOnly
-    public ResponseEntity<?> showPayByCash(
+    public ResponseEntity<?> showPay(
             @PathVariable(value = "reserveId") final Long reserveId,
             @Auth final Accessor accessor
     ) {
@@ -147,12 +147,11 @@ public class CashLogController {
             @PathVariable(value = "reserveId") final Long reserveId
     ) {
         Reservation reservation = reservationService.findUnpaidById(reserveId).orElseThrow(() -> new ReservationException(NOT_FOUND_RESERVATION_ID));
+        if (!cashLogService.canPay(reserveId, Long.parseLong(tossConfirmRequest.getAmount()))) throw new CashException(INSUFFICIENT_DEPOSIT);
+        Long cashLogId = cashLogService.payByTossPayments(tossConfirmRequest, reservation).getId();
 
         return tossService.confirmTossPayment(tossConfirmRequest)
                 .flatMap(tossPaymentResponse -> {
-                    //
-                    if (!cashLogService.canPay(reserveId, tossPaymentResponse.getTotalAmount())) return Mono.error(new CashException(INSUFFICIENT_DEPOSIT));
-                    Long cashLogId = cashLogService.payByTossPayments(tossPaymentResponse, reservation).getId();
                     CashLogIdResponse cashLogIdResponse = cashLogService.getCashLogIdById(cashLogId, tossPaymentResponse);
                     return Mono.just(ResponseEntity.ok(
                             new ResponseDto<>(
@@ -174,9 +173,6 @@ public class CashLogController {
         if (!cashLog.getMember().getId().equals(accessor.getMemberId())) throw new CashException(INVALID_AUTHORITY);
         ConfirmResponse confirmResponse = cashLogService.getConfirmRespById(cashLogId);
 
-        // TODO 본인이 아닐 경우 접근 불가
-//        if (!accessor.getMemberId().equals(confirmResponse.getMemberId())) throw new BadRequestException(INVALID_REQUEST);
-
         return ResponseEntity.ok(
                 new ResponseDto<>(
                         HttpStatus.OK.value(),
@@ -185,6 +181,4 @@ public class CashLogController {
                 )
         );
     }
-
-
 }

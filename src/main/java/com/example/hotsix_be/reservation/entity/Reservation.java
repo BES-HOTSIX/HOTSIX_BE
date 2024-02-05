@@ -105,4 +105,8 @@ public class Reservation extends DateEntity {
 
         return reservedDates;
     }
+
+    public void payDone() {
+        updateIsPaid(true);
+    }
 }

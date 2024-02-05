@@ -29,12 +29,6 @@ public class ReservationController {
 	) {
 		ReservationDetailResponse reservationDetailResponse = reservationService.getPaidDetailById(reserveId, accessor.getMemberId());
 
-//		ReservationDetailResponse reservationDetailResponse = reservationService.findPaidById(reserveId, accessor.getMemberId());
-
-		// ReservationService 의 findPaidById 에서 이 역할을 대체
-//		if (!reservationDetailResponse.isPaid())
-//			throw new ReservationException(NOT_FOUND_RESERVATION_ID);
-
         return ResponseEntity.ok(new ResponseDto<>(
                 HttpStatus.OK.value(),
                 "예약 상세 조회 성공", null,

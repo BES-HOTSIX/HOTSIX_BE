@@ -1,6 +1,7 @@
 package com.example.hotsix_be.cashlog.service;
 
 import com.example.hotsix_be.cashlog.dto.request.AddCashRequest;
+import com.example.hotsix_be.cashlog.dto.request.TossConfirmRequest;
 import com.example.hotsix_be.cashlog.dto.response.*;
 import com.example.hotsix_be.cashlog.entity.CashLog;
 import com.example.hotsix_be.cashlog.entity.EventType;
@@ -126,8 +127,7 @@ public class CashLogService {
 
         addCash(owner, payPrice, null, reservation, EventType.정산__예치금);
 
-        // TODO 테스트를 용이하게 하기 위해 결제 완료 상태 업데이트 메소드 비활성화해둠
-        reservation.updateIsPaid(true);
+        reservation.payDone();
 
         return cashLog;
     }
@@ -135,28 +135,21 @@ public class CashLogService {
     // 복합 결제 및 토스페이먼츠 결제
     @Transactional
     public CashLog payByTossPayments(
-            final TossPaymentResponse tossPaymentResponse,
+            final TossConfirmRequest tossConfirmRequest,
             final Reservation reservation
     ) {
         Member buyer = reservation.getMember();
         Member owner = reservation.getHotel().getOwner();
-        Long pgPayPrice = tossPaymentResponse.getTotalAmount();
+        Long pgPayPrice = Long.valueOf(tossConfirmRequest.getAmount());
         Long payPrice = reservation.getPrice();
-        String orderId = tossPaymentResponse.getOrderId();
+        String orderId = tossConfirmRequest.getOrderId();
 
         addCash(buyer, pgPayPrice, orderId, reservation, EventType.충전__토스페이먼츠);
-        CashLog cashLog = addCash(
-                buyer,
-                payPrice * -1
-                , orderId,
-                reservation,
-                EventType.사용__예치금_결제
-        );
+        CashLog cashLog = addCash(buyer, payPrice * -1, orderId, reservation, EventType.사용__예치금_결제);
 
         addCash(owner, payPrice, orderId, reservation, EventType.정산__예치금);
 
-        // TODO 테스트를 용이하게 하기 위해 결제 완료 상태 업데이트 메소드 비활성화해둠
-        reservation.updateIsPaid(true);
+        reservation.payDone();
 
         return cashLog;
     }
@@ -178,4 +171,9 @@ public class CashLogService {
 
         return canPay(reservation, pgPayPrice);
     }
+
+//    @Transactional
+//    public CashLog cancel(final Reservation reservation) {
+//        reservationService
+//    }
 }

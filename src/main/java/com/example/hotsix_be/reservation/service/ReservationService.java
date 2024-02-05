@@ -27,9 +27,10 @@ import static com.example.hotsix_be.common.exception.ExceptionCode.*;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class ReservationService {
-	private final ReservationRepository reservationRepository;
-	private final HotelRepository hotelRepository;
-	private final MemberRepository memberRepository;
+    private final ReservationRepository reservationRepository;
+    private final HotelRepository hotelRepository;
+    private final MemberRepository memberRepository;
+
     public Page<ReservationDetailResponse> findByMemberIdAndIsPaid(Long memberId, int page) {
         Pageable pageable = Pageable.ofSize(4).withPage(page);
 
@@ -40,79 +41,63 @@ public class ReservationService {
                 ));
     }
 
-	public ReservationDetailResponse findPaidById(final Long reserveId, final Long memberId) {
-		Reservation reservation = findPaidById(reserveId).orElseThrow(() -> new ReservationException(NOT_FOUND_RESERVATION_ID));
+    public ReservationDetailResponse getDetailById(final Reservation reservation, final Long memberId) {
+        // 조회하는 사람이 본인이 아닐 경우 Exception 호출
+        if (!memberId.equals(reservation.getMember().getId()))
+            throw new AuthException(INVALID_AUTHORITY);
 
-		if (!memberId.equals(reservation.getMember().getId()))
-			throw new AuthException(INVALID_AUTHORITY);
+        return ReservationDetailResponse.of(
+                reservation.getHotel(),
+                reservation
+        );
+    }
 
-		return ReservationDetailResponse.of(
-				reservation.getHotel(),
-				reservation
-		);
-	}
+    public ReservationDetailResponse getPaidDetailById(final Long reserveId, final Long memberId) {
+        Reservation reservation = findPaidById(reserveId).orElseThrow(() -> new ReservationException(NOT_FOUND_RESERVATION_ID));
 
-	public ReservationDetailResponse getDetailById(final Reservation reservation, final Long memberId) {
-		// 조회하는 사람이 본인이 아닐 경우 Exception 호출
-		if (!memberId.equals(reservation.getMember().getId()))
-			throw new AuthException(INVALID_AUTHORITY);
+        return getDetailById(reservation, memberId);
+    }
 
-		return ReservationDetailResponse.of(
-				reservation.getHotel(),
-				reservation
-		);
-	}
+    public ReservationDetailResponse getUnpaidDetailById(final Long reserveId, final Long memberId) {
+        Reservation reservation = findUnpaidById(reserveId).orElseThrow(() -> new ReservationException(NOT_FOUND_RESERVATION_ID));
 
-	public ReservationDetailResponse getPaidDetailById(final Long reserveId, final Long memberId) {
-		Reservation reservation = findPaidById(reserveId).orElseThrow(() -> new ReservationException(NOT_FOUND_RESERVATION_ID));
+        return getDetailById(reservation, memberId);
+    }
 
-		return getDetailById(reservation, memberId);
-	}
+    // isPaid 가 false 인지 확인 (true 일 경우 Optional 로 감싼 null 을 반환)
+    public Optional<Reservation> findUnpaidById(final Long reserveId) {
+        return reservationRepository.findByIdAndIsPaidFalse(reserveId);
+    }
 
-	public ReservationDetailResponse getUnpaidDetailById(final Long reserveId, final Long memberId) {
-		Reservation reservation = findUnpaidById(reserveId).orElseThrow(() -> new ReservationException(NOT_FOUND_RESERVATION_ID));
+    // isPaid 가 true 인지 확인 (false 일 경우 Optional 로 감싼 null 을 반환)
+    public Optional<Reservation> findPaidById(final Long reserveId) {
+        return reservationRepository.findByIdAndIsPaidTrue(reserveId);
+    }
 
-		return getDetailById(reservation, memberId);
-	}
+    @Transactional
+    public Reservation save(final Long hotelId, final ReservationInfoRequest reservationInfoRequest, final Long memberId) {
+        Hotel hotel = hotelRepository.findById(hotelId).orElseThrow(() -> new HotelException(NOT_FOUND_HOTEL_ID));
 
-	public Optional<Reservation> findById(final Long reserveId) {
-		return reservationRepository.findById(reserveId);
-	}
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new AuthException(INVALID_AUTHORITY));
 
-	// isPaid 가 false 인지 확인 (true 일 경우 Optional 로 감싼 null 을 반환)
-	public Optional<Reservation> findUnpaidById(final Long reserveId) {
-		return findById(reserveId).filter(reservation -> !reservation.isPaid());
-	}
-
-	// isPaid 가 true 인지 확인 (false 일 경우 Optional 로 감싼 null 을 반환)
-	public Optional<Reservation> findPaidById(final Long reserveId) {
-		return findById(reserveId).filter(reservation -> reservation.isPaid());
-	}
-
-	@Transactional
-	public Reservation save(final Long hotelId, final ReservationInfoRequest reservationInfoRequest, final Long memberId) {
-		Hotel hotel = hotelRepository.findById(hotelId).orElseThrow(() -> new HotelException(NOT_FOUND_HOTEL_ID));
-
-		Member member = memberRepository.findById(memberId).orElseThrow(() -> new AuthException(INVALID_AUTHORITY));
-
-		final Reservation reservation = new Reservation(
-				reservationInfoRequest.getCheckInDate(),
-				reservationInfoRequest.getCheckOutDate(),
-				reservationInfoRequest.getNumOfGuests(),
-				reservationInfoRequest.getPrice(),
-				reservationInfoRequest.isPaid(),
-				hotel,
-				member
-		);
+        final Reservation reservation = new Reservation(
+                reservationInfoRequest.getCheckInDate(),
+                reservationInfoRequest.getCheckOutDate(),
+                reservationInfoRequest.getNumOfGuests(),
+                reservationInfoRequest.getPrice(),
+                reservationInfoRequest.isPaid(),
+                hotel,
+                member
+        );
 
         return reservationRepository.save(reservation);
     }
 
-	public ReservedDatesOfHotelResponse findAllByHotelIdAndIsPaidTrue(final Long hotelId) {
-		List<Reservation> reservations = reservationRepository.findAllByHotelIdAndIsPaidTrue(hotelId);
+    public ReservedDatesOfHotelResponse findAllByHotelIdAndIsPaidTrue(final Long hotelId) {
+        List<Reservation> reservations = reservationRepository.findAllByHotelIdAndIsPaidTrue(hotelId);
 
-		return ReservedDatesOfHotelResponse.of(
-				reservations
-		);
-	}
+        return ReservedDatesOfHotelResponse.of(
+                reservations
+        );
+    }
 }

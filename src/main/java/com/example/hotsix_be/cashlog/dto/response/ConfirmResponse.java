@@ -21,7 +21,6 @@ public class ConfirmResponse {
     private final LocalDate checkInDate;
     private final LocalDate checkOutDate;
 
-    // TODO 복합결제의 경우 cashLog 어떻게 생성할지 생각해두기
     public static ConfirmResponse of(
             final CashLog cashLog,
             final Reservation reservation,
