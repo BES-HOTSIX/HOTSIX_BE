@@ -15,7 +15,7 @@ public class MyCashLogResponse {
 
     public static MyCashLogResponse of(
             final Member member,
-            PageImpl<CashLogConfirmResponse> cashLogConfirmPage
+            final PageImpl<CashLogConfirmResponse> cashLogConfirmPage
             ) {
         return new MyCashLogResponse(
                 member.getRestCash(),

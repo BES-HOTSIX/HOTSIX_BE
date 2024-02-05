@@ -9,14 +9,11 @@ import com.example.hotsix_be.reservation.dto.response.ReservationCreateResponse;
 import com.example.hotsix_be.reservation.dto.response.ReservationDetailResponse;
 import com.example.hotsix_be.reservation.dto.response.ReservedDatesOfHotelResponse;
 import com.example.hotsix_be.reservation.entity.Reservation;
-import com.example.hotsix_be.reservation.exception.ReservationException;
 import com.example.hotsix_be.reservation.service.ReservationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import static com.example.hotsix_be.common.exception.ExceptionCode.NOT_FOUND_RESERVATION_ID;
 
 @RestController
 @RequiredArgsConstructor
@@ -30,10 +27,7 @@ public class ReservationController {
 			@PathVariable(value = "reserveId") final Long reserveId,
 			@Auth final Accessor accessor
 	) {
-		ReservationDetailResponse reservationDetailResponse = reservationService.findById(reserveId, accessor.getMemberId());
-
-		if (!reservationDetailResponse.isPaid())
-			throw new ReservationException(NOT_FOUND_RESERVATION_ID);
+		ReservationDetailResponse reservationDetailResponse = reservationService.getPaidDetailById(reserveId, accessor.getMemberId());
 
         return ResponseEntity.ok(new ResponseDto<>(
                 HttpStatus.OK.value(),
