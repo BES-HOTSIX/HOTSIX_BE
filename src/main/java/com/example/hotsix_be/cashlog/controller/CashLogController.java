@@ -111,7 +111,7 @@ public class CashLogController {
             @Auth final Accessor accessor
     ) {
         // 이 메소드에서 로그인한 사용자가 예약한 본인인지도 확인
-        ReservationDetailResponse reservationDetailResponse = reservationService.findById(reserveId, accessor.getMemberId());
+        ReservationDetailResponse reservationDetailResponse = reservationService.getUnpaidDetailById(reserveId, accessor.getMemberId());
 
         return ResponseEntity.ok(new ResponseDto<>(
                 HttpStatus.OK.value(),
@@ -122,16 +122,15 @@ public class CashLogController {
     // 결제창에서 결제하기 버튼을 누를 경우 아래 메소드가 작동
     // 이미 생성되어있는 임시 예약
     @PostMapping("/payByCash/{reserveId}")
-    @MemberOnly
     public ResponseEntity<?> payByCash(@PathVariable(value = "reserveId") final Long reserveId) {
-        Reservation reservation = reservationService.findOpById(reserveId).orElseThrow(() -> new CashException(INVALID_REQUEST));
+        Reservation reservation = reservationService.findUnpaidById(reserveId).orElseThrow(() -> new CashException(INVALID_REQUEST));
+
+        if (!cashLogService.canPay(reservation, reservation.getPrice())) throw new CashException(INSUFFICIENT_DEPOSIT);
 
         // 이용자 결제
         CashLog cashLog = cashLogService.payByCashOnly(reservation);
 
         CashLogIdResponse cashLogIdResponse = cashLogService.getCashLogIdById(cashLog.getId());
-
-        if (!cashLogService.canPay(reservation, reservation.getPrice())) throw new CashException(INSUFFICIENT_DEPOSIT);
 
         return ResponseEntity.ok(
                 new ResponseDto<>(
@@ -142,12 +141,37 @@ public class CashLogController {
         );
     }
 
-    // TODO cashLog 의 내용에 따라 다르게 쓰이는 범용 완료 페이지로 만들 예정
-    // TODO 본인 외 접근이 불가능하도록
-    @GetMapping("/{cashLogId}/confirm")
-    public ResponseEntity<?> showConfirm(
-            @PathVariable(value = "cashLogId") final Long cashLogId
+    @PostMapping("/payByToss/{reserveId}")
+    public Mono<ResponseEntity<ResponseDto<?>>> confirmPayment(
+            @RequestBody final TossConfirmRequest tossConfirmRequest,
+            @PathVariable(value = "reserveId") final Long reserveId
     ) {
+        Reservation reservation = reservationService.findUnpaidById(reserveId).orElseThrow(() -> new ReservationException(NOT_FOUND_RESERVATION_ID));
+
+        return tossService.confirmTossPayment(tossConfirmRequest)
+                .flatMap(tossPaymentResponse -> {
+                    //
+                    if (!cashLogService.canPay(reserveId, tossPaymentResponse.getTotalAmount())) return Mono.error(new CashException(INSUFFICIENT_DEPOSIT));
+                    Long cashLogId = cashLogService.payByTossPayments(tossPaymentResponse, reservation).getId();
+                    CashLogIdResponse cashLogIdResponse = cashLogService.getCashLogIdById(cashLogId, tossPaymentResponse);
+                    return Mono.just(ResponseEntity.ok(
+                            new ResponseDto<>(
+                                    HttpStatus.OK.value(),
+                                    "토스페이먼츠 결제가 완료되었습니다.", null,
+                                    null, cashLogIdResponse)
+                    ));
+                });
+    }
+
+    // TODO cashLog 의 내용에 따라 다르게 쓰이는 범용 완료 페이지로 만들 예정
+    @GetMapping("/{cashLogId}/confirm")
+    @MemberOnly
+    public ResponseEntity<?> showConfirm(
+            @PathVariable(value = "cashLogId") final Long cashLogId,
+            @Auth Accessor accessor
+    ) {
+        CashLog cashLog = cashLogService.findById(cashLogId).orElseThrow(() -> new CashException(NOT_FOUND_CASHLOG_ID));
+        if (!cashLog.getMember().getId().equals(accessor.getMemberId())) throw new CashException(INVALID_AUTHORITY);
         ConfirmResponse confirmResponse = cashLogService.getConfirmRespById(cashLogId);
 
         // TODO 본인이 아닐 경우 접근 불가
@@ -162,28 +186,5 @@ public class CashLogController {
         );
     }
 
-    // TODO 토스페이먼츠 완성해야함
-    @PostMapping("/confirm/{reserveId}")
-    public Mono<ResponseEntity<ResponseDto<CashLogIdResponse>>> confirmPayment(
-            @RequestBody final TossConfirmRequest tossConfirmRequest,
-            @PathVariable(value = "reserveId") final Long reserveId
-    ) {
-        Reservation reservation = reservationService.findOpById(reserveId).orElseThrow(() -> new ReservationException(NOT_FOUND_RESERVATION_ID));
-        Long amount = Long.parseLong(tossConfirmRequest.getAmount());
 
-        // 체크 // TODO 실제 reservation의 가격과 같은지 확인하기, 할인에 관한 부분 생각해보기
-
-        return tossService.confirmTossPayment(tossConfirmRequest)
-                .flatMap(tossPaymentResponse -> {
-                    if (!cashLogService.canPay(reserveId, amount)) return Mono.error(new CashException(INVALID_REQUEST));
-                    Long cashLogId = cashLogService.payByTossPayments(tossPaymentResponse, reservation, amount).getId();
-                    CashLogIdResponse cashLogIdResponse = cashLogService.getCashLogIdById(cashLogId, tossPaymentResponse);
-                    return Mono.just(ResponseEntity.ok(
-                            new ResponseDto<>(
-                                    HttpStatus.OK.value(),
-                                    "토스페이먼츠 결제가 완료되었습니다.", null,
-                                    null, cashLogIdResponse)
-                    ));
-                });
-    }
 }

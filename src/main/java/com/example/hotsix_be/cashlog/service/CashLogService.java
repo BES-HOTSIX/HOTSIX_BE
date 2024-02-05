@@ -122,61 +122,44 @@ public class CashLogService {
 
         Member owner = reservation.getHotel().getOwner();
 
-        addCash(
-                owner,
-                payPrice,
-                null,
-                reservation,
-                EventType.정산__예치금
-        );
+        CashLog cashLog = addCash(buyer, payPrice * -1, null, reservation,EventType.사용__예치금_결제); // TODO UUID를 일반 결제에도 적용시켜야할까
+
+        addCash(owner, payPrice, null, reservation, EventType.정산__예치금);
 
         // TODO 테스트를 용이하게 하기 위해 결제 완료 상태 업데이트 메소드 비활성화해둠
         reservation.updateIsPaid(true);
 
-        return addCash(
-                buyer,
-                payPrice * -1,
-                null, // TODO UUID를 일반 결제에도 적용시켜야할까
-                reservation,
-                EventType.사용__예치금_결제
-        );
+        return cashLog;
     }
 
     // 복합 결제 및 토스페이먼츠 결제
     @Transactional
     public CashLog payByTossPayments(
             final TossPaymentResponse tossPaymentResponse,
-            final Reservation reservation,
-            final Long pgPayPrice
+            final Reservation reservation
     ) {
         Member buyer = reservation.getMember();
-        Long restCash = buyer.getRestCash();
+        Member owner = reservation.getHotel().getOwner();
+        Long pgPayPrice = tossPaymentResponse.getTotalAmount();
         Long payPrice = reservation.getPrice();
         String orderId = tossPaymentResponse.getOrderId();
-
-        // TODO 복합 결제 관련 미완성 로직
-        Long useCash = payPrice - pgPayPrice;
 
         addCash(buyer, pgPayPrice, orderId, reservation, EventType.충전__토스페이먼츠);
         CashLog cashLog = addCash(
                 buyer,
-                pgPayPrice * -1
+                payPrice * -1
                 , orderId,
                 reservation,
                 EventType.사용__예치금_결제
         );
 
-        // TODO 복합 결제 관련 미완성 로직
-        if (useCash > 0) {
-            if (useCash > restCash) {
-                throw new CashException(INSUFFICIENT_DEPOSIT);
-            }
+        addCash(owner, payPrice, orderId, reservation, EventType.정산__예치금);
 
-            addCash(buyer, useCash * -1, orderId, reservation, EventType.사용__예치금_결제);
-        }
+        // TODO 테스트를 용이하게 하기 위해 결제 완료 상태 업데이트 메소드 비활성화해둠
+        reservation.updateIsPaid(true);
+
         return cashLog;
     }
-
 
     public boolean canPay(final Reservation reservation, final Long pgPayPrice) {
         Member member = reservation.getMember();
@@ -186,14 +169,12 @@ public class CashLogService {
         // 중복 결제 예방
         if (reservation.isPaid()) throw new CashException(INVALID_REQUEST);
 
+        // 예치금이 충분한지 확인
         return price <= restCash + pgPayPrice;
     }
 
     public boolean canPay(final Long reservationId, final Long pgPayPrice) {
-        Reservation reservation = reservationService.findOpById(reservationId).orElseThrow(() -> new ReservationException(NOT_FOUND_RESERVATION_ID));
-
-        // 프론트에서 넘어온 price 와 실제 price 가 일치하는 지 확인
-        if (!reservation.getPrice().equals(pgPayPrice)) throw new CashException(PRICE_NOT_MATCH);
+        Reservation reservation = reservationService.findUnpaidById(reservationId).orElseThrow(() -> new ReservationException(NOT_FOUND_RESERVATION_ID));
 
         return canPay(reservation, pgPayPrice);
     }
