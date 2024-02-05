@@ -2,12 +2,11 @@ package com.example.hotsix_be.login.service;
 
 import static com.example.hotsix_be.member.entity.SocialProvider.GOOGLE;
 
-import com.example.hotsix_be.login.dto.google.GoogleTokenResponseDto;
-import com.example.hotsix_be.login.dto.google.GoogleUserInfoDto;
+import com.example.hotsix_be.login.dto.google.GoogleTokenResponse;
+import com.example.hotsix_be.login.dto.google.GoogleUserInfo;
 import com.example.hotsix_be.member.entity.Member;
 import com.example.hotsix_be.member.repository.MemberRepository;
 import java.util.Optional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,7 +18,6 @@ import reactor.core.publisher.Mono;
 public class GoogleOauthService {
 
     private static final String PROPERTIES_PATH = "${oauth2.provider.google.";
-    private static final String PROVIDER_NAME = "google";
 
     private static final String GRANT_TYPE = "authorization_code";
 
@@ -50,7 +48,7 @@ public class GoogleOauthService {
     }
 
 
-    public Mono<GoogleTokenResponseDto> getToken(String code) {
+    public Mono<GoogleTokenResponse> getToken(final String code) {
         return webClient.post()
                 .uri(tokenUri)
                 .body(BodyInserters
@@ -60,21 +58,21 @@ public class GoogleOauthService {
                         .with("client_secret", clientSecret)
                         .with("redirect_uri", redirectUri))
                 .retrieve()
-                .bodyToMono(GoogleTokenResponseDto.class);
+                .bodyToMono(GoogleTokenResponse.class);
     }
 
-    public Mono<GoogleUserInfoDto> getUserInfo(String token) {
+    public Mono<GoogleUserInfo> getUserInfo(final String token) {
         return webClient.get()
                 .uri(userUri) // Google 사용자 정보 URI
                 .header("Authorization", "Bearer " + token)
                 .retrieve()
-                .bodyToMono(GoogleUserInfoDto.class);
+                .bodyToMono(GoogleUserInfo.class);
     }
 
     @Transactional
-    public Member registerGoogleMember(GoogleUserInfoDto googleUserInfoDto) {
-        String nickname = googleUserInfoDto.getName();
-        String profileImageUrl = googleUserInfoDto.getPicture(); // Google 응답에 맞는 필드명으로 조정
+    public Member registerGoogleMember(final GoogleUserInfo googleUserInfo) {
+        String nickname = googleUserInfo.getName();
+        String profileImageUrl = googleUserInfo.getPicture(); // Google 응답에 맞는 필드명으로 조정
 
         Optional<Member> oauthMember = memberRepository.findByNicknameAndSocialProvider(nickname, GOOGLE);
 

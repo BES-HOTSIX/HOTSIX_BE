@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = PRIVATE)
 @AllArgsConstructor
-public class GoogleUserInfoDto {
+public class GoogleUserInfo {
     private String sub; // 고유 식별자
     private String name; // 전체 이름
     private String given_name; // 주어진 이름 (이름)
