@@ -7,6 +7,6 @@ import org.springframework.data.domain.Pageable;
 
 public interface HotelRepositoryCustom {
 
-    Page<Hotel> findAllByDistrictAndDate(Pageable pageable, String district, LocalDate startDate, LocalDate endDate);
+    Page<Hotel> findAllByDistrictAndDate(Pageable pageable, String district, LocalDate startDate, LocalDate endDate, String kw);
 
 }
