@@ -39,9 +39,11 @@ public class QReview extends EntityPathBase<Review> {
 
     public final com.example.hotsix_be.member.entity.QMember member;
 
-    public final NumberPath<Double> staffService = createNumber("staffService", Double.class);
+    public final NumberPath<Double> rating = createNumber("rating", Double.class);
 
-    public final NumberPath<Double> totalRating = createNumber("totalRating", Double.class);
+    public final com.example.hotsix_be.reservation.entity.QReservation reservation;
+
+    public final NumberPath<Double> staffService = createNumber("staffService", Double.class);
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;
@@ -66,6 +68,7 @@ public class QReview extends EntityPathBase<Review> {
         super(type, metadata, inits);
         this.hotel = inits.isInitialized("hotel") ? new com.example.hotsix_be.hotel.entity.QHotel(forProperty("hotel"), inits.get("hotel")) : null;
         this.member = inits.isInitialized("member") ? new com.example.hotsix_be.member.entity.QMember(forProperty("member")) : null;
+        this.reservation = inits.isInitialized("reservation") ? new com.example.hotsix_be.reservation.entity.QReservation(forProperty("reservation"), inits.get("reservation")) : null;
     }
 
 }
