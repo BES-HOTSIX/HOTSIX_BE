@@ -25,6 +25,7 @@ public class ReservationDetailResponse {
     private final Long numOfGuests;
     private final Long paidPrice;
     private final boolean isPaid;
+    private final Long hotelId;
     private final String buyerName;
     private final Long buyerRestCash;
 
@@ -47,6 +48,7 @@ public class ReservationDetailResponse {
                 reservation.getGuests(),
                 reservation.getPrice(),
                 reservation.isPaid(),
+                hotel.getId(),
                 reservation.getMember().getUsername(),
                 reservation.getMember().getRestCash()
                 );
