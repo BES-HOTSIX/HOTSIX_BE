@@ -120,16 +120,24 @@ public class HotelController implements HotelApi {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<ResponseDto<PageImpl<HotelPageResponse>>> getHotelsByDistrictAndDate(
+    public ResponseEntity<ResponseDto<PageImpl<HotelPageResponse>>> getHotelsByDistrictAndDateAndKw(
             @RequestParam String district,
+            @RequestParam String kw,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
             @PageableDefault(size = 9) Pageable pageable) {
+
+        log.info("kw = {}", kw);
+
         Page<Hotel> hotelsByDistrictAndDate = hotelService.getHotelsByDistrictAndDate(district, startDate, endDate,
-                pageable);
+                pageable, kw);
 
         List<HotelPageResponse> hotelByDistrictAndDateResponse = hotelsByDistrictAndDate.stream()
                 .map(HotelPageResponse::of).toList();
+
+        log.info("totalElements :  {}", hotelsByDistrictAndDate.getTotalElements());
+
+        log.info("hotelByDistrictAndDateResponse = {}", hotelByDistrictAndDateResponse);
 
         PageImpl<HotelPageResponse> hotelPageResponse = new PageImpl<>(hotelByDistrictAndDateResponse, pageable,
                 hotelsByDistrictAndDate.getTotalElements());

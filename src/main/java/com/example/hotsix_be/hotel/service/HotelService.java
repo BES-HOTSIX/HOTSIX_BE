@@ -72,7 +72,7 @@ public class HotelService {
         List<Image> uploadedNewImages = new ArrayList<>();
 
         if (newImages != null && !newImages.isEmpty()) {
-            uploadedNewImages = imageService.uploadImages(newImages, "ACCOMODATION",
+            uploadedNewImages = imageService.uploadImages(newImages, ImageType.ACCOMMODATION.name(),
                     hotelUpdateRequest.getNickname());
         } // 새로운 사진이 있을 경우 업로드
 
@@ -139,7 +139,7 @@ public class HotelService {
                 .map(HotelDetailResponse::of);
     }
 
-    public Page<Hotel> getHotelsByDistrictAndDate(String district, LocalDate startDate, LocalDate endDate, Pageable pageable) {
-        return hotelRepository.findAllByDistrictAndDate(pageable, district, startDate, endDate);
+    public Page<Hotel> getHotelsByDistrictAndDate(String district, LocalDate startDate, LocalDate endDate, Pageable pageable, String kw) {
+        return hotelRepository.findAllByDistrictAndDate(pageable, district, startDate, endDate, kw);
     }
 }
