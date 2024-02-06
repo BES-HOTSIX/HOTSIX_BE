@@ -40,23 +40,23 @@ public interface HotelApi {
     @Operation(
             summary = "숙소 등록",
             description = "숙소 등록을 위한 API입니다. 호텔 정보는 'hotelInfo' 파트에 JSON 형식으로 제공되어야 합니다. " +
-            "다음은 'hotelInfo' JSON 객체의 예시입니다. 이 형식에 맞춰 JSON 파일을 만들어 API 테스트 시 'hotelInfo' 파트에 첨부할 수 있습니다:\n\n" +
-            "```json\n" + // JSON 예시를 강조하기 위해 Markdown 코드 블록 사용 (Swagger UI에서는 작동하지 않을 수 있음)
-            "{\n" +
-            "  \"hotelType\": \"호텔\",\n" +
-            "  \"address\": \"address\",\n" +
-            "  \"addressDetail\": \"addressDetail\",\n" +
-            "  \"roomCnt\": 0,\n" +
-            "  \"bedCnt\": 2,\n" +
-            "  \"bathroomCnt\": 3,\n" +
-            "  \"maxPeople\": 4,\n" +
-            "  \"nickname\": \"abc\",\n" +
-            "  \"description\": \"abc\",\n" +
-            "  \"price\": 10000\n" +
-            "}\n" +
-            "```\n\n" +
-            "위 형식의 JSON 데이터를 파일로 저장한 후, Swagger UI를 통한 API 테스트 시 'hotelInfo' 파트에 해당 파일을 첨부해주세요. " +
-            "'files' 파트에는 숙소의 사진 파일들을 첨부할 수 있습니다. 이 파트는 테스트에 한하여 필수가 아니며, 여러 파일을 첨부할 수 있습니다."
+                    "다음은 'hotelInfo' JSON 객체의 예시입니다. 이 형식에 맞춰 JSON 파일을 만들어 API 테스트 시 'hotelInfo' 파트에 첨부할 수 있습니다:\n\n" +
+                    "```json\n" + // JSON 예시를 강조하기 위해 Markdown 코드 블록 사용 (Swagger UI에서는 작동하지 않을 수 있음)
+                    "{\n" +
+                    "  \"hotelType\": \"호텔\",\n" +
+                    "  \"address\": \"address\",\n" +
+                    "  \"addressDetail\": \"addressDetail\",\n" +
+                    "  \"roomCnt\": 0,\n" +
+                    "  \"bedCnt\": 2,\n" +
+                    "  \"bathroomCnt\": 3,\n" +
+                    "  \"maxPeople\": 4,\n" +
+                    "  \"nickname\": \"abc\",\n" +
+                    "  \"description\": \"abc\",\n" +
+                    "  \"price\": 10000\n" +
+                    "}\n" +
+                    "```\n\n" +
+                    "위 형식의 JSON 데이터를 파일로 저장한 후, Swagger UI를 통한 API 테스트 시 'hotelInfo' 파트에 해당 파일을 첨부해주세요. " +
+                    "'files' 파트에는 숙소의 사진 파일들을 첨부할 수 있습니다. 이 파트는 테스트에 한하여 필수가 아니며, 여러 파일을 첨부할 수 있습니다."
     )
     @ApiResponse(
             responseCode = "201",
@@ -110,23 +110,25 @@ public interface HotelApi {
 
     @Operation(
             summary = "숙소 수정",
-            description = "숙소 정보를 수정하기 위한 API입니다. 수정할 숙소의 정보와 새로운 이미지 파일들을 제공할 수 있으며, 삭제하고자 하는 이미지의 URL을 지정할 수 있습니다.\n\n" +
-                    "숙소 정보('hotelInfo')는 JSON 형식으로 제공되어야 하며, 다음은 'hotelInfo' JSON 객체의 예시입니다. 이 형식에 맞춰 JSON 파일을 만들어 API 테스트 시 'hotelInfo' 파트에 첨부할 수 있습니다:\n\n" +
-                    "```json\n" +
-                    "{\n" +
-                    "  \"hotelType\": \"리조트\",\n" +
-                    "  \"address\": \"새 주소\",\n" +
-                    "  \"addressDetail\": \"새 주소 상세\",\n" +
-                    "  \"roomCnt\": 5,\n" +
-                    "  \"bedCnt\": 10,\n" +
-                    "  \"bathroomCnt\": 4,\n" +
-                    "  \"maxPeople\": 20,\n" +
-                    "  \"nickname\": \"새 이름\",\n" +
-                    "  \"description\": \"새 설명\",\n" +
-                    "  \"price\": 20000\n" +
-                    "}\n" +
-                    "```\n\n" +
-                    "'files' 파트에는 숙소의 새로운 사진 파일들을 첨부할 수 있습니다. 'deletedImages' 파라미터를 사용하여 삭제하고자 하는 이미지의 URL 리스트를 제공할 수 있습니다."
+            description =
+                    "숙소 정보를 수정하기 위한 API입니다. 수정할 숙소의 정보와 새로운 이미지 파일들을 제공할 수 있으며, 삭제하고자 하는 이미지의 URL을 지정할 수 있습니다.\n\n" +
+                            "숙소 정보('hotelInfo')는 JSON 형식으로 제공되어야 하며, 다음은 'hotelInfo' JSON 객체의 예시입니다. 이 형식에 맞춰 JSON 파일을 만들어 API 테스트 시 'hotelInfo' 파트에 첨부할 수 있습니다:\n\n"
+                            +
+                            "```json\n" +
+                            "{\n" +
+                            "  \"hotelType\": \"리조트\",\n" +
+                            "  \"address\": \"새 주소\",\n" +
+                            "  \"addressDetail\": \"새 주소 상세\",\n" +
+                            "  \"roomCnt\": 5,\n" +
+                            "  \"bedCnt\": 10,\n" +
+                            "  \"bathroomCnt\": 4,\n" +
+                            "  \"maxPeople\": 20,\n" +
+                            "  \"nickname\": \"새 이름\",\n" +
+                            "  \"description\": \"새 설명\",\n" +
+                            "  \"price\": 20000\n" +
+                            "}\n" +
+                            "```\n\n" +
+                            "'files' 파트에는 숙소의 새로운 사진 파일들을 첨부할 수 있습니다. 'deletedImages' 파라미터를 사용하여 삭제하고자 하는 이미지의 URL 리스트를 제공할 수 있습니다."
     )
     @ApiResponse(
             responseCode = "200",
@@ -179,8 +181,9 @@ public interface HotelApi {
     @Parameter(name = "startDate", required = true, example = "2024-03-06")
     @Parameter(name = "endDate", required = true, example = "2024-03-07")
     @GetMapping("/search")
-    public ResponseEntity<ResponseDto<PageImpl<HotelPageResponse>>> getHotelsByDistrictAndDate(
+    public ResponseEntity<ResponseDto<PageImpl<HotelPageResponse>>> getHotelsByDistrictAndDateAndKw(
             @RequestParam String district,
+            @RequestParam String kw,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
             @PageableDefault(size = 9) Pageable pageable);
