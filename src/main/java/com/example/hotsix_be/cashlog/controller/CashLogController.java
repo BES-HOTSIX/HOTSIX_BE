@@ -176,7 +176,7 @@ public class CashLogController {
         return ResponseEntity.ok(
                 new ResponseDto<>(
                         HttpStatus.OK.value(),
-                        "예약 %s이(가) 완료되었습니다.".formatted(confirmResponse.getEventType()), null,
+                        "%s이(가) 완료되었습니다.".formatted(confirmResponse.getEventType()), null,
                         null, confirmResponse
                 )
         );

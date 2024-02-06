@@ -86,13 +86,14 @@ public class CashLogService {
     public CashLog addCash(final AddCashRequest addCashRequest, final EventType eventType) {
         Member member = memberService.getMemberByUsername(addCashRequest.getUsername());
 
-        return addCash(
-                member,
-                addCashRequest.getPrice(),
-                null,
-                null,
-                eventType
+        return addCash(member, addCashRequest.getPrice(), null, eventType
         );
+    }
+
+    @Transactional
+    public CashLog addCash(final Member member, final Long price, final Reservation reservation, final EventType eventType) {
+        if (reservation == null) return addCash(member, price, randomNanoId(), null, eventType);
+        return addCash(member, price, reservation.getOrderId(), reservation, eventType);
     }
 
     // 전반적인 입출금
@@ -125,11 +126,11 @@ public class CashLogService {
         Long payPrice = reservation.getPrice();
         Member owner = reservation.getHotel().getOwner();
 
-        reservation.setInitialOrderId(randomNanoId());
+        reservation.updateOrderId(randomNanoId());
 
-        CashLog cashLog = addCash(buyer, payPrice * -1, null, reservation, 결제__예치금); // TODO UUID를 일반 결제에도 적용시켜야할까
+        CashLog cashLog = addCash(buyer, payPrice * -1, null, reservation, 결제__예치금);
 
-        addCash(owner, payPrice, null, reservation, EventType.정산__예치금);
+        addCash(owner, payPrice, reservation, EventType.정산__예치금);
 
         reservation.payDone();
 
@@ -148,17 +149,17 @@ public class CashLogService {
         Long payPrice = reservation.getPrice();
         String orderId = tossConfirmRequest.getOrderId();
 
-        addCash(buyer, pgPayPrice, orderId, reservation, 충전__토스페이먼츠);
+        // orderId 입력
+        reservation.updateOrderId(orderId);
+
+        addCash(buyer, pgPayPrice, reservation, 충전__토스페이먼츠);
 
         CashLog cashLog = addCash(buyer, payPrice * -1, orderId, reservation, 결제__예치금);
 
-        addCash(owner, payPrice, orderId, reservation, EventType.정산__예치금);
+        addCash(owner, payPrice, reservation, EventType.정산__예치금);
 
         // 결제 완료 처리
         reservation.payDone();
-
-        // orderId 입력
-        reservation.setInitialOrderId(orderId);
 
         return cashLog;
     }
@@ -167,7 +168,9 @@ public class CashLogService {
     public CashLog cancelReservation(final Reservation reservation) {
         reservation.cancelDone();
 
-        return addCash(reservation.getMember(), reservation.getPrice(), null, reservation, 취소__예치금);
+        addCash(reservation.getHotel().getOwner(), reservation.getPrice() * -1, reservation, 정산__예약취소);
+
+        return addCash(reservation.getMember(), reservation.getPrice(), reservation, 취소__예치금);
     }
 
     public boolean canPay(final Long reservationId, final Long pgPayPrice) {

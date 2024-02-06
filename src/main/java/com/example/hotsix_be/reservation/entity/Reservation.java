@@ -3,7 +3,6 @@ package com.example.hotsix_be.reservation.entity;
 import com.example.hotsix_be.common.entity.DateEntity;
 import com.example.hotsix_be.hotel.entity.Hotel;
 import com.example.hotsix_be.member.entity.Member;
-import com.example.hotsix_be.reservation.exception.ReservationException;
 import com.example.hotsix_be.review.entity.Review;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -19,8 +18,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.example.hotsix_be.common.exception.ExceptionCode.POST_INITIALIZATION_EDIT_FORBIDDEN;
 
 
 @Table(name = "reservations")
@@ -95,7 +92,7 @@ public class Reservation extends DateEntity {
         this.isPaid = isPaid;
     }
 
-    private void updateOrderId(String orderId) {
+    public void updateOrderId(String orderId) {
         this.orderId = orderId;
     }
 
@@ -121,11 +118,6 @@ public class Reservation extends DateEntity {
 
     public void cancelDone() {
         updateCancelDate(LocalDateTime.now());
-    }
-
-    public void setInitialOrderId(String orderId) {
-        if (this.orderId != null) throw new ReservationException(POST_INITIALIZATION_EDIT_FORBIDDEN);
-        updateOrderId(orderId);
     }
 
     public boolean isCancelable() {
