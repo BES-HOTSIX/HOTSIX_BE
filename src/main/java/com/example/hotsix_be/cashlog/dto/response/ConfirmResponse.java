@@ -20,6 +20,7 @@ public class ConfirmResponse {
     private final Long price;
     private final LocalDate checkInDate;
     private final LocalDate checkOutDate;
+    private final String EventType;
 
     public static ConfirmResponse of(
             final CashLog cashLog,
@@ -35,7 +36,8 @@ public class ConfirmResponse {
                 hotel.getNickname(),
                 price,
                 reservation.getCheckInDate(),
-                reservation.getCheckOutDate()
+                reservation.getCheckOutDate(),
+                cashLog.getEventType().getStatus()
         );
     }
 }

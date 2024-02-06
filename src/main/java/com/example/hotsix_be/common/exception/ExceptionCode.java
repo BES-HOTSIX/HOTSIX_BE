@@ -34,6 +34,8 @@ public enum ExceptionCode {
 
     NOT_FOUND_RESERVATION_ID(7001, "요청한 ID에 해당하는 예약 내역이 존재하지 않습니다."),
     INVALID_RESERVATION_REQUEST(7002, "요청에 해당하는 예약 내역을 불러올 수 없습니다."),
+    CANCELLATION_PERIOD_EXPIRED(7003, "예약을 취소할 수 있는 기간이 만료되었습니다."),
+    POST_INITIALIZATION_EDIT_FORBIDDEN(7004, "주문코드는 초기 설정 이후 수정할 수 없습니다."),
 
     INVALID_AUTHORIZATION_CODE(9001, "유효하지 않은 인증 코드입니다."),
     NOT_SUPPORTED_OAUTH_SERVICE(9002, "해당 OAuth 서비스는 제공하지 않습니다."),

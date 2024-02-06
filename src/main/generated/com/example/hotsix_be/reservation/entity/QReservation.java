@@ -43,6 +43,8 @@ public class QReservation extends EntityPathBase<Reservation> {
 
     public final com.example.hotsix_be.member.entity.QMember member;
 
+    public final StringPath orderId = createString("orderId");
+
     public final NumberPath<Long> price = createNumber("price", Long.class);
 
     public final com.example.hotsix_be.review.entity.QReview review;

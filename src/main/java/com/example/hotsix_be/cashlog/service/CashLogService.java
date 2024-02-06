@@ -21,7 +21,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
-import static com.example.hotsix_be.common.exception.ExceptionCode.*;
+import static com.aventrix.jnanoid.jnanoid.NanoIdUtils.randomNanoId;
+import static com.example.hotsix_be.cashlog.entity.EventType.*;
+import static com.example.hotsix_be.common.exception.ExceptionCode.INVALID_REQUEST;
+import static com.example.hotsix_be.common.exception.ExceptionCode.NOT_FOUND_RESERVATION_ID;
 
 @Service
 @Transactional(readOnly = true)
@@ -78,6 +81,20 @@ public class CashLogService {
         return MyCashLogResponse.of(member, cashLogConfirmPage);
     }
 
+    // 무통장 입금
+    @Transactional
+    public CashLog addCash(final AddCashRequest addCashRequest, final EventType eventType) {
+        Member member = memberService.getMemberByUsername(addCashRequest.getUsername());
+
+        return addCash(
+                member,
+                addCashRequest.getPrice(),
+                null,
+                null,
+                eventType
+        );
+    }
+
     // 전반적인 입출금
     @Transactional
     public CashLog addCash(final Member member, final Long price, final String orderId, final Reservation reservation, final EventType eventType) {
@@ -100,30 +117,17 @@ public class CashLogService {
         return cashLog;
     }
 
-    // 무통장 입금
-    @Transactional
-    public CashLog addCash(final AddCashRequest addCashRequest, final EventType eventType) {
-        Member member = memberService.getMemberByUsername(addCashRequest.getUsername());
-
-        return addCash(
-                member,
-                addCashRequest.getPrice(),
-                null,
-                null,
-                eventType
-        );
-    }
-
     // TODO 특정한 날짜에 한꺼번에 정산하는 기능 추가하기
     // 예치금 사용 결제
     @Transactional
     public CashLog payByCashOnly(final Reservation reservation) {
         Member buyer = reservation.getMember();
         Long payPrice = reservation.getPrice();
-
         Member owner = reservation.getHotel().getOwner();
 
-        CashLog cashLog = addCash(buyer, payPrice * -1, null, reservation,EventType.사용__예치금_결제); // TODO UUID를 일반 결제에도 적용시켜야할까
+        reservation.setInitialOrderId(randomNanoId());
+
+        CashLog cashLog = addCash(buyer, payPrice * -1, null, reservation, 결제__예치금); // TODO UUID를 일반 결제에도 적용시켜야할까
 
         addCash(owner, payPrice, null, reservation, EventType.정산__예치금);
 
@@ -144,14 +148,32 @@ public class CashLogService {
         Long payPrice = reservation.getPrice();
         String orderId = tossConfirmRequest.getOrderId();
 
-        addCash(buyer, pgPayPrice, orderId, reservation, EventType.충전__토스페이먼츠);
-        CashLog cashLog = addCash(buyer, payPrice * -1, orderId, reservation, EventType.사용__예치금_결제);
+        addCash(buyer, pgPayPrice, orderId, reservation, 충전__토스페이먼츠);
+
+        CashLog cashLog = addCash(buyer, payPrice * -1, orderId, reservation, 결제__예치금);
 
         addCash(owner, payPrice, orderId, reservation, EventType.정산__예치금);
 
+        // 결제 완료 처리
         reservation.payDone();
 
+        // orderId 입력
+        reservation.setInitialOrderId(orderId);
+
         return cashLog;
+    }
+
+    @Transactional
+    public CashLog cancelReservation(final Reservation reservation) {
+        reservation.cancelDone();
+
+        return addCash(reservation.getMember(), reservation.getPrice(), null, reservation, 취소__예치금);
+    }
+
+    public boolean canPay(final Long reservationId, final Long pgPayPrice) {
+        Reservation reservation = reservationService.findUnpaidById(reservationId).orElseThrow(() -> new ReservationException(NOT_FOUND_RESERVATION_ID));
+
+        return canPay(reservation, pgPayPrice);
     }
 
     public boolean canPay(final Reservation reservation, final Long pgPayPrice) {
@@ -165,15 +187,4 @@ public class CashLogService {
         // 예치금이 충분한지 확인
         return price <= restCash + pgPayPrice;
     }
-
-    public boolean canPay(final Long reservationId, final Long pgPayPrice) {
-        Reservation reservation = reservationService.findUnpaidById(reservationId).orElseThrow(() -> new ReservationException(NOT_FOUND_RESERVATION_ID));
-
-        return canPay(reservation, pgPayPrice);
-    }
-
-//    @Transactional
-//    public CashLog cancel(final Reservation reservation) {
-//        reservationService
-//    }
 }
