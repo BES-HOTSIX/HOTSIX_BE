@@ -139,7 +139,7 @@ public class HotelService {
                 .map(HotelDetailResponse::of);
     }
 
-    public Page<Hotel> getHotelsByDistrictAndDate(String district, LocalDate startDate, LocalDate endDate, Pageable pageable, String kw) {
-        return hotelRepository.findAllByDistrictAndDate(pageable, district, startDate, endDate, kw);
+    public Page<Hotel> getHotelsByDistrictAndDate(String district, LocalDate startDate, LocalDate endDate, Pageable pageable, String kw, Long bedroomCount, Long bedCount, Long bathroomCount, Long maxGuestCount, Long price) {
+        return hotelRepository.findAllByDistrictAndDate(pageable, district, startDate, endDate, kw, bedroomCount, bedCount, bathroomCount, maxGuestCount, price);
     }
 }
