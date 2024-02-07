@@ -14,13 +14,11 @@ import com.example.hotsix_be.member.openapi.MemberApi;
 import com.example.hotsix_be.member.service.MemberService;
 import com.example.hotsix_be.reservation.dto.response.ReservationDetailResponse;
 import com.example.hotsix_be.reservation.service.ReservationService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -102,12 +100,8 @@ public class MemberController implements MemberApi {
 
     @GetMapping("/me/reservations")
     @MemberOnly
-    @Operation(security = {
-            @SecurityRequirement(name = "Authorization"),
-            @SecurityRequirement(name = "refreshToken")
-    })
     public ResponseEntity<ResponseDto<Page<ReservationDetailResponse>>> getMyReservations(
-            @Parameter(hidden = true) @Auth final Accessor accessor,
+            @Auth final Accessor accessor,
             @RequestParam(value = "page", defaultValue = "0") int page
     ) {
         Page<ReservationDetailResponse> reservationDetailResponses = reservationService.findByMemberIdAndIsPaid(accessor.getMemberId(), page);
@@ -205,7 +199,7 @@ public class MemberController implements MemberApi {
         );
     }
 
-    @PutMapping("/image")
+    @PutMapping(value = "/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @MemberOnly
     public ResponseEntity<ResponseDto<?>> changeImageUrl(
             @Auth final Accessor accessor,
