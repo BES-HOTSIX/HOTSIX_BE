@@ -20,7 +20,7 @@ public class HotelRepositoryImpl implements HotelRepositoryCustom {
 
     @Override
     public Page<Hotel> findAllByDistrictAndDate(Pageable pageable, String district, LocalDate startDate,
-                                                LocalDate endDate, String kw) {
+                                                LocalDate endDate, String kw, Long bedroomCount, Long bedCount, Long bathroomCount, Long maxGuestCount, Long price) {
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
         QHotel hotel = QHotel.hotel;
         QReservation reservation = QReservation.reservation;
@@ -46,6 +46,23 @@ public class HotelRepositoryImpl implements HotelRepositoryCustom {
                 .and(hotel.id.notIn(reservedHotelIds));
         if (keywordCondition != null) {
             searchCondition = searchCondition.and(keywordCondition);
+        }
+
+        // 각 필터 조건이 null이 아닐 경우 적용
+        if (bedroomCount != null) {
+            searchCondition = searchCondition.and(hotel.bathroomCnt.goe(bedroomCount));
+        }
+        if (bedCount != null) {
+            searchCondition = searchCondition.and(hotel.bedCnt.goe(bedCount));
+        }
+        if (bathroomCount != null) {
+            searchCondition = searchCondition.and(hotel.bathroomCnt.goe(bathroomCount));
+        }
+        if (maxGuestCount != null) {
+            searchCondition = searchCondition.and(hotel.maxPeople.goe(maxGuestCount));
+        }
+        if (price != null) {
+            searchCondition = searchCondition.and(hotel.price.loe(price));
         }
 
         // 위에서 찾은 ID 목록에 없는 호텔들을 조회
