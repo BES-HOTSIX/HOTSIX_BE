@@ -47,6 +47,8 @@ public class Reservation extends DateEntity {
 
     private boolean isPaid;
 
+    private String orderId;
+
     @JsonIgnore
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -82,12 +84,16 @@ public class Reservation extends DateEntity {
         this.member = member;
     }
 
-    public void updateCancelDate(LocalDateTime date) {
+    private void updateCancelDate(LocalDateTime date) {
         this.cancelDate = date;
     }
 
-    public void updateIsPaid(boolean isPaid) {
+    private void updateIsPaid(boolean isPaid) {
         this.isPaid = isPaid;
+    }
+
+    public void updateOrderId(String orderId) {
+        this.orderId = orderId;
     }
 
     public List<LocalDate> getReservedDateRange() {
@@ -108,5 +114,13 @@ public class Reservation extends DateEntity {
 
     public void payDone() {
         updateIsPaid(true);
+    }
+
+    public void cancelDone() {
+        updateCancelDate(LocalDateTime.now());
+    }
+
+    public boolean isCancelable() {
+        return checkInDate.isAfter(LocalDate.now());
     }
 }

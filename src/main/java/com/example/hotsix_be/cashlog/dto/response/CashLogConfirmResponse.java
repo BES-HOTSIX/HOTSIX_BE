@@ -20,6 +20,7 @@ public class CashLogConfirmResponse {
     private final Long memberId;
     private final Long reservationId;
     private final Long withdrawApplyId;
+    private final String orderId;
     private final LocalDateTime createdAt;
     public static CashLogConfirmResponse of(final CashLog cashLog) {
         Reservation reservation = cashLog.getReservation();
@@ -37,6 +38,7 @@ public class CashLogConfirmResponse {
                 memberId,
                 reservationId,
                 withdrawApplyId,
+                cashLog.getOrderId(),
                 cashLog.getCreatedAt()
         );
     }

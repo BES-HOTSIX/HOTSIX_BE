@@ -176,9 +176,34 @@ public class CashLogController {
         return ResponseEntity.ok(
                 new ResponseDto<>(
                         HttpStatus.OK.value(),
-                        "예약이 완료되었습니다.", null,
+                        "%s이(가) 완료되었습니다.".formatted(confirmResponse.getEventType()), null,
                         null, confirmResponse
                 )
         );
+    }
+
+    @PatchMapping("/{reserveId}/cancel")
+    @MemberOnly
+    public ResponseEntity<?> cancelReservation(
+            @PathVariable(value = "reserveId") final Long reserveId,
+            @Auth Accessor accessor
+    ) {
+        // 조회
+        Reservation reservation = reservationService.findPaidById(reserveId).orElseThrow(() -> new ReservationException(NOT_FOUND_RESERVATION_ID));
+
+        if (!reservation.getMember().getId().equals(accessor.getMemberId())) throw new ReservationException(INVALID_AUTHORITY);
+
+        if (!reservation.isCancelable()) throw new ReservationException(CANCELLATION_PERIOD_EXPIRED);
+
+        CashLog cashLog = cashLogService.cancelReservation(reservation);
+
+        CashLogIdResponse cashLogIdResponse = CashLogIdResponse.of(cashLog.getId());
+
+        return ResponseEntity.ok(
+                new ResponseDto<>(
+                        HttpStatus.OK.value(),
+                        "예약 취소가 완료되었습니다.", null,
+                        null, cashLogIdResponse
+                ));
     }
 }
