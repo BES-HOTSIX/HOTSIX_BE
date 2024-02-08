@@ -84,7 +84,7 @@ public class Hotel extends DateEntity {
     private Long price;
 
     @Builder.Default
-    private Integer likesCount = 0;
+    private int likesCount = 0;
 
     @OneToMany(mappedBy = "hotel", cascade = {REMOVE, PERSIST}, orphanRemoval = true)
     private List<Image> images = new ArrayList<>();

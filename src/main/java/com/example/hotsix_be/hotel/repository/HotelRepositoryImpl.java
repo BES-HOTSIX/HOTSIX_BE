@@ -138,5 +138,4 @@ public class HotelRepositoryImpl implements HotelRepositoryCustom {
 
         return new PageImpl<>(hotels, pageable, total);
     }
-
 }
