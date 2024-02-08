@@ -1,4 +1,7 @@
 package com.example.hotsix_be.review.controller;
+import com.example.hotsix_be.auth.Auth;
+import com.example.hotsix_be.auth.MemberOnly;
+import com.example.hotsix_be.auth.util.Accessor;
 import com.example.hotsix_be.common.dto.ResponseDto;
 import com.example.hotsix_be.review.dto.request.ReviewRequestDTO;
 import com.example.hotsix_be.review.dto.response.ReviewResponseDTO;
@@ -19,13 +22,13 @@ import java.util.List;
 public class ReviewController {
     private final ReviewService reviewService;
 
+    @MemberOnly
     @PostMapping("/add/{hotelId}/{reservationId}")
-    public ResponseEntity<?> addReview(@Valid @RequestBody final ReviewRequestDTO reviewRequestDTO,
+    public ResponseEntity<?> addReview(@RequestBody final ReviewRequestDTO reviewRequestDTO,
                                        @PathVariable final Long hotelId,
-                                       @PathVariable final Long reservationId) {
-
-        log.info("Received review request: {}", reviewRequestDTO);
-        reviewService.addReview(reviewRequestDTO, hotelId, reservationId);
+                                       @PathVariable final Long reservationId,
+                                       @Auth final Accessor accessor) {
+        reviewService.addReview(reviewRequestDTO, hotelId, reservationId, accessor.getMemberId());
         return ResponseEntity.ok(
                 new ResponseDto<>(
                         HttpStatus.OK.value(),
@@ -59,8 +62,6 @@ public class ReviewController {
             @PathVariable Long id,
             @Valid @RequestBody ReviewRequestDTO modifiedReviewDTO
     ) {
-        log.info("Received modify review request for reviewId: {}", id);
-
 //        Long hotelId = modifiedReviewDTO.getHotelId();
 //
 //        Hotel hotel = hotelRepository.findById(hotelId)
@@ -76,6 +77,5 @@ public class ReviewController {
                 )
         );
     }
-
     }
     

@@ -52,7 +52,8 @@ public class Review extends DateEntity {
             final Double cleanliness,
             final Double rating,
             final Hotel hotel,
-            final Reservation reservation
+            final Reservation reservation,
+            final Member member
     ){
         this.body = body;
         this.amenities = amenities;
@@ -61,6 +62,7 @@ public class Review extends DateEntity {
         this.rating = rating;
         this.hotel = hotel;
         this.reservation = reservation;
+        this.member = member;
     }
 
     public void update(final ReviewRequestDTO reviewRequestDTO) {

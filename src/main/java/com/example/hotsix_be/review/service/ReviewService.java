@@ -1,7 +1,10 @@
 package com.example.hotsix_be.review.service;
+import com.example.hotsix_be.common.exception.AuthException;
 import com.example.hotsix_be.hotel.entity.Hotel;
 import com.example.hotsix_be.hotel.exception.HotelException;
 import com.example.hotsix_be.hotel.repository.HotelRepository;
+import com.example.hotsix_be.member.entity.Member;
+import com.example.hotsix_be.member.repository.MemberRepository;
 import com.example.hotsix_be.reservation.entity.Reservation;
 import com.example.hotsix_be.reservation.exception.ReservationException;
 import com.example.hotsix_be.reservation.repository.ReservationRepository;
@@ -26,11 +29,13 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final HotelRepository hotelRepository;
     private final ReservationRepository reservationRepository;
+    private final MemberRepository memberRepository;
 
     @Transactional
-    public ReviewResponseDTO addReview(final ReviewRequestDTO reviewRequestDTO, final Long hotelId, final Long reservationId) {
+    public ReviewResponseDTO addReview(final ReviewRequestDTO reviewRequestDTO, final Long hotelId, final Long reservationId, final Long memberId) {
         Hotel hotel = hotelRepository.findById(hotelId).orElseThrow(() -> new HotelException(NOT_FOUND_HOTEL_ID));
         Reservation reservation = reservationRepository.findById(reservationId).orElseThrow(() -> new ReservationException(NOT_FOUND_RESERVATION_ID));
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new AuthException(NOT_FOUND_MEMBER_BY_ID));
 
         Review review = new Review(
                 reviewRequestDTO.getBody(),
@@ -39,7 +44,8 @@ public class ReviewService {
                 reviewRequestDTO.getCleanliness(),
                 reviewRequestDTO.getRating(),
                 hotel,
-                reservation
+                reservation,
+                member
         );
         reviewRepository.save(review);
         return ReviewResponseDTO.of(review);
