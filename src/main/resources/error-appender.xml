@@ -1,7 +1,7 @@
 <included>
     <springProperty name="SLACK_WEBHOOK_URL" source="logging.slack.webhook.url"/>
     <appender name="SLACK" class="com.github.maricn.logback.SlackAppender">
-        <webhookUri>https://hooks.slack.com/services/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</webhookUri>
+        <webhookUri>https://hooks.slack.com/services/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</webhookUri>
         <layout class="ch.qos.logback.classic.PatternLayout">
             <Pattern>
 ${PID:-} --- [%15.15thread] %-40.40logger{36} %msg%n%n
