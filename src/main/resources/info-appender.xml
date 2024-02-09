@@ -1,20 +1,5 @@
 <included>
     <appender name="FILE-INFO" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <appender name="SLACK" class="com.github.maricn.logback.SlackAppender">
-            <webhookUri>https://hooks.slack.com/services/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</webhookUri>
-            <layout class="ch.qos.logback.classic.PatternLayout">
-                <Pattern>
-                    ${PID:-} --- [%15.15thread] %-40.40logger{36} %msg%n%n
-                    [REQUEST_ID] : %X{REQUEST_ID:-NO REQUEST ID}%n
-                    [REQUEST_METHOD] : %X{REQUEST_METHOD:-NO REQUEST METHOD}%n
-                    [REQUEST_URI] : %X{REQUEST_URI:-NO REQUEST URI}%n
-                    [REQUEST_TIME] : %d{yyyy-MM-dd HH:mm:ss.SSS}%n
-                    [REQUEST_IP] : %X{REQUEST_IP:-NO REQUEST IP}%n
-                </Pattern>
-                <charset>utf8</charset>
-            </layout>
-            <colorCoding>true</colorCoding>
-        </appender>
         <file>../logs/info/${BY_DATE}.log</file>
         <filter class="ch.qos.logback.classic.filter.LevelFilter">
             <level>INFO</level>
