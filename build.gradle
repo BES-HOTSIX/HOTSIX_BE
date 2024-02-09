@@ -83,6 +83,11 @@ dependencies {
     // SpringDoc OpenAPI
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0'
 
+
+    // Monitoring
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'io.micrometer:micrometer-registry-prometheus'
+
 }
 
 def querydslSrcDir = 'src/main/generated'
