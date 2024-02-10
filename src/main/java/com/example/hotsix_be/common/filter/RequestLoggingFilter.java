@@ -10,9 +10,7 @@ public class RequestLoggingFilter extends AbstractRequestLoggingFilter {
 
     @Override
     protected void beforeRequest(@NonNull final HttpServletRequest request, @NonNull final String message) {
-        if (!message.contains("prometheus")) {
-            logger.info(message);
-        }
+        logger.info(message);
     }
 
     @Override
