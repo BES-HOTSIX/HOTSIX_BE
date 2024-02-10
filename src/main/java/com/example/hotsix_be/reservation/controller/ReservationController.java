@@ -6,7 +6,7 @@ import com.example.hotsix_be.auth.util.Accessor;
 import com.example.hotsix_be.common.dto.ResponseDto;
 import com.example.hotsix_be.reservation.dto.request.ReservationInfoRequest;
 import com.example.hotsix_be.reservation.dto.response.ReservationCreateResponse;
-import com.example.hotsix_be.reservation.dto.response.ReservationDetailResponse;
+import com.example.hotsix_be.reservation.dto.response.ReservationInfoResponse;
 import com.example.hotsix_be.reservation.dto.response.ReservedDatesOfHotelResponse;
 import com.example.hotsix_be.reservation.entity.Reservation;
 import com.example.hotsix_be.reservation.service.ReservationService;
@@ -27,12 +27,13 @@ public class ReservationController {
 			@PathVariable(value = "reserveId") final Long reserveId,
 			@Auth final Accessor accessor
 	) {
-		ReservationDetailResponse reservationDetailResponse = reservationService.getPaidDetailById(reserveId, accessor.getMemberId());
+		ReservationInfoResponse reservationInfoResponse = reservationService.getInfoById(reserveId, accessor.getMemberId());
 
         return ResponseEntity.ok(new ResponseDto<>(
                 HttpStatus.OK.value(),
                 "예약 상세 조회 성공", null,
-                null, reservationDetailResponse));
+                null, reservationInfoResponse)
+		);
     }
 
 	@PostMapping("/{hotelId}")
