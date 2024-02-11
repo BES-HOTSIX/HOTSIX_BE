@@ -71,6 +71,5 @@ public class Review extends DateEntity {
         this.amenities = reviewRequestDTO.getAmenities();
         this.staffService = reviewRequestDTO.getStaffService();
         this.cleanliness = reviewRequestDTO.getCleanliness();
-        //this.hotel = hotel;
     }
 }

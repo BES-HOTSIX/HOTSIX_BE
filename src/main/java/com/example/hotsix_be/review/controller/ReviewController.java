@@ -45,9 +45,11 @@ public class ReviewController {
             return ResponseEntity.ok(reviews);
         }
 
+    @MemberOnly
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteReview(@PathVariable final Long id) {
-        reviewService.deleteReview(id);
+    public ResponseEntity<?> deleteReview(@PathVariable final Long id,
+                                          @Auth final Accessor accessor) {
+        reviewService.deleteReview(id, accessor.getMemberId());
         return ResponseEntity.ok(new ResponseDto<>(HttpStatus.OK.value(), "리뷰가 성공적으로 삭제되었습니다.", null, null, null));
     }
 
@@ -57,17 +59,13 @@ public class ReviewController {
         return ResponseEntity.ok(review);
     }
 
+    @MemberOnly
     @PutMapping("/modify/{id}")
-    public ResponseEntity<?> modifyReview(
-            @PathVariable Long id,
-            @Valid @RequestBody ReviewRequestDTO modifiedReviewDTO
-    ) {
-//        Long hotelId = modifiedReviewDTO.getHotelId();
-//
-//        Hotel hotel = hotelRepository.findById(hotelId)
-//                .orElseThrow(() -> new HotelException(NOT_FOUND_HOTEL_ID));
-
-        reviewService.modifyReview(id, modifiedReviewDTO);
+    public ResponseEntity<?> modifyReview(@PathVariable final Long id,
+                                          @Valid @RequestBody final ReviewRequestDTO modifiedReviewDTO,
+                                          @Auth final Accessor accessor
+                                          ) {
+        reviewService.modifyReview(id, modifiedReviewDTO, accessor.getMemberId());
 
         return ResponseEntity.ok(
                 new ResponseDto<>(

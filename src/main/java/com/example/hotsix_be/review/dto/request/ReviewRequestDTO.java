@@ -10,7 +10,7 @@ import static lombok.AccessLevel.PRIVATE;
 @AllArgsConstructor
 @NoArgsConstructor(access= PRIVATE)
 public class ReviewRequestDTO {
-    @NotBlank
+
     private String body;
 
     private Double amenities;

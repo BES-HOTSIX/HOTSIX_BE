@@ -56,22 +56,25 @@ public class ReviewService {
     }
 
     @Transactional
-    public void modifyReview(final Long id, final @Valid ReviewRequestDTO reviewUpdateRequest) {
+    public void modifyReview(final Long id, final @Valid ReviewRequestDTO reviewUpdateRequest, final Long memberId) {
 
         Review review = reviewRepository.findById(id)
                 .orElseThrow(() -> new ReviewException(NOT_FOUND_REVIEW_ID));
+
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new AuthException(NOT_FOUND_MEMBER_BY_ID));
 
         review.update(reviewUpdateRequest);
     }
 
     @Transactional
-    public void deleteReview(Long id) {
+    public void deleteReview(final Long id, final Long memberId) {
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new AuthException(NOT_FOUND_MEMBER_BY_ID));
         reviewRepository.findById(id).ifPresent(reviewRepository::delete);
     }
 
 
 
-    public ReviewResponseDTO getReviewDetails(Long id) {
+    public ReviewResponseDTO getReviewDetails(final Long id) {
         return ReviewResponseDTO.of(
                 reviewRepository.findById(id).orElseThrow(() -> new ReviewException(NOT_FOUND_REVIEW_ID)));
     }
