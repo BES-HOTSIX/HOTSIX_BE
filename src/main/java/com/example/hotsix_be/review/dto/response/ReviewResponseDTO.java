@@ -1,10 +1,10 @@
 package com.example.hotsix_be.review.dto.response;
-import com.example.hotsix_be.hotel.entity.Hotel;
 import com.example.hotsix_be.member.entity.Member;
 import com.example.hotsix_be.review.entity.Review;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+
+import java.time.LocalDateTime;
 
 import static lombok.AccessLevel.PRIVATE;
 
@@ -19,6 +19,8 @@ public class ReviewResponseDTO {
     private final Double staffService;
     private final Double cleanliness;
     private final Double rating;
+    private final LocalDateTime createdAt;
+    private final LocalDateTime updatedAt;
 
 
 
@@ -30,7 +32,9 @@ public class ReviewResponseDTO {
                 review.getAmenities(),
                 review.getStaffService(),
                 review.getCleanliness(),
-                review.getRating()
+                review.getRating(),
+                review.getCreatedAt(),
+                review.getUpdatedAt()
         );
     }
 }

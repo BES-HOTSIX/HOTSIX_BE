@@ -64,6 +64,7 @@ public class ReviewService {
         Member member = memberRepository.findById(memberId).orElseThrow(() -> new AuthException(NOT_FOUND_MEMBER_BY_ID));
 
         review.update(reviewUpdateRequest);
+        reviewRepository.save(review);
     }
 
     @Transactional
