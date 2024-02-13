@@ -12,9 +12,9 @@ import static lombok.AccessLevel.PRIVATE;
 @AllArgsConstructor
 @NoArgsConstructor(access = PRIVATE)
 public class ReservationInfoRequest {
-	private Long numOfGuests;
-	private LocalDate checkInDate;
-	private LocalDate checkOutDate;
-	private Long price;
-	private boolean isPaid;
+    private Long numOfGuests;
+    private LocalDate checkInDate;
+    private LocalDate checkOutDate;
+    private Long price;
+    private boolean isPaid;
 }

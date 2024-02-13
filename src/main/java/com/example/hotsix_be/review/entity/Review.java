@@ -1,4 +1,5 @@
 package com.example.hotsix_be.review.entity;
+
 import com.example.hotsix_be.common.entity.DateEntity;
 import com.example.hotsix_be.hotel.entity.Hotel;
 import com.example.hotsix_be.member.entity.Member;
@@ -10,6 +11,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+
 @Getter
 @SuperBuilder(toBuilder = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -53,7 +55,7 @@ public class Review extends DateEntity {
             final Double rating,
             final Hotel hotel,
             final Reservation reservation
-    ){
+    ) {
         this.body = body;
         this.amenities = amenities;
         this.staffService = staffService;

@@ -1,7 +1,7 @@
 package com.example.hotsix_be.cashlog.dto.response;
 
-import com.example.hotsix_be.cashlog.entity.CashLog;
 import com.example.hotsix_be.hotel.entity.Hotel;
+import com.example.hotsix_be.payment.cashlog.entity.CashLog;
 import com.example.hotsix_be.reservation.entity.Reservation;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

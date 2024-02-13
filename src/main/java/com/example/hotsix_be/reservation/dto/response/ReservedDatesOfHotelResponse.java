@@ -13,17 +13,17 @@ import static lombok.AccessLevel.PRIVATE;
 @Getter
 @RequiredArgsConstructor(access = PRIVATE)
 public class ReservedDatesOfHotelResponse {
-	private final List<LocalDate> reservedDates;
+    private final List<LocalDate> reservedDates;
 
-	public static ReservedDatesOfHotelResponse of(final List<Reservation> reservations) {
-		List<LocalDate> reservedDates = new ArrayList<>();
+    public static ReservedDatesOfHotelResponse of(final List<Reservation> reservations) {
+        List<LocalDate> reservedDates = new ArrayList<>();
 
-		for (Reservation reservation : reservations) {
-			reservedDates.addAll(reservation.getReservedDateRange());
-		}
+        for (Reservation reservation : reservations) {
+            reservedDates.addAll(reservation.getReservedDateRange());
+        }
 
-		return new ReservedDatesOfHotelResponse(
-				reservedDates
-		);
-	}
+        return new ReservedDatesOfHotelResponse(
+                reservedDates
+        );
+    }
 }

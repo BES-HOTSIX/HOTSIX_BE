@@ -1,4 +1,5 @@
 package com.example.hotsix_be.review.controller;
+
 import com.example.hotsix_be.common.dto.ResponseDto;
 import com.example.hotsix_be.review.dto.request.ReviewRequestDTO;
 import com.example.hotsix_be.review.dto.response.ReviewResponseDTO;
@@ -37,10 +38,10 @@ public class ReviewController {
 
     @GetMapping("/{hotelId}")
     @ResponseBody
-        public ResponseEntity<List<ReviewResponseDTO>> getReviewsOrderByCreatedAtDesc(@PathVariable final Long hotelId) {
-            List<ReviewResponseDTO> reviews = reviewService.getReviewsOrderByCreatedAtDesc(hotelId);
-            return ResponseEntity.ok(reviews);
-        }
+    public ResponseEntity<List<ReviewResponseDTO>> getReviewsOrderByCreatedAtDesc(@PathVariable final Long hotelId) {
+        List<ReviewResponseDTO> reviews = reviewService.getReviewsOrderByCreatedAtDesc(hotelId);
+        return ResponseEntity.ok(reviews);
+    }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteReview(@PathVariable final Long id) {
@@ -77,5 +78,5 @@ public class ReviewController {
         );
     }
 
-    }
+}
     
