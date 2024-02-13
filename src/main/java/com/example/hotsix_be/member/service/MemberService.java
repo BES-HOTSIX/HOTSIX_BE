@@ -39,7 +39,9 @@ public class MemberService {
         final Member member = new Member(
                 memberRegisterRequest.getUsername(),
                 passwordEncoder.encode(memberRegisterRequest.getPassword()),
-                memberRegisterRequest.getNickname()
+                memberRegisterRequest.getNickname(),
+                memberRegisterRequest.getImageUrl(),
+                memberRegisterRequest.getEmail()
         );
 
         memberRepository.save(member);
