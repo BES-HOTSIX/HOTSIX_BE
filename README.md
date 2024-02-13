@@ -69,7 +69,7 @@
 
 
 ## 멤버
-|<img src="https://avatars.githubusercontent.com/u/96820952?v=4" width="150" height="150">|<img src ="https://avatars.githubusercontent.com/u/61774034?v=4" width="150" height="150">|<img src ="https://avatars.githubusercontent.com/u/146146134?v=4" width="150" height="150">|<img src="https://avatars.githubusercontent.com/u/62785408?v=4" width="150" height="150">|<img src ="https://avatars.githubusercontent.com/u/128708536?v=4" width="150" height="150">|<img src ="https://avatars.githubusercontent.com/u/148306166?v=4" width="150" height="150">
+|<img src="https://avatars.githubusercontent.com/u/96820952?v=4" width="100" height="100">|<img src ="https://avatars.githubusercontent.com/u/61774034?v=4" width="100" height="100">|<img src ="https://avatars.githubusercontent.com/u/146146134?v=4" width="100" height="100">|<img src="https://avatars.githubusercontent.com/u/62785408?v=4" width="100" height="100">|<img src ="https://avatars.githubusercontent.com/u/128708536?v=4" width="100" height="100">|<img src ="https://avatars.githubusercontent.com/u/148306166?v=4" width="100" height="100">
 |:-:|:-:|:-:|:-:|:-:|:-:|
 |[김겸호](https://github.com/js030)|[금시연](https://github.com/jkeum-dev)|[김경환](https://github.com/hagd0520)|[정주영](https://github.com/git990412)|[이유현](https://github.com/leeyuhyun0104)|[배현준](https://github.com/bhj2bb)|
 
