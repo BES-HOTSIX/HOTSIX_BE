@@ -41,11 +41,11 @@ public class ReviewController {
 
     @GetMapping("/{hotelId}")
     @ResponseBody
-        public ResponseEntity<List<ReviewResponseDTO>> getReviewsOrderByCreatedAtDesc(@PathVariable final Long hotelId) {
+    public ResponseEntity<List<ReviewResponseDTO>> getReviewsOrderByCreatedAtDesc(@PathVariable final Long hotelId) {
         ReviewListWithSummaryResponse response = reviewService.getReviewsOrderByCreatedAtDesc(hotelId);
         List<ReviewResponseDTO> reviews = response.getReviews();
-            return ResponseEntity.ok(reviews);
-        }
+        return ResponseEntity.ok(reviews);
+    }
 
     @MemberOnly
     @DeleteMapping("/delete/{id}")
@@ -66,7 +66,7 @@ public class ReviewController {
     public ResponseEntity<?> modifyReview(@PathVariable final Long id,
                                           @Valid @RequestBody final ReviewRequestDTO modifiedReviewDTO,
                                           @Auth final Accessor accessor
-                                          ) {
+    ) {
         reviewService.modifyReview(id, modifiedReviewDTO, accessor.getMemberId());
 
         return ResponseEntity.ok(
@@ -77,5 +77,4 @@ public class ReviewController {
                 )
         );
     }
-    }
-    
+}

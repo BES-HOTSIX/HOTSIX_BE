@@ -1,4 +1,6 @@
 package com.example.hotsix_be.review.dto.response;
+
+
 import com.example.hotsix_be.member.entity.Member;
 import com.example.hotsix_be.review.entity.Review;
 import lombok.Getter;
@@ -25,7 +27,6 @@ public class ReviewResponseDTO {
     private final Double totalCleanliness;
     private final Double totalStaffService;
     private final Double totalRating;
-
 
 
     public static ReviewResponseDTO of(final Review review, final ReviewSummaryResponse summary) {

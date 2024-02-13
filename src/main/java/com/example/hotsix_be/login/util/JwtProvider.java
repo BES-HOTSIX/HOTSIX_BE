@@ -1,7 +1,6 @@
 package com.example.hotsix_be.login.util;
 
 
-
 import static com.example.hotsix_be.common.exception.ExceptionCode.EXPIRED_PERIOD_ACCESS_TOKEN;
 import static com.example.hotsix_be.common.exception.ExceptionCode.EXPIRED_PERIOD_REFRESH_TOKEN;
 import static com.example.hotsix_be.common.exception.ExceptionCode.INVALID_ACCESS_TOKEN;
@@ -19,9 +18,11 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import javax.crypto.SecretKey;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -74,7 +75,7 @@ public class JwtProvider {
         } catch (final ExpiredJwtException e) {
             throw new ExpiredPeriodJwtException(EXPIRED_PERIOD_REFRESH_TOKEN);
         } catch (final JwtException | IllegalArgumentException e) {
-                throw new InvalidJwtException(INVALID_REFRESH_TOKEN);
+            throw new InvalidJwtException(INVALID_REFRESH_TOKEN);
         }
     }
 

@@ -1,4 +1,5 @@
 package com.example.hotsix_be.review.dto.request;
+
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,7 +9,7 @@ import static lombok.AccessLevel.PRIVATE;
 
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor(access= PRIVATE)
+@NoArgsConstructor(access = PRIVATE)
 public class ReviewRequestDTO {
 
     private String body;
