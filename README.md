@@ -73,7 +73,5 @@
 |:-:|:-:|:-:|:-:|:-:|:-:|
 |[김겸호](https://github.com/js030)|[금시연](https://github.com/jkeum-dev)|[김경환](https://github.com/hagd0520)|[정주영](https://github.com/git990412)|[이유현](https://github.com/leeyuhyun0104)|[배현준](https://github.com/bhj2bb)|
 
-<br>
-<br>
 
 
