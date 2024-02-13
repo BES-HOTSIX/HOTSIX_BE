@@ -165,8 +165,7 @@ public class CashLogController implements CashLogApi {
         // 조회
         Reservation reservation = reservationService.findPaidById(reserveId).orElseThrow(() -> new ReservationException(NOT_FOUND_RESERVATION_ID));
 
-        if (!reservation.getMember().getId().equals(accessor.getMemberId()))
-            throw new ReservationException(INVALID_AUTHORITY);
+        if (!reservation.getMember().getId().equals(accessor.getMemberId())) throw new ReservationException(INVALID_AUTHORITY);
 
         if (!reservation.isCancelable()) throw new ReservationException(CANCELLATION_PERIOD_EXPIRED);
 
