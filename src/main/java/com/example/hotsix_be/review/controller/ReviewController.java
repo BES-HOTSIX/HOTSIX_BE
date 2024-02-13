@@ -4,6 +4,7 @@ import com.example.hotsix_be.auth.MemberOnly;
 import com.example.hotsix_be.auth.util.Accessor;
 import com.example.hotsix_be.common.dto.ResponseDto;
 import com.example.hotsix_be.review.dto.request.ReviewRequestDTO;
+import com.example.hotsix_be.review.dto.response.ReviewListWithSummaryResponse;
 import com.example.hotsix_be.review.dto.response.ReviewResponseDTO;
 import com.example.hotsix_be.review.service.ReviewService;
 import jakarta.validation.Valid;
@@ -41,7 +42,8 @@ public class ReviewController {
     @GetMapping("/{hotelId}")
     @ResponseBody
         public ResponseEntity<List<ReviewResponseDTO>> getReviewsOrderByCreatedAtDesc(@PathVariable final Long hotelId) {
-            List<ReviewResponseDTO> reviews = reviewService.getReviewsOrderByCreatedAtDesc(hotelId);
+        ReviewListWithSummaryResponse response = reviewService.getReviewsOrderByCreatedAtDesc(hotelId);
+        List<ReviewResponseDTO> reviews = response.getReviews();
             return ResponseEntity.ok(reviews);
         }
 

@@ -30,6 +30,14 @@ public class Review extends DateEntity {
     private Double staffService;
 
     private Double cleanliness;
+
+    private Double totalAmenities;
+
+    private Double totalCleanliness;
+
+    private Double totalStaffService;
+
+    private Double totalRating;
     @JsonIgnore
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -71,5 +79,12 @@ public class Review extends DateEntity {
         this.amenities = reviewRequestDTO.getAmenities();
         this.staffService = reviewRequestDTO.getStaffService();
         this.cleanliness = reviewRequestDTO.getCleanliness();
+    }
+
+    public void updateAverages(double totalRating, double totalAmenities, double totalStaffService, double totalCleanliness) {
+        this.totalRating = totalRating;
+        this.totalAmenities = totalAmenities;
+        this.totalStaffService = totalStaffService;
+        this.totalCleanliness = totalCleanliness;
     }
 }

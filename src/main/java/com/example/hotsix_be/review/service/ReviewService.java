@@ -17,10 +17,13 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.DoubleSummaryStatistics;
 import java.util.List;
 
 import static com.example.hotsix_be.common.exception.ExceptionCode.*;
-
+import com.example.hotsix_be.review.dto.response.ReviewListWithSummaryResponse;
+import com.example.hotsix_be.review.dto.response.ReviewSummaryResponse;
 
 @RequiredArgsConstructor
 @Service
@@ -48,11 +51,17 @@ public class ReviewService {
                 member
         );
         reviewRepository.save(review);
-        return ReviewResponseDTO.of(review);
+        List<ReviewResponseDTO> reviews = reviewRepository.findAllByHotelIdOrderByCreatedAtDesc(hotelId);
+
+        ReviewListWithSummaryResponse response = calculateAndUpdateAverages(hotelId, reviews);
+
+        return ReviewResponseDTO.of(review, response.getSummary());
     }
 
-    public List<ReviewResponseDTO> getReviewsOrderByCreatedAtDesc(final Long hotelId) {
-        return reviewRepository.findAllByHotelIdOrderByCreatedAtDesc(hotelId);
+    public ReviewListWithSummaryResponse getReviewsOrderByCreatedAtDesc(final Long hotelId) {
+        List<ReviewResponseDTO> reviews = reviewRepository.findAllByHotelIdOrderByCreatedAtDesc(hotelId);
+        ReviewListWithSummaryResponse response = calculateAndUpdateAverages(hotelId, reviews);
+        return response;
     }
 
     @Transactional
@@ -65,18 +74,61 @@ public class ReviewService {
 
         review.update(reviewUpdateRequest);
         reviewRepository.save(review);
+
+        calculateAndUpdateAverages(review.getHotel().getId(), reviewRepository.findAllByHotelIdOrderByCreatedAtDesc(review.getHotel().getId()));
     }
 
     @Transactional
     public void deleteReview(final Long id, final Long memberId) {
         Member member = memberRepository.findById(memberId).orElseThrow(() -> new AuthException(NOT_FOUND_MEMBER_BY_ID));
-        reviewRepository.findById(id).ifPresent(reviewRepository::delete);
+        Review reviewToDelete = reviewRepository.findById(id).orElseThrow(() -> new ReviewException(NOT_FOUND_REVIEW_ID));
+
+        reviewRepository.delete(reviewToDelete);
+
+        calculateAndUpdateAverages(reviewToDelete.getHotel().getId(), reviewRepository.findAllByHotelIdOrderByCreatedAtDesc(reviewToDelete.getHotel().getId()));
     }
 
-
-
     public ReviewResponseDTO getReviewDetails(final Long id) {
-        return ReviewResponseDTO.of(
-                reviewRepository.findById(id).orElseThrow(() -> new ReviewException(NOT_FOUND_REVIEW_ID)));
+        Review review = reviewRepository.findById(id).orElseThrow(() -> new ReviewException(NOT_FOUND_REVIEW_ID));
+        ReviewSummaryResponse summary = calculateSummaryForReview(review);
+        return ReviewResponseDTO.of(review, summary);
+    }
+
+    private ReviewSummaryResponse calculateSummaryForReview(Review review) {
+        // Implement the logic to calculate summary for a single review
+        Double amenities = review.getAmenities();
+        Double cleanliness = review.getCleanliness();
+        Double staffService = review.getStaffService();
+        Double rating = review.getRating();
+
+        // Example: Calculate average values
+        double totalAmenities = amenities;
+        double totalCleanliness = cleanliness;
+        double totalStaffService = staffService;
+        double totalRating = rating;
+
+        return new ReviewSummaryResponse(totalAmenities, totalCleanliness, totalStaffService, totalRating);
+    }
+
+    private ReviewListWithSummaryResponse calculateAndUpdateAverages(Long hotelId, List<ReviewResponseDTO> reviews) {
+        DoubleSummaryStatistics amenitiesStats = reviews.stream().mapToDouble(ReviewResponseDTO::getAmenities).summaryStatistics();
+        DoubleSummaryStatistics cleanlinessStats = reviews.stream().mapToDouble(ReviewResponseDTO::getCleanliness).summaryStatistics();
+        DoubleSummaryStatistics staffServiceStats = reviews.stream().mapToDouble(ReviewResponseDTO::getStaffService).summaryStatistics();
+        DoubleSummaryStatistics ratingStats = reviews.stream().mapToDouble(ReviewResponseDTO::getRating).summaryStatistics();
+
+        double totalAmenities = amenitiesStats.getAverage();
+        double totalCleanliness = cleanlinessStats.getAverage();
+        double totalStaffService = staffServiceStats.getAverage();
+        double totalRating = ratingStats.getAverage();
+
+        // Update each review with the calculated averages
+        for (ReviewResponseDTO review : reviews) {
+            Review existingReview = reviewRepository.findById(review.getId()).orElseThrow(() -> new ReviewException(NOT_FOUND_REVIEW_ID));
+            existingReview.updateAverages(totalAmenities, totalCleanliness, totalStaffService, totalRating);
+            reviewRepository.save(existingReview);
+        }
+
+        ReviewSummaryResponse summary = new ReviewSummaryResponse(totalAmenities, totalCleanliness, totalStaffService, totalRating);
+        return new ReviewListWithSummaryResponse(reviews, summary);
     }
 }

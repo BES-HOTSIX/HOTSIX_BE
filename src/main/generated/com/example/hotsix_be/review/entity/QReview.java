@@ -45,6 +45,14 @@ public class QReview extends EntityPathBase<Review> {
 
     public final NumberPath<Double> staffService = createNumber("staffService", Double.class);
 
+    public final NumberPath<Double> totalAmenities = createNumber("totalAmenities", Double.class);
+
+    public final NumberPath<Double> totalCleanliness = createNumber("totalCleanliness", Double.class);
+
+    public final NumberPath<Double> totalRating = createNumber("totalRating", Double.class);
+
+    public final NumberPath<Double> totalStaffService = createNumber("totalStaffService", Double.class);
+
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;
 

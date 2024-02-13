@@ -21,10 +21,14 @@ public class ReviewResponseDTO {
     private final Double rating;
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
+    private final Double totalAmenities;
+    private final Double totalCleanliness;
+    private final Double totalStaffService;
+    private final Double totalRating;
 
 
 
-    public static ReviewResponseDTO of(final Review review) {
+    public static ReviewResponseDTO of(final Review review, final ReviewSummaryResponse summary) {
         return new ReviewResponseDTO (
                 review.getId(),
                 review.getMember(),
@@ -34,7 +38,11 @@ public class ReviewResponseDTO {
                 review.getCleanliness(),
                 review.getRating(),
                 review.getCreatedAt(),
-                review.getUpdatedAt()
+                review.getUpdatedAt(),
+                summary.getTotalAmenities(),
+                summary.getTotalCleanliness(),
+                summary.getTotalStaffService(),
+                summary.getTotalRating()
         );
     }
 }
