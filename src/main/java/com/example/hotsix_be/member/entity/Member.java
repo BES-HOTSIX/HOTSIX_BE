@@ -30,6 +30,8 @@ public class Member extends DateEntity {
     @Column(unique = true)
     private String nickname;
 
+    private String email;
+
     private Long restCash = 0L;
 
     @Enumerated(EnumType.STRING)
@@ -50,10 +52,12 @@ public class Member extends DateEntity {
         this.imageUrl = imageUrl;
     }
 
-    public Member(final String username, final String password, final String nickname) {
+    public Member(final String username, final String password, final String nickname, final String imageUrl, final String email) {
         this.username = username;
         this.password = password;
         this.nickname = nickname;
+        this.imageUrl = imageUrl;
+        this.email = email;
     }
 
     public Member(final String nickname, final String profileImageUrl, final SocialProvider socialProvider) {

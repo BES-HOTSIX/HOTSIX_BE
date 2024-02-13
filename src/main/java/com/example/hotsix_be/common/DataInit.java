@@ -42,7 +42,7 @@ public class DataInit implements ApplicationRunner {
 
         if (memberRepository.count() <= 0 && hotelRepository.count() <= 0) {
             IntStream.rangeClosed(1, 50).forEach(i -> {
-                Member member = new Member("test" + i, passwordEncoder.encode("test" + i), "test" + i);
+                Member member = new Member("test" + i, passwordEncoder.encode("test" + i), "test" + i, "https://res.cloudinary.com/dlfl2w8hk/image/upload/v1707802926/ejnekuco/ziecjcqos1otbi8mk9zg.png", "test" + i);
 
                 memberRepository.save(member);
 

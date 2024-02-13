@@ -21,4 +21,8 @@ public class MemberRegisterRequest {
     @Schema(description = "닉네임", example = "테스트51")
     @NotBlank
     private String nickname;
+
+    private String email;
+
+    private String imageUrl;
 }
