@@ -3,6 +3,7 @@ package com.example.hotsix_be.login.dto.kakao;
 import static lombok.AccessLevel.PRIVATE;
 
 import java.util.Map;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

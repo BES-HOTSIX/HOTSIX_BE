@@ -1,4 +1,5 @@
 package com.example.hotsix_be.review.service;
+
 import com.example.hotsix_be.hotel.entity.Hotel;
 import com.example.hotsix_be.hotel.exception.HotelException;
 import com.example.hotsix_be.hotel.repository.HotelRepository;
@@ -14,6 +15,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 
 import static com.example.hotsix_be.common.exception.ExceptionCode.*;
@@ -21,7 +23,7 @@ import static com.example.hotsix_be.common.exception.ExceptionCode.*;
 
 @RequiredArgsConstructor
 @Service
-@Transactional(readOnly=true)
+@Transactional(readOnly = true)
 public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final HotelRepository hotelRepository;
@@ -62,7 +64,6 @@ public class ReviewService {
     public void deleteReview(Long id) {
         reviewRepository.findById(id).ifPresent(reviewRepository::delete);
     }
-
 
 
     public ReviewResponseDTO getReviewDetails(Long id) {

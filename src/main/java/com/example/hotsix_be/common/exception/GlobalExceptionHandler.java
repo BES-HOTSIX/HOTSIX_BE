@@ -4,6 +4,7 @@ import static com.example.hotsix_be.common.exception.ExceptionCode.INTERNAL_SEVE
 import static com.example.hotsix_be.common.exception.ExceptionCode.INVALID_REQUEST;
 
 import java.util.Objects;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;

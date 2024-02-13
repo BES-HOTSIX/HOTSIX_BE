@@ -49,7 +49,7 @@ public class DataInit implements ApplicationRunner {
                 Hotel hotel = new Hotel("호텔", "서울" + i, "구로구" + i, 3L, 2L, 3L, 5L, List.of("주방"), "test" + i,
                         "test" + i, 10000L, member);
 
-                hotel.addImage(new Image("test" + i, "test" + i, "https://kr.object.ncloudstorage.com/hotsix.accomodation.bucket/ACCOMODATION/2024/01/ACCOMODATION_123123_0926ac58-3dd4-4b2c-a044-e123f2d20e6b_%ED%8E%9C%EC%85%982.jpg", 30L));
+                hotel.addImage(new Image("test" + i, "test" + i, "https://kr.object.ncloudstorage.com/hotsix.accomodation.bucket/ACCOMMODATION/2024/02/ACCOMMODATION_123_1afd0e02-780f-4732-8d62-a7453667d9de_pension1.jpg", 30L));
                 hotelRepository.save(hotel);
             });
 

@@ -6,7 +6,9 @@ import com.example.hotsix_be.login.dto.google.GoogleTokenResponse;
 import com.example.hotsix_be.login.dto.google.GoogleUserInfo;
 import com.example.hotsix_be.member.entity.Member;
 import com.example.hotsix_be.member.repository.MemberRepository;
+
 import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;

@@ -1,4 +1,5 @@
 package com.example.hotsix_be.review.dto.response;
+
 import com.example.hotsix_be.hotel.entity.Hotel;
 import com.example.hotsix_be.member.entity.Member;
 import com.example.hotsix_be.review.entity.Review;
@@ -21,9 +22,8 @@ public class ReviewResponseDTO {
     private final Double rating;
 
 
-
     public static ReviewResponseDTO of(final Review review) {
-        return new ReviewResponseDTO (
+        return new ReviewResponseDTO(
                 review.getId(),
                 review.getMember(),
                 review.getBody(),

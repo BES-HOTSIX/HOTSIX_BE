@@ -19,7 +19,7 @@ public class LoginResponse {
     @Schema(description = "엑세스 토큰", example = "eyJhbGci")
     private String accessToken;
 
-   public static LoginResponse of(String refreshToken, String accessToken) {
+    public static LoginResponse of(String refreshToken, String accessToken) {
         return new LoginResponse(refreshToken, accessToken);
     }
 }
