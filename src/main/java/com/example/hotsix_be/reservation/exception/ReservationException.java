@@ -4,7 +4,7 @@ import com.example.hotsix_be.common.exception.BadRequestException;
 import com.example.hotsix_be.common.exception.ExceptionCode;
 
 public class ReservationException extends BadRequestException {
-	public ReservationException(final ExceptionCode exceptionCode) {
-			super(exceptionCode);
-		}
+    public ReservationException(final ExceptionCode exceptionCode) {
+        super(exceptionCode);
+    }
 }

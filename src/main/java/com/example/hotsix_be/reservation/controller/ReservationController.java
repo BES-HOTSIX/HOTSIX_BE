@@ -36,15 +36,15 @@ public class ReservationController {
 		);
     }
 
-	@PostMapping("/{hotelId}")
-	@MemberOnly
-	public ResponseEntity<?> reserveHotel(
-			@PathVariable(value = "hotelId") final Long hotelId,
-			@RequestBody final ReservationInfoRequest reservationInfoRequest,
-			@Auth final Accessor accessor
-	) {
-		Reservation reservation = reservationService.save(hotelId, reservationInfoRequest, accessor.getMemberId());
-		ReservationCreateResponse reservationCreateResponse = ReservationCreateResponse.of(reservation);
+    @PostMapping("/{hotelId}")
+    @MemberOnly
+    public ResponseEntity<?> reserveHotel(
+            @PathVariable(value = "hotelId") final Long hotelId,
+            @RequestBody final ReservationInfoRequest reservationInfoRequest,
+            @Auth final Accessor accessor
+    ) {
+        Reservation reservation = reservationService.save(hotelId, reservationInfoRequest, accessor.getMemberId());
+        ReservationCreateResponse reservationCreateResponse = ReservationCreateResponse.of(reservation);
 
         return ResponseEntity.ok(
                 new ResponseDto<>(
@@ -55,11 +55,11 @@ public class ReservationController {
         );
     }
 
-	@GetMapping("/reservedDates/{hotelId}")
-	public ResponseEntity<?> getReservedDatesOfHotel(
-			@PathVariable(value = "hotelId") final Long hotelId
-	) {
-		ReservedDatesOfHotelResponse reservedDatesOfHotelResponse = reservationService.findAllByHotelIdAndIsPaidTrue(hotelId);
+    @GetMapping("/reservedDates/{hotelId}")
+    public ResponseEntity<?> getReservedDatesOfHotel(
+            @PathVariable(value = "hotelId") final Long hotelId
+    ) {
+        ReservedDatesOfHotelResponse reservedDatesOfHotelResponse = reservationService.findAllByHotelIdAndIsPaidTrue(hotelId);
 
 		return ResponseEntity.ok(
 				new ResponseDto<>(

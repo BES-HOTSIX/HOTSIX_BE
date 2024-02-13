@@ -30,7 +30,7 @@ public class ReservationInit implements ApplicationRunner {
     private final MemberRepository memberRepository;
 
     @Override
-    public void run(ApplicationArguments args) throws Exception {
+    public void run(ApplicationArguments args) {
         if (reservationRepository.count() == 20) {
             List<Hotel> hotels = hotelRepository.findAll();
             Member member = memberRepository.findById(1L).orElseThrow(() -> new AuthException(NOT_FOUND_MEMBER_BY_ID));

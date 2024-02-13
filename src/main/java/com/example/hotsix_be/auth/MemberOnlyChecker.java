@@ -4,7 +4,9 @@ import static com.example.hotsix_be.common.exception.ExceptionCode.INVALID_AUTHO
 
 import com.example.hotsix_be.auth.util.Accessor;
 import com.example.hotsix_be.common.exception.AuthException;
+
 import java.util.Arrays;
+
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
