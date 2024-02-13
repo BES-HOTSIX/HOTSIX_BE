@@ -34,6 +34,7 @@ public enum ExceptionCode {
 
     NOT_FOUND_RESERVATION_ID(7001, "요청한 ID에 해당하는 예약 내역이 존재하지 않습니다."),
     INVALID_RESERVATION_REQUEST(7002, "요청에 해당하는 예약 내역을 불러올 수 없습니다."),
+    CANCELLATION_PERIOD_EXPIRED(7003, "예약을 취소할 수 있는 기간이 만료되었습니다."),
 
     NOT_FOUND_REVIEW_ID(8001, "해당 ID의 리뷰를 찾을 수 없습니다."),
     NOT_FOUND_REVIEW_USERNAME(8001, "해당 username의 리뷰를 찾을 수 없습니다."),

@@ -15,7 +15,6 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.example.hotsix_be.common.exception.ExceptionCode.NOT_FOUND_MEMBER_BY_ID;
@@ -75,7 +74,7 @@ public class ReservationInit implements ApplicationRunner {
                 List<Reservation> reservations = reservationRepository.findAll();
                 if (!reservations.isEmpty()) {
                     Reservation reservation = reservations.get(20);
-                    reservation.updateCancelDate(LocalDateTime.now());
+                    reservation.cancelDone();
                     reservationRepository.save(reservation);
                 }
             }

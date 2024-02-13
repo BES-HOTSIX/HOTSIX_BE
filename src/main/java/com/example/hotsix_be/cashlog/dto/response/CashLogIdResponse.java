@@ -17,4 +17,7 @@ public class CashLogIdResponse {
                 tossPaymentResponse
         );
     }
+    public static CashLogIdResponse of(final Long cashLogId) {
+        return CashLogIdResponse.of(cashLogId, null);
+    }
 }
