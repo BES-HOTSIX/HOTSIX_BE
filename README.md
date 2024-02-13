@@ -1,6 +1,23 @@
-# HOTSHARE
+<div align="center">
 
-## 프로젝트 소개
+## [HOTSHARE 바로가기](https://www.hotshare.me)
+
+<br>
+<br>
+<br>
+<br>
+
+<img src="https://github.com/BES-HOTSIX/HOTSIX_BE/assets/96820952/07cbc2a5-b351-4104-b639-fbc556c6b315" width="30%">
+
+
+![HOTSHARE_IMAGE2](https://github.com/BES-HOTSIX/HOTSIX_BE/assets/96820952/23e6638c-f27e-4793-92d1-5a4b6b79897d)
+
+<br>
+
+![HOTSHARE_NEED](https://github.com/BES-HOTSIX/HOTSIX_BE/assets/96820952/aed81452-2ca4-4258-bf72-88650c969bdd)
+
+
+</div>
 
 ## 기술 스택
 
