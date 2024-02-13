@@ -140,7 +140,6 @@ public class HotelController implements HotelApi {
         List<HotelPageResponse> hotelByDistrictAndDateResponse = hotelsByDistrictAndDate.stream()
                 .map(HotelPageResponse::of).toList();
 
-
         PageImpl<HotelPageResponse> hotelPageResponse = new PageImpl<>(hotelByDistrictAndDateResponse, pageable,
                 hotelsByDistrictAndDate.getTotalElements());
 
@@ -152,4 +151,49 @@ public class HotelController implements HotelApi {
                 )
         );
     }
+
+    @GetMapping("/likes-sorted")
+    public ResponseEntity<ResponseDto<PageImpl<HotelPageResponse>>> getHotelsSortedByLikes(
+            final Pageable pageable) {
+
+        Page<Hotel> hotelsSortedByLikes = hotelService.getHotelsSortedByLikesCountAndCreatedAt(pageable);
+
+        List<HotelPageResponse> hotelSortByLikesResponse = hotelsSortedByLikes.stream().map(HotelPageResponse::of)
+                .toList();
+
+        PageImpl<HotelPageResponse> hotelSortByLikesPageResponse = new PageImpl<>(hotelSortByLikesResponse, pageable,
+                hotelsSortedByLikes.getTotalElements());
+
+        return ResponseEntity.ok(
+                new ResponseDto<>(
+                        HttpStatus.OK.value(),
+                        "성공적으로 찜 순으로 정렬된 데이터가 조회되었습니다.", null,
+                        null, hotelSortByLikesPageResponse
+                )
+        );
+    }
+
+    @GetMapping("/reservation-sorted")
+    public ResponseEntity<ResponseDto<PageImpl<HotelPageResponse>>> getHotelsSortedByReservationCnt(
+            final Pageable pageable) {
+
+        log.info("pageable = {}", pageable);
+
+        Page<Hotel> hotelsSortedByReservationCnt = hotelService.getHotelsOrderedByReservationsAndCreatedAt(pageable);
+
+        List<HotelPageResponse> hotelSortByReservationCntResponse = hotelsSortedByReservationCnt.stream().map(HotelPageResponse::of)
+                .toList();
+
+        PageImpl<HotelPageResponse> hotelSortByReservationCntPageResponse = new PageImpl<>(hotelSortByReservationCntResponse, pageable,
+                hotelsSortedByReservationCnt.getTotalElements());
+
+        return ResponseEntity.ok(
+                new ResponseDto<>(
+                        HttpStatus.OK.value(),
+                        "성공적으로 예약 순으로 정렬된 데이터가 조회되었습니다.", null,
+                        null, hotelSortByReservationCntPageResponse
+                )
+        );
+    }
+
 }
