@@ -9,11 +9,11 @@ import static lombok.AccessLevel.PRIVATE;
 @Getter
 @RequiredArgsConstructor(access = PRIVATE)
 public class ReservationCreateResponse {
-	private final Long id;
+    private final Long id;
 
-	public static ReservationCreateResponse of(final Reservation reservation) {
-		return new ReservationCreateResponse(
-				reservation.getId()
-		);
-	}
+    public static ReservationCreateResponse of(final Reservation reservation) {
+        return new ReservationCreateResponse(
+                reservation.getId()
+        );
+    }
 }

@@ -51,6 +51,6 @@ public class ReservationDetailResponse {
                 hotel.getId(),
                 reservation.getMember().getUsername(),
                 reservation.getMember().getRestCash()
-                );
+        );
     }
 }

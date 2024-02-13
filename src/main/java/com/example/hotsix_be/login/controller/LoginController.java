@@ -39,7 +39,7 @@ public class LoginController implements LoginApi {
 
     @PostMapping("/login")
     public ResponseEntity<ResponseDto<AccessTokenResponse>> login(@RequestBody final LoginRequest loginRequest,
-                                   final HttpServletResponse response) {
+                                                                  final HttpServletResponse response) {
 
         Member member = memberService.getMemberByUsername(loginRequest.getUsername());
 
@@ -47,7 +47,7 @@ public class LoginController implements LoginApi {
 
         loginService.sendRefreshTokenCookie(response, loginResponse);
 
-     new AccessTokenResponse(loginResponse.getAccessToken());
+        new AccessTokenResponse(loginResponse.getAccessToken());
 
         return ResponseEntity.ok(
                 new ResponseDto<>(
