@@ -55,6 +55,8 @@ public class QHotel extends EntityPathBase<Hotel> {
 
     public final NumberPath<Long> price = createNumber("price", Long.class);
 
+    public final ListPath<com.example.hotsix_be.reservation.entity.Reservation, com.example.hotsix_be.reservation.entity.QReservation> reservations = this.<com.example.hotsix_be.reservation.entity.Reservation, com.example.hotsix_be.reservation.entity.QReservation>createList("reservations", com.example.hotsix_be.reservation.entity.Reservation.class, com.example.hotsix_be.reservation.entity.QReservation.class, PathInits.DIRECT2);
+
     public final NumberPath<Long> roomCnt = createNumber("roomCnt", Long.class);
 
     //inherited

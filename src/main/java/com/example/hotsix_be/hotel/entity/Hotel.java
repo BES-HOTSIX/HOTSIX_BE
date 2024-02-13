@@ -8,6 +8,7 @@ import com.example.hotsix_be.common.entity.DateEntity;
 import com.example.hotsix_be.hotel.dto.request.HotelUpdateRequest;
 import com.example.hotsix_be.image.entity.Image;
 import com.example.hotsix_be.member.entity.Member;
+import com.example.hotsix_be.reservation.entity.Reservation;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
@@ -87,6 +88,9 @@ public class Hotel extends DateEntity {
 
     @OneToMany(mappedBy = "hotel", cascade = {REMOVE, PERSIST}, orphanRemoval = true)
     private List<Image> images = new ArrayList<>();
+
+    @OneToMany(mappedBy = "hotel", cascade = { REMOVE }, orphanRemoval = true)
+    private List<Reservation> reservations = new ArrayList<>();
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
