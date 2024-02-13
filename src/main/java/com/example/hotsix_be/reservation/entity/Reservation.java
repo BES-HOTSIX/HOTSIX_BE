@@ -3,6 +3,7 @@ package com.example.hotsix_be.reservation.entity;
 import com.example.hotsix_be.common.entity.DateEntity;
 import com.example.hotsix_be.hotel.entity.Hotel;
 import com.example.hotsix_be.member.entity.Member;
+import com.example.hotsix_be.reservation.dto.request.ReservationInfoRequest;
 import com.example.hotsix_be.review.entity.Review;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -123,4 +124,12 @@ public class Reservation extends DateEntity {
     public boolean isCancelable() {
         return checkInDate.isAfter(LocalDate.now());
     }
+
+	public void update(final ReservationInfoRequest reservationInfoRequest) {
+        this.checkInDate = reservationInfoRequest.getCheckInDate();
+        this.checkOutDate = reservationInfoRequest.getCheckOutDate();
+        this.guests = reservationInfoRequest.getNumOfGuests();
+        this.price = reservationInfoRequest.getPrice();
+        this.isPaid = reservationInfoRequest.isPaid();
+	}
 }
