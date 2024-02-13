@@ -6,7 +6,7 @@ import com.example.hotsix_be.auth.util.Accessor;
 import com.example.hotsix_be.common.dto.ResponseDto;
 import com.example.hotsix_be.reservation.dto.request.ReservationInfoRequest;
 import com.example.hotsix_be.reservation.dto.response.ReservationCreateResponse;
-import com.example.hotsix_be.reservation.dto.response.ReservationDetailResponse;
+import com.example.hotsix_be.reservation.dto.response.ReservationInfoResponse;
 import com.example.hotsix_be.reservation.dto.response.ReservedDatesOfHotelResponse;
 import com.example.hotsix_be.reservation.entity.Reservation;
 import com.example.hotsix_be.reservation.service.ReservationService;
@@ -27,12 +27,13 @@ public class ReservationController {
 			@PathVariable(value = "reserveId") final Long reserveId,
 			@Auth final Accessor accessor
 	) {
-		ReservationDetailResponse reservationDetailResponse = reservationService.getPaidDetailById(reserveId, accessor.getMemberId());
+		ReservationInfoResponse reservationInfoResponse = reservationService.getInfoById(reserveId, accessor.getMemberId());
 
         return ResponseEntity.ok(new ResponseDto<>(
                 HttpStatus.OK.value(),
                 "예약 상세 조회 성공", null,
-                null, reservationDetailResponse));
+                null, reservationInfoResponse)
+		);
     }
 
 	@PostMapping("/{hotelId}")
@@ -65,6 +66,26 @@ public class ReservationController {
 						HttpStatus.OK.value(),
 						"해당 숙소의 예약된 날짜를 모두 불러왔습니다.", null,
 						null, reservedDatesOfHotelResponse
+				)
+		);
+	}
+
+	@PutMapping("/{hotelId}/{reserveId}")
+	@MemberOnly
+	public ResponseEntity<?> reserveHotelByReserveId(
+			@PathVariable(value = "hotelId") final Long hotelId,
+			@PathVariable(value = "reserveId") final Long reserveId,
+			@RequestBody final ReservationInfoRequest reservationInfoRequest,
+			@Auth final Accessor accessor
+	) {
+		Reservation reservation = reservationService.modifyByReserveId(hotelId, reserveId, reservationInfoRequest, accessor.getMemberId());
+		ReservationCreateResponse reservationCreateResponse = ReservationCreateResponse.of(reservation);
+
+		return ResponseEntity.ok(
+				new ResponseDto<>(
+						HttpStatus.OK.value(),
+						"예약 내역이 수정되었습니다.", null,
+						null, reservationCreateResponse
 				)
 		);
 	}
