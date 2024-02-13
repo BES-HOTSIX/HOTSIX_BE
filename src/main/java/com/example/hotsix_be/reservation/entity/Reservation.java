@@ -50,18 +50,18 @@ public class Reservation extends DateEntity {
     private String orderId;
 
     @JsonIgnore
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "hotel_id")
     private Hotel hotel;
 
     @JsonIgnore
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "review_id")
     @JsonIgnore
     private Review review;
@@ -99,8 +99,9 @@ public class Reservation extends DateEntity {
     public List<LocalDate> getReservedDateRange() {
         List<LocalDate> reservedDates = new ArrayList<>();
 
-        if (this.checkOutDate.isBefore(LocalDate.now()))
+        if (this.checkOutDate.isBefore(LocalDate.now())) {
             return reservedDates;
+        }
 
         LocalDate date = this.checkInDate;
 

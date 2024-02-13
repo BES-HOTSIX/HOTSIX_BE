@@ -85,6 +85,13 @@ dependencies {
 
     // nanoId
     implementation 'com.aventrix.jnanoid:jnanoid:2.0.0'
+
+    // Monitoring
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'io.micrometer:micrometer-registry-prometheus'
+
+    implementation 'com.github.maricn:logback-slack-appender:1.6.1'
+
 }
 
 def querydslSrcDir = 'src/main/generated'

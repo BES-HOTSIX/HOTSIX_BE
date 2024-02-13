@@ -12,7 +12,6 @@ import com.example.hotsix_be.payment.cashlog.entity.CashLog;
 import com.example.hotsix_be.payment.cashlog.entity.EventType;
 import com.example.hotsix_be.payment.cashlog.repository.CashLogRepository;
 import com.example.hotsix_be.payment.payment.dto.request.TossConfirmRequest;
-import com.example.hotsix_be.payment.payment.dto.response.TossEasyPayResponse;
 import com.example.hotsix_be.payment.payment.exception.PaymentException;
 import com.example.hotsix_be.payment.recharge.entity.Recharge;
 import com.example.hotsix_be.reservation.entity.Reservation;
@@ -107,10 +106,6 @@ public class CashLogService {
 
     public CashLogIdResponse getCashLogIdById(final Long id) {
         return CashLogIdResponse.of(id);
-    }
-
-    public CashLogIdResponse getCashLogIdById(final Long id, final TossEasyPayResponse tossEasyPayResponse) {
-        return CashLogIdResponse.of(id, tossEasyPayResponse);
     }
 
     public MyCashLogResponse getMyCashLogById(final Long id, final PageImpl<CashLogConfirmResponse> cashLogConfirmPage) {

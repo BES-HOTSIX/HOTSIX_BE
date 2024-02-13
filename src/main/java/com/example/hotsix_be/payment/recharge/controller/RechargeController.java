@@ -79,10 +79,9 @@ public class RechargeController implements RechargeApi {
 
         if (method.equals("가상계좌")) {
             rechargeService.requestVirtualRecharge(tossPaymentRequest, member);
-            tossService.getEasyPayRes(tossPaymentRequest);
             return ResponseEntity.ok(
                     new ResponseDto<>(
-                            200-1,
+                            HttpStatus.OK.value(), 
                             "가상계좌 충전 신청 성공", null,
                             null, new EmptyResponse()));
         }
@@ -90,7 +89,7 @@ public class RechargeController implements RechargeApi {
             rechargeService.easyPayRecharge(tossPaymentRequest, member);
             return ResponseEntity.ok(
                     new ResponseDto<>(
-                            200-2,
+                            HttpStatus.OK.value(),
                             "간편결제 충전 성공", null,
                             null, new EmptyResponse()));
         }

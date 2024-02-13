@@ -11,6 +11,7 @@ import java.time.LocalDate;
 
 import static lombok.AccessLevel.PRIVATE;
 
+@Schema(description = "예약 결제, 취소 확인 응답")
 @Getter
 @RequiredArgsConstructor(access = PRIVATE)
 public class ConfirmResponse {

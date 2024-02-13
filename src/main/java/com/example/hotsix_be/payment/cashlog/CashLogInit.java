@@ -2,7 +2,6 @@ package com.example.hotsix_be.payment.cashlog;
 
 import com.example.hotsix_be.common.exception.BadRequestException;
 import com.example.hotsix_be.common.exception.ExceptionCode;
-import com.example.hotsix_be.hotel.repository.HotelRepository;
 import com.example.hotsix_be.member.entity.Member;
 import com.example.hotsix_be.member.repository.MemberRepository;
 import com.example.hotsix_be.payment.cashlog.entity.CashLog;
@@ -25,7 +24,6 @@ import static com.example.hotsix_be.payment.cashlog.entity.EventType.충전__무
 @Order(3)
 public class CashLogInit implements ApplicationRunner {
     private final CashLogRepository cashLogRepository;
-    private final HotelRepository hotelRepository;
     private final MemberRepository memberRepository;
 
     @Override
@@ -40,7 +38,6 @@ public class CashLogInit implements ApplicationRunner {
                         .member(member)
                         .orderId(randomNanoId())
                         .reservation(null)
-                        .withdraw(null)
                         .build();
 
                 cashLogRepository.save(cashLog);

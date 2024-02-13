@@ -16,4 +16,5 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     Optional<Reservation> findByIdAndIsPaidTrue(Long reserveId);
 
     Optional<Reservation> findByIdAndIsPaidFalse(Long reserveId);
+
 }

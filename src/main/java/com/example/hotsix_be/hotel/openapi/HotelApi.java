@@ -177,9 +177,14 @@ public interface HotelApi {
     @GetMapping("/search")
     public ResponseEntity<ResponseDto<PageImpl<HotelPageResponse>>> getHotelsByDistrictAndDateAndKw(
             @RequestParam String district,
-            @RequestParam String kw,
+            @RequestParam(required = false) String kw,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+            @RequestParam(required = false) Long bedroomCount,
+            @RequestParam(required = false) Long bedCount,
+            @RequestParam(required = false) Long bathroomCount,
+            @RequestParam(required = false) Long maxGuestCount,
+            @RequestParam(required = false) Long price,
             @PageableDefault(size = 9) Pageable pageable);
 
 }

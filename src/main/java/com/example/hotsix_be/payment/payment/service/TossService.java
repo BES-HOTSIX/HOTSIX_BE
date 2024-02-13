@@ -4,7 +4,6 @@ package com.example.hotsix_be.payment.payment.service;
 import com.example.hotsix_be.payment.cashlog.service.CashLogService;
 import com.example.hotsix_be.payment.payment.dto.request.TossConfirmRequest;
 import com.example.hotsix_be.payment.payment.dto.request.TossPaymentRequest;
-import com.example.hotsix_be.payment.payment.dto.response.TossEasyPayResponse;
 import com.example.hotsix_be.payment.payment.exception.PaymentException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -49,25 +48,4 @@ public class TossService {
                         clientResponse -> Mono.error(new PaymentException(PAYMENT_API_CALL_FAILED)))
                 .bodyToMono(TossPaymentRequest.class);
     }
-
-    public TossEasyPayResponse getEasyPayRes(final TossPaymentRequest req) {
-        return TossEasyPayResponse.of(req);
-    }
-
-//    public Mono<TossPaymentRequest> confirmTossPaymentByVirtual(final TossConfirmRequest tossConfirmRequest) {
-//
-//        String encodedKey = Base64.getEncoder().encodeToString((tossPaymentsWidgetSecretKey + ":").getBytes(UTF_8));
-//        String authorizations = "Basic " + encodedKey;
-//
-//        return webClient.post()
-//                .uri("https://api.tosspayments.com/v1/virtual-accounts")
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .header("Authorization", authorizations)
-//                .bodyValue(tossConfirmRequest)
-//                .retrieve()
-//                .onStatus(
-//                        HttpStatusCode::isError,
-//                        clientResponse -> Mono.error(new PaymentException(PAYMENT_API_CALL_FAILED)))
-//                .bodyToMono(TossPaymentRequest.class);
-//    }
 }

@@ -46,8 +46,8 @@ public interface RechargeApi {
                     "TossPaymentRequest 내의 method 에 따라 다른 방식의 충전을 진행합니다."
     )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200-1", description = "가상계좌 충전 신청 성공"),
-            @ApiResponse(responseCode = "200-2", description = "간편결제 충전 성공"),
+            @ApiResponse(responseCode = "200", description = "가상계좌 충전 신청 성공"),
+            @ApiResponse(responseCode = "200", description = "간편결제 충전 성공"),
             @ApiResponse(responseCode = "400", description = "토스페이먼츠 충전 신청 실패",
                     content = @Content(schema = @Schema(implementation = EmptyResponse.class))),
             @ApiResponse(responseCode = "500", description = "서버 에러",
@@ -59,12 +59,12 @@ public interface RechargeApi {
     );
 
     @Operation(
-            summary = "가상계좌 충전 신청 취소 토스페이먼츠 웹훅",
-            description = "가상계좌 충전 신청 취소를 위한 웹훅입니다."
+            summary = "가상계좌 충전 입금 확인 토스페이먼츠 웹훅",
+            description = "가상계좌 충전 입금 확인을 위한 웹훅입니다."
     )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "충전 신청 취소 웹훅 성공"),
-            @ApiResponse(responseCode = "400", description = "충전 신청 취소 웹훅 실패",
+            @ApiResponse(responseCode = "200", description = "충전 신청 입금 확인 웹훅 성공"),
+            @ApiResponse(responseCode = "400", description = "충전 신청 입금 확인 웹훅 실패",
                     content = @Content(schema = @Schema(implementation = EmptyResponse.class))),
             @ApiResponse(responseCode = "500", description = "서버 에러",
                     content = @Content(schema = @Schema(implementation = EmptyResponse.class)))
@@ -75,7 +75,7 @@ public interface RechargeApi {
 
     @Operation(
             summary = "가상계좌 충전 신청 취소",
-            description = "가상계좌 충전 신청 취소를 위한 엔드포인트입니다. 웹훅과 연동하여 사용됩니다."
+            description = "가상계좌 충전 신청 취소를 위한 엔드포인트입니다."
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "충전 신청 취소 성공"),

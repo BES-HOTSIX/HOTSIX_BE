@@ -51,8 +51,14 @@ public class HotelPageResponse {
     @Schema(description = "숙소 하루 숙박비", example = "10000")
     private final Long price;
 
+    @Schema(description = "좋아요 수", example = "10")
+    private final Integer likesCount;
+
     @Schema(description = "숙소 이미지 정보")
     private final ImagesResponse imagesResponse;
+
+    @Schema(description = "예약 개수", example = "5")
+    private final ReservationCountResponse reservationCountResponse;
 
     @Schema(description = "숙소 등록 시간", example = "2023-08-15T16:34:30.388")
     private final LocalDateTime createdAt;
@@ -72,7 +78,9 @@ public class HotelPageResponse {
                 hotel.getNickname(),
                 hotel.getDescription(),
                 hotel.getPrice(),
+                hotel.getLikesCount(),
                 ImagesResponse.of(hotel.getImages()),
+                ReservationCountResponse.of(hotel.getReservations()),
                 hotel.getCreatedAt()
         );
     }

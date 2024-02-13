@@ -4,7 +4,6 @@ import com.example.hotsix_be.common.entity.DateEntity;
 import com.example.hotsix_be.member.entity.Member;
 import com.example.hotsix_be.payment.recharge.entity.Recharge;
 import com.example.hotsix_be.reservation.entity.Reservation;
-import com.example.hotsix_be.payment.withdraw.entity.Withdraw;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
@@ -41,12 +40,6 @@ public class CashLog extends DateEntity {
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "reservation_id")
     private Reservation reservation;
-
-    @JsonIgnore
-    @OneToOne
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "withdraw_id")
-    private Withdraw withdraw;
 
     @JsonIgnore
     @OneToOne

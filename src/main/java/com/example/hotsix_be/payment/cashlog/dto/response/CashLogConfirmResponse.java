@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 
 import static lombok.AccessLevel.PRIVATE;
 
+@Schema(description = "CashLog 엔티티 내용 응답")
 @Getter
 @RequiredArgsConstructor(access = PRIVATE)
 public class CashLogConfirmResponse {

@@ -8,6 +8,7 @@ import org.springframework.data.domain.PageImpl;
 
 import static lombok.AccessLevel.PRIVATE;
 
+@Schema(description = "결제 내역 응답")
 @Getter
 @RequiredArgsConstructor(access = PRIVATE)
 public class MyCashLogResponse {

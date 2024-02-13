@@ -9,12 +9,11 @@ import com.example.hotsix_be.payment.cashlog.dto.response.CashLogIdResponse;
 import com.example.hotsix_be.payment.cashlog.dto.response.ConfirmResponse;
 import com.example.hotsix_be.payment.cashlog.dto.response.MyCashLogResponse;
 import com.example.hotsix_be.payment.cashlog.entity.CashLog;
-import com.example.hotsix_be.payment.payment.dto.response.TossEasyPayResponse;
-import com.example.hotsix_be.payment.payment.exception.PaymentException;
 import com.example.hotsix_be.payment.cashlog.openapi.CashLogApi;
 import com.example.hotsix_be.payment.cashlog.service.CashLogService;
 import com.example.hotsix_be.payment.payment.dto.request.TossConfirmRequest;
 import com.example.hotsix_be.payment.payment.dto.request.TossPaymentRequest;
+import com.example.hotsix_be.payment.payment.exception.PaymentException;
 import com.example.hotsix_be.payment.payment.service.TossService;
 import com.example.hotsix_be.reservation.dto.response.ReservationDetailResponse;
 import com.example.hotsix_be.reservation.entity.Reservation;
@@ -128,8 +127,7 @@ public class CashLogController implements CashLogApi {
 
         return tossPaymentResponseMono
                 .flatMap(tossPaymentRequest -> {
-                    TossEasyPayResponse tossEasyPayResponse = tossService.getEasyPayRes(tossPaymentRequest);
-                    CashLogIdResponse cashLogIdResponse = cashLogService.getCashLogIdById(cashLogId, tossEasyPayResponse);
+                    CashLogIdResponse cashLogIdResponse = cashLogService.getCashLogIdById(cashLogId);
                     return Mono.just(ResponseEntity.ok(
                             new ResponseDto<>(
                                     HttpStatus.OK.value(),

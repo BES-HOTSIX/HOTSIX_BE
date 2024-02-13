@@ -5,27 +5,27 @@ import lombok.*;
 
 import static lombok.AccessLevel.PRIVATE;
 
+@Schema(description = "토스페이먼츠 서버에서 받는 요청")
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = PRIVATE)
-@ToString
 public class TossPaymentRequest {
 
     @Schema(description = "주문 고유 식별 코드", example = "8sJILLP1EP6V1nLksCBL0")
     private String orderId;
 
-    @Schema(description = "토스페이먼츠 결제 금액", example = "50000")
+    @Schema(description = "결제 금액", example = "50000")
     private Long totalAmount;
 
-    // TODO 임시 필드
+    @Schema(description = "결제 수단", example = "간편결제")
     private String method;
 
-    // TODO 임시 필드
+    @Schema(description = "결제 상태", example = "DONE")
     private String status;
 
-    // TODO 임시 필드
+    @Schema(description = "가상계좌 시크릿키", example = "ps_E92LAa5PVbqlR7g5qzJJ37YmpXyJ")
     private String secret;
 
-    // TODO 임시 필드
+    @Schema(description = "가상계좌번호")
     private VirtualAccountRequest virtualAccount;
 }
