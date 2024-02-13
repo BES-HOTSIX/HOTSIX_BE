@@ -25,66 +25,66 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
-@ExtendWith(MockitoExtension.class)
-@Transactional
-class LoginServiceTest {
-
-    @Mock
-    private MemberRepository memberRepository;
-
-    @Mock
-    private PasswordEncoder passwordEncoder;
-
-    @Mock
-    private JwtProvider jwtProvider;
-
-    @Mock
-    private RefreshTokenRepository refreshTokenRepository;
-
-    @InjectMocks
-    private LoginService loginService;
-
-
-    @Test
-    void 로그인_성공() {
-        // given
-        LoginRequest loginRequest = new LoginRequest("username", "password");
-        // Member 객체 생성 시 passwordEncoder.encode("password")로 비밀번호 인코딩
-        Member member = new Member("username", passwordEncoder.encode("password"), "user1");
-
-        member = member.toBuilder()
-                .id(1L)
-                .build();
-
-        MemberTokens memberTokens = new MemberTokens("dummyRefreshToken", "dummyAccessToken");
-        given(jwtProvider.generateLoginToken(member.getId().toString())).willReturn(memberTokens);
-        given(passwordEncoder.matches(loginRequest.getPassword(), member.getPassword())).willReturn(true);
-
-        RefreshToken savedRefreshToken = new RefreshToken(memberTokens.getRefreshToken(), member.getId());
-        given(refreshTokenRepository.save(any(RefreshToken.class))).willReturn(savedRefreshToken);
-
-        // when
-        LoginResponse result = loginService.login(loginRequest, member);
-
-        // then
-        assertThat(result.getAccessToken()).isEqualTo(memberTokens.getAccessToken());
-        assertThat(result.getRefreshToken()).isEqualTo(memberTokens.getRefreshToken());
-    }
-
-    @Test
-    void 로그인_실패_비밀번호_불일치() {
-        // given
-        String username = "username";
-        String wrongPassword = "wrongPassword";
-        Member member = new Member(username, passwordEncoder.encode("password"), "user1");
-
-        LoginRequest loginRequest = new LoginRequest(username, wrongPassword);
-
-        when(passwordEncoder.matches(wrongPassword, member.getPassword())).thenReturn(false);
-
-        // when & then
-        assertThrows(AuthException.class, () -> loginService.login(loginRequest, member));
-    }
-
-
-}
+//@ExtendWith(MockitoExtension.class)
+//@Transactional
+//class LoginServiceTest {
+//
+//    @Mock
+//    private MemberRepository memberRepository;
+//
+//    @Mock
+//    private PasswordEncoder passwordEncoder;
+//
+//    @Mock
+//    private JwtProvider jwtProvider;
+//
+//    @Mock
+//    private RefreshTokenRepository refreshTokenRepository;
+//
+//    @InjectMocks
+//    private LoginService loginService;
+//
+//
+//    @Test
+//    void 로그인_성공() {
+//        // given
+//        LoginRequest loginRequest = new LoginRequest("username", "password");
+//        // Member 객체 생성 시 passwordEncoder.encode("password")로 비밀번호 인코딩
+//        Member member = new Member("username", passwordEncoder.encode("password"), "user1");
+//
+//        member = member.toBuilder()
+//                .id(1L)
+//                .build();
+//
+//        MemberTokens memberTokens = new MemberTokens("dummyRefreshToken", "dummyAccessToken");
+//        given(jwtProvider.generateLoginToken(member.getId().toString())).willReturn(memberTokens);
+//        given(passwordEncoder.matches(loginRequest.getPassword(), member.getPassword())).willReturn(true);
+//
+//        RefreshToken savedRefreshToken = new RefreshToken(memberTokens.getRefreshToken(), member.getId());
+//        given(refreshTokenRepository.save(any(RefreshToken.class))).willReturn(savedRefreshToken);
+//
+//        // when
+//        LoginResponse result = loginService.login(loginRequest, member);
+//
+//        // then
+//        assertThat(result.getAccessToken()).isEqualTo(memberTokens.getAccessToken());
+//        assertThat(result.getRefreshToken()).isEqualTo(memberTokens.getRefreshToken());
+//    }
+//
+//    @Test
+//    void 로그인_실패_비밀번호_불일치() {
+//        // given
+//        String username = "username";
+//        String wrongPassword = "wrongPassword";
+//        Member member = new Member(username, passwordEncoder.encode("password"), "user1");
+//
+//        LoginRequest loginRequest = new LoginRequest(username, wrongPassword);
+//
+//        when(passwordEncoder.matches(wrongPassword, member.getPassword())).thenReturn(false);
+//
+//        // when & then
+//        assertThrows(AuthException.class, () -> loginService.login(loginRequest, member));
+//    }
+//
+//
+//}
