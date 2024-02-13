@@ -12,12 +12,14 @@ import com.example.hotsix_be.image.config.NcpS3Properties;
 import com.example.hotsix_be.image.entity.Image;
 import com.example.hotsix_be.image.exception.ImageException;
 import com.example.hotsix_be.image.repository.ImageRepository;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
