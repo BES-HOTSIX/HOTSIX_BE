@@ -26,9 +26,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 
 import static com.aventrix.jnanoid.jnanoid.NanoIdUtils.randomNanoId;
-import static com.example.hotsix_be.cashlog.entity.EventType.*;
 import static com.example.hotsix_be.common.exception.ExceptionCode.INVALID_REQUEST;
 import static com.example.hotsix_be.common.exception.ExceptionCode.NOT_FOUND_RESERVATION_ID;
+import static com.example.hotsix_be.payment.cashlog.entity.EventType.*;
 
 @Service
 @Transactional(readOnly = true)
@@ -114,43 +114,6 @@ public class CashLogService {
         return MyCashLogResponse.of(member, cashLogConfirmPage);
     }
 
-    // 무통장 입금
-    @Transactional
-    public CashLog addCash(final AddCashRequest addCashRequest, final EventType eventType) {
-        Member member = memberService.getMemberByUsername(addCashRequest.getUsername());
-
-        return addCash(member, addCashRequest.getPrice(), null, eventType
-        );
-    }
-
-    @Transactional
-    public CashLog addCash(final Member member, final Long price, final Reservation reservation, final EventType eventType) {
-        if (reservation == null) return addCash(member, price, randomNanoId(), null, eventType);
-        return addCash(member, price, reservation.getOrderId(), reservation, eventType);
-    }
-
-    // 전반적인 입출금
-    @Transactional
-    public CashLog addCash(final Member member, final Long price, final String orderId, final Reservation reservation, final EventType eventType) {
-
-        CashLog cashLog = CashLog.builder()
-                .member(member)
-                .price(price)
-                // reservation 이 null 일 경우 충전, null 이 아닐 경우 예약, 환불, 정산(예약취소)
-                .reservation(reservation)
-                .orderId(orderId)
-                .eventType(eventType)
-                .build();
-
-        cashLogRepository.save(cashLog);
-
-        // 충전 혹은 차감 발생 후 member의 restCash 갱신
-        Long newRestCash = member.getRestCash() + cashLog.getPrice();
-        member.updateRestCash(newRestCash);
-
-        return cashLog;
-    }
-
     // TODO 특정한 날짜에 한꺼번에 정산하는 기능 추가하기
     // 예치금 사용 결제
     @Transactional
@@ -161,7 +124,7 @@ public class CashLogService {
 
         reservation.updateOrderId(randomNanoId());
 
-        CashLog cashLog = addCash(buyer, payPrice * -1, null, reservation, 결제__예치금);
+        CashLog cashLog = addCash(buyer, payPrice * -1, reservation, 결제__예치금);
 
         addCash(owner, payPrice, reservation, EventType.정산__예치금);
 
@@ -187,7 +150,7 @@ public class CashLogService {
 
         addCash(buyer, pgPayPrice, reservation, 충전__토스페이먼츠);
 
-        CashLog cashLog = addCash(buyer, payPrice * -1, orderId, reservation, 결제__예치금);
+        CashLog cashLog = addCash(buyer, payPrice * -1, reservation, 결제__예치금);
 
         addCash(owner, payPrice, reservation, EventType.정산__예치금);
 
@@ -217,8 +180,10 @@ public class CashLogService {
         Long restCash = member.getRestCash();
         Long price = reservation.getPrice();
 
-        addCash(reservation.getHotel().getOwner(), reservation.getPrice() * -1, reservation, 정산__예약취소);
+        // 중복 결제 예방
+        if (reservation.isPaid()) throw new PaymentException(INVALID_REQUEST);
 
-        return addCash(reservation.getMember(), reservation.getPrice(), reservation, 취소__예치금);
+        // 예치금이 충분한지 확인
+        return price <= restCash + pgPayPrice;
     }
 }

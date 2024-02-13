@@ -30,8 +30,11 @@ public class CashLogConfirmResponse {
 
     @Schema(description = "예약 아이디", example = "1")
     private final Long reservationId;
-    private final Long withdrawApplyId;
+
+    @Schema(description = "주문 고유 식별 코드", example = "8sJILLP1EP6V1nLksCBL0")
     private final String orderId;
+
+    @Schema(description = "CashLog 생성 일시", example = "2024-02-06 17:26:48.772390")
     private final LocalDateTime createdAt;
 
     public static CashLogConfirmResponse of(final CashLog cashLog) {
@@ -47,7 +50,6 @@ public class CashLogConfirmResponse {
                 cashLog.getPrice(),
                 memberId,
                 reservationId,
-                withdrawApplyId,
                 cashLog.getOrderId(),
                 cashLog.getCreatedAt()
         );

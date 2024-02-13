@@ -1,5 +1,6 @@
 package com.example.hotsix_be.payment.cashlog.controller;
 
+
 import com.example.hotsix_be.auth.Auth;
 import com.example.hotsix_be.auth.MemberOnly;
 import com.example.hotsix_be.auth.util.Accessor;
@@ -158,9 +159,9 @@ public class CashLogController implements CashLogApi {
 
     @PatchMapping("/{reserveId}/cancel")
     @MemberOnly
-    public ResponseEntity<?> cancelReservation(
-            @PathVariable(value = "reserveId") final Long reserveId,
-            @Auth Accessor accessor
+    public ResponseEntity<ResponseDto<CashLogIdResponse>> cancelReservation(
+            @PathVariable final Long reserveId,
+            @Auth final Accessor accessor
     ) {
         // 조회
         Reservation reservation = reservationService.findPaidById(reserveId).orElseThrow(() -> new ReservationException(NOT_FOUND_RESERVATION_ID));
