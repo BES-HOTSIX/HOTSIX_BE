@@ -26,16 +26,16 @@
 </tr>
 <tr>
 <td align="center">
-      <img src='https://github.com/BES-HOTSIX/HOTSIX_BE/assets/96820952/9da46c56-433a-4b23-a058-cdd4f7cbd254'>
+      <img src='https://github.com/BES-HOTSIX/HOTSIX_BE/assets/96820952/8c81b663-61f4-4dcb-84c7-f842b5313db0'>
     </td>
 </tr>
 </table>
 
 |                                                        숙소 등록                                                        |                                                         숙소 예약                                                         |
 | :---------------------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------: |
-| <img src='https://github.com/BES-HOTSIX/HOTSIX_BE/assets/96820952/9da46c56-433a-4b23-a058-cdd4f7cbd254'> | <img src='https://github.com/BES-HOTSIX/HOTSIX_BE/assets/96820952/9da46c56-433a-4b23-a058-cdd4f7cbd254'> |
+| <img src='https://github.com/BES-HOTSIX/HOTSIX_BE/assets/96820952/8c81b663-61f4-4dcb-84c7-f842b5313db0'> | <img src='https://github.com/BES-HOTSIX/HOTSIX_BE/assets/96820952/8c81b663-61f4-4dcb-84c7-f842b5313db0'> |
 |                                                     <b>숙소 결제</b>                                                      |                                                <b>리뷰 남기기</b>                                                |
-| <img src='https://github.com/BES-HOTSIX/HOTSIX_BE/assets/96820952/9da46c56-433a-4b23-a058-cdd4f7cbd254'> | <img src='https://github.com/BES-HOTSIX/HOTSIX_BE/assets/96820952/9da46c56-433a-4b23-a058-cdd4f7cbd254'> |
+| <img src='https://github.com/BES-HOTSIX/HOTSIX_BE/assets/96820952/8c81b663-61f4-4dcb-84c7-f842b5313db0'> | <img src='https://github.com/BES-HOTSIX/HOTSIX_BE/assets/96820952/8c81b663-61f4-4dcb-84c7-f842b5313db0'> |
 
 
 <br/>
