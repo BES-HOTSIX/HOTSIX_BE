@@ -19,6 +19,7 @@ import org.hibernate.annotations.OnDeleteAction;
 @Table(name = "reviews")
 @Entity
 public class Review extends DateEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -32,16 +33,19 @@ public class Review extends DateEntity {
     private Double staffService;
 
     private Double cleanliness;
+
     @JsonIgnore
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "hotel_id")
     private Hotel hotel;
+
     @JsonIgnore
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "member_id")
     private Member member;
+
     @JsonIgnore
     @OneToOne
     @JoinColumn(name = "reservation_id")

@@ -16,7 +16,6 @@ import com.example.hotsix_be.login.repository.RefreshTokenRepository;
 import com.example.hotsix_be.login.util.JwtProvider;
 import com.example.hotsix_be.member.entity.Member;
 import com.example.hotsix_be.member.repository.MemberRepository;
-import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -89,6 +88,5 @@ class LoginServiceTest {
         // when & then
         assertThrows(AuthException.class, () -> loginService.login(loginRequest, member));
     }
-
 
 }

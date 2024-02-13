@@ -11,19 +11,16 @@ import com.example.hotsix_be.hotel.dto.request.HotelUpdateRequest;
 import com.example.hotsix_be.hotel.dto.response.HotelDetailResponse;
 import com.example.hotsix_be.hotel.entity.Hotel;
 import com.example.hotsix_be.hotel.repository.HotelRepository;
-import com.example.hotsix_be.image.entity.Image;
 import com.example.hotsix_be.image.service.ImageService;
 import com.example.hotsix_be.member.entity.Member;
 import com.example.hotsix_be.member.repository.MemberRepository;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -59,7 +56,9 @@ class HotelServiceTest {
 
     @BeforeEach
     void 초기_설정() {
-        member = new Member("김겸호", "123456789", "KYUMHO", "https://t4.ftcdn.net/jpg/02/15/84/43/360_F_215844325_ttX9YiIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg", "test@test.com");
+        member = new Member("김겸호", "123456789", "KYUMHO",
+                "https://t4.ftcdn.net/jpg/02/15/84/43/360_F_215844325_ttX9YiIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg",
+                "test@test.com");
         hotel = new Hotel("호텔", "서울시 강남구", "강남역 1번출구", 10L, 10L, 10L, 10L,
                 List.of("헬스장"), "강남호텔", "강남호텔입니다.", 10000L, member);
     }
