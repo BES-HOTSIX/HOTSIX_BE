@@ -126,11 +126,12 @@ public class Reservation extends DateEntity {
         return checkInDate.isAfter(LocalDate.now());
     }
 
-	public void update(final ReservationInfoRequest reservationInfoRequest) {
+	public void update(final ReservationInfoRequest reservationInfoRequest, final Hotel hotel) {
         this.checkInDate = reservationInfoRequest.getCheckInDate();
         this.checkOutDate = reservationInfoRequest.getCheckOutDate();
         this.guests = reservationInfoRequest.getNumOfGuests();
         this.price = reservationInfoRequest.getPrice();
         this.isPaid = reservationInfoRequest.isPaid();
+        this.hotel = hotel;
 	}
 }

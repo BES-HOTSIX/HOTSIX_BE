@@ -80,9 +80,9 @@ public class ReservationService {
 
     @Transactional
     public Reservation save(final Long hotelId, final ReservationInfoRequest reservationInfoRequest, final Long memberId) {
-        Hotel hotel = hotelRepository.findById(hotelId).orElseThrow(() -> new HotelException(NOT_FOUND_HOTEL_ID));
-
         Member member = memberRepository.findById(memberId).orElseThrow(() -> new AuthException(INVALID_AUTHORITY));
+
+        Hotel hotel = hotelRepository.findById(hotelId).orElseThrow(() -> new HotelException(NOT_FOUND_HOTEL_ID));
 
         final Reservation reservation = new Reservation(
                 reservationInfoRequest.getCheckInDate(),
@@ -121,13 +121,14 @@ public class ReservationService {
         );
     }
 
+    @Transactional
     public Reservation saveByReserveId(final Long hotelId, final Long reserveId, final ReservationInfoRequest reservationInfoRequest, final Long memberId) {
-        Member member = memberRepository.findById(memberId).orElseThrow(() -> new AuthException(INVALID_AUTHORITY));
+        memberRepository.findById(memberId).orElseThrow(() -> new AuthException(INVALID_AUTHORITY));
 
         Hotel hotel = hotelRepository.findById(hotelId).orElseThrow(() -> new HotelException(NOT_FOUND_HOTEL_ID));
 
         Reservation reservation = reservationRepository.findById(reserveId).orElseThrow(() -> new ReservationException(NOT_FOUND_RESERVATION_ID));
-        reservation.update(reservationInfoRequest);
+        reservation.update(reservationInfoRequest, hotel);
 
         return reservation;
     }

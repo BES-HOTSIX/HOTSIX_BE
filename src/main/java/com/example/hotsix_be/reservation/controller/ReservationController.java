@@ -84,7 +84,7 @@ public class ReservationController {
 		return ResponseEntity.ok(
 				new ResponseDto<>(
 						HttpStatus.OK.value(),
-						"예약 내역이 생성되었습니다.", null,
+						"예약 내역이 수정되었습니다.", null,
 						null, reservationCreateResponse
 				)
 		);
