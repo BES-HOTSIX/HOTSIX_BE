@@ -16,6 +16,32 @@
 
 ![HOTSHARE_NEED](https://github.com/BES-HOTSIX/HOTSIX_BE/assets/96820952/aed81452-2ca4-4258-bf72-88650c969bdd)
 
+<br>
+
+<table>
+<tr >
+<td align="center">
+메인 페이지
+</td>
+</tr>
+<tr>
+<td align="center">
+      <img src='https://github.com/BES-HOTSIX/HOTSIX_BE/assets/96820952/9da46c56-433a-4b23-a058-cdd4f7cbd254'>
+    </td>
+</tr>
+</table>
+
+|                                                        숙소 등록                                                        |                                                         숙소 예약                                                         |
+| :---------------------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------: |
+| <img src='https://github.com/BES-HOTSIX/HOTSIX_BE/assets/96820952/9da46c56-433a-4b23-a058-cdd4f7cbd254'> | <img src='https://github.com/BES-HOTSIX/HOTSIX_BE/assets/96820952/9da46c56-433a-4b23-a058-cdd4f7cbd254'> |
+|                                                     <b>숙소 결제</b>                                                      |                                                <b>리뷰 남기기</b>                                                |
+| <img src='https://github.com/BES-HOTSIX/HOTSIX_BE/assets/96820952/9da46c56-433a-4b23-a058-cdd4f7cbd254'> | <img src='https://github.com/BES-HOTSIX/HOTSIX_BE/assets/96820952/9da46c56-433a-4b23-a058-cdd4f7cbd254'> |
+
+
+<br/>
+
+
+<br>
 
 </div>
 
@@ -46,5 +72,8 @@
 |<img src="https://avatars.githubusercontent.com/u/96820952?v=4" width="150" height="150">|<img src ="https://avatars.githubusercontent.com/u/61774034?v=4" width="150" height="150">|<img src ="https://avatars.githubusercontent.com/u/146146134?v=4" width="150" height="150">|<img src="https://avatars.githubusercontent.com/u/62785408?v=4" width="150" height="150">|<img src ="https://avatars.githubusercontent.com/u/128708536?v=4" width="150" height="150">|<img src ="https://avatars.githubusercontent.com/u/148306166?v=4" width="150" height="150">
 |:-:|:-:|:-:|:-:|:-:|:-:|
 |[김겸호](https://github.com/js030)|[금시연](https://github.com/jkeum-dev)|[김경환](https://github.com/hagd0520)|[정주영](https://github.com/git990412)|[이유현](https://github.com/leeyuhyun0104)|[배현준](https://github.com/bhj2bb)|
+
+<br>
+<br>
 
 
