@@ -122,7 +122,7 @@ public class ReservationService {
     }
 
     @Transactional
-    public Reservation saveByReserveId(final Long hotelId, final Long reserveId, final ReservationInfoRequest reservationInfoRequest, final Long memberId) {
+    public Reservation modifyByReserveId(final Long hotelId, final Long reserveId, final ReservationInfoRequest reservationInfoRequest, final Long memberId) {
         memberRepository.findById(memberId).orElseThrow(() -> new AuthException(INVALID_AUTHORITY));
 
         Hotel hotel = hotelRepository.findById(hotelId).orElseThrow(() -> new HotelException(NOT_FOUND_HOTEL_ID));

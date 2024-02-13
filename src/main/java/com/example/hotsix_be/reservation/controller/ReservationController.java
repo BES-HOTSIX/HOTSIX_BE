@@ -78,7 +78,7 @@ public class ReservationController {
 			@RequestBody final ReservationInfoRequest reservationInfoRequest,
 			@Auth final Accessor accessor
 	) {
-		Reservation reservation = reservationService.saveByReserveId(hotelId, reserveId, reservationInfoRequest, accessor.getMemberId());
+		Reservation reservation = reservationService.modifyByReserveId(hotelId, reserveId, reservationInfoRequest, accessor.getMemberId());
 		ReservationCreateResponse reservationCreateResponse = ReservationCreateResponse.of(reservation);
 
 		return ResponseEntity.ok(
