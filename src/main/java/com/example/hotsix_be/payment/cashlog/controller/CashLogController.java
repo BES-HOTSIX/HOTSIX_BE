@@ -158,9 +158,9 @@ public class CashLogController implements CashLogApi {
 
     @PatchMapping("/{reserveId}/cancel")
     @MemberOnly
-    public ResponseEntity<ResponseDto<CashLogIdResponse>> cancelReservation(
-            @PathVariable final Long reserveId,
-            @Auth final Accessor accessor
+    public ResponseEntity<?> cancelReservation(
+            @PathVariable(value = "reserveId") final Long reserveId,
+            @Auth Accessor accessor
     ) {
         // 조회
         Reservation reservation = reservationService.findPaidById(reserveId).orElseThrow(() -> new ReservationException(NOT_FOUND_RESERVATION_ID));
