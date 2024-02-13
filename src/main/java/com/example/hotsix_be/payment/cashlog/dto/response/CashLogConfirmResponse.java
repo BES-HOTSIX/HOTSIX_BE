@@ -30,16 +30,11 @@ public class CashLogConfirmResponse {
 
     @Schema(description = "예약 아이디", example = "1")
     private final Long reservationId;
-<<<<<<< HEAD:src/main/java/com/example/hotsix_be/cashlog/dto/response/CashLogConfirmResponse.java
-    private final Long withdrawApplyId;
-    private final String orderId;
-=======
 
     @Schema(description = "주문 고유 식별 코드", example = "8sJILLP1EP6V1nLksCBL0")
     private final String orderId;
 
     @Schema(description = "CashLog 생성 일시", example = "2024-02-06 17:26:48.772390")
->>>>>>> 01d8254bb08e8226ca6eec3cea8fcabc6422413a:src/main/java/com/example/hotsix_be/payment/cashlog/dto/response/CashLogConfirmResponse.java
     private final LocalDateTime createdAt;
 
     public static CashLogConfirmResponse of(final CashLog cashLog) {
@@ -55,10 +50,6 @@ public class CashLogConfirmResponse {
                 cashLog.getPrice(),
                 memberId,
                 reservationId,
-<<<<<<< HEAD:src/main/java/com/example/hotsix_be/cashlog/dto/response/CashLogConfirmResponse.java
-                withdrawApplyId,
-=======
->>>>>>> 01d8254bb08e8226ca6eec3cea8fcabc6422413a:src/main/java/com/example/hotsix_be/payment/cashlog/dto/response/CashLogConfirmResponse.java
                 cashLog.getOrderId(),
                 cashLog.getCreatedAt()
         );
