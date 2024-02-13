@@ -12,6 +12,7 @@ import com.example.hotsix_be.image.entity.ImageType;
 import com.example.hotsix_be.image.service.ImageService;
 import com.example.hotsix_be.member.entity.Member;
 import com.example.hotsix_be.member.repository.MemberRepository;
+import com.example.hotsix_be.reservation.repository.ReservationRepository;
 import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
@@ -139,7 +140,19 @@ public class HotelService {
                 .map(HotelDetailResponse::of);
     }
 
-    public Page<Hotel> getHotelsByDistrictAndDate(String district, LocalDate startDate, LocalDate endDate, Pageable pageable, String kw, Long bedroomCount, Long bedCount, Long bathroomCount, Long maxGuestCount, Long price) {
-        return hotelRepository.findAllByDistrictAndDate(pageable, district, startDate, endDate, kw, bedroomCount, bedCount, bathroomCount, maxGuestCount, price);
+    public Page<Hotel> getHotelsByDistrictAndDate(String district, LocalDate startDate, LocalDate endDate,
+                                                  Pageable pageable, String kw, Long bedroomCount, Long bedCount,
+                                                  Long bathroomCount, Long maxGuestCount, Long price) {
+        return hotelRepository.findAllByDistrictAndDate(pageable, district, startDate, endDate, kw, bedroomCount,
+                bedCount, bathroomCount, maxGuestCount, price);
     }
+
+    public Page<Hotel> getHotelsSortedByLikesCountAndCreatedAt(Pageable pageable) {
+        return hotelRepository.findByLikesCountAndCreatedAt(pageable);
+    }
+
+    public Page<Hotel> getHotelsOrderedByReservationsAndCreatedAt(Pageable pageable) {
+        return hotelRepository.findByReservationsCountAndCreatedAt(pageable);
+    }
+
 }

@@ -9,4 +9,5 @@ public interface HotelRepository extends JpaRepository<Hotel, Long>, HotelReposi
     Page<Hotel> findAllByOrderByCreatedAtDesc(Pageable sortedPageable);
 
     Page<Hotel> findByOwnerIdOrderByIdDesc(Pageable pageable, Long memberId);
+
 }
