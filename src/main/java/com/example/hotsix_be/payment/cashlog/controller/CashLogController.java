@@ -42,7 +42,7 @@ public class CashLogController implements CashLogApi {
     private final ReservationService reservationService;
     private final TossService tossService;
 
-    @GetMapping("/me") // TODO 예약 내역도 추가
+    @GetMapping("/me")
     @MemberOnly
     public ResponseEntity<ResponseDto<MyCashLogResponse>> showMyCashLogs(
             final Pageable pageable,

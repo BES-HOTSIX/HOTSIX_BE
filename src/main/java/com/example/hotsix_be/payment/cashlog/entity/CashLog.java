@@ -45,5 +45,5 @@ public class CashLog extends DateEntity {
     @OneToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "recharge_id")
-    private Recharge recharge; // TODO relTypeCode 같은 구분법 만들기
+    private Recharge recharge;
 }
