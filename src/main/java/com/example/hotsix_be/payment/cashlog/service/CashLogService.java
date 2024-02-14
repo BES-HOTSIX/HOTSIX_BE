@@ -89,7 +89,7 @@ public class CashLogService {
 
         return Optional.of(pageCashLog)
                 .filter(Slice::hasContent)
-                .orElseThrow(() -> new PaymentException(INVALID_REQUEST));
+                .orElse(Page.empty());
     }
 
     public ConfirmResponse getConfirmRespById(final Long id) {
@@ -114,7 +114,6 @@ public class CashLogService {
         return MyCashLogResponse.of(member, cashLogConfirmPage);
     }
 
-    // TODO 특정한 날짜에 한꺼번에 정산하는 기능 추가하기
     // 예치금 사용 결제
     @Transactional
     public CashLog payByCashOnly(final Reservation reservation) {

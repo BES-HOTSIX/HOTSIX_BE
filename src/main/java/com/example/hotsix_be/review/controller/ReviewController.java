@@ -42,6 +42,7 @@ public class ReviewController {
     @GetMapping("/{hotelId}")
     @ResponseBody
     public ResponseEntity<List<ReviewResponseDTO>> getReviewsOrderByCreatedAtDesc(@PathVariable final Long hotelId) {
+
         ReviewListWithSummaryResponse response = reviewService.getReviewsOrderByCreatedAtDesc(hotelId);
         List<ReviewResponseDTO> reviews = response.getReviews();
         return ResponseEntity.ok(reviews);
