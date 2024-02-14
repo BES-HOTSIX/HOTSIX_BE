@@ -187,4 +187,37 @@ public interface HotelApi {
             @RequestParam(required = false) Long price,
             @PageableDefault(size = 9) Pageable pageable);
 
+    @Operation(
+            summary = "찜 개수를 기준으로 숙소 조회",
+            description = "찜 개수를 기준으로 숙소를 조회하기 위한 API"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "찜 개수를 기준으로 숙소 조회 성공"
+    )
+    @ApiResponse(responseCode = "400", description = "찜 개수를 기준으로 숙소 조회 실패",
+            content = @Content(schema = @Schema(implementation = EmptyResponse.class)))
+    @ApiResponse(responseCode = "500", description = "서버 에러",
+            content = @Content(schema = @Schema(implementation = EmptyResponse.class)))
+    @GetMapping("/likes-sorted")
+    public ResponseEntity<ResponseDto<PageImpl<HotelPageResponse>>> getHotelsSortedByLikes(
+            final Pageable pageable);
+
+
+    @Operation(
+            summary = "예약 개수를 기준으로 숙소 조회",
+            description = "예약 개수를 기준으로 숙소를 조회하기 위한 API"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "예약 개수를 기준으로 숙소 조회 성공"
+    )
+    @ApiResponse(responseCode = "400", description = "예약 개수를 기준으로 숙소 조회 실패",
+            content = @Content(schema = @Schema(implementation = EmptyResponse.class)))
+    @ApiResponse(responseCode = "500", description = "서버 에러",
+            content = @Content(schema = @Schema(implementation = EmptyResponse.class)))
+    @GetMapping("/reservation-sorted")
+    public ResponseEntity<ResponseDto<PageImpl<HotelPageResponse>>> getHotelsSortedByReservationCnt(
+            final Pageable pageable);
+
 }
