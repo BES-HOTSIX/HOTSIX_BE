@@ -21,7 +21,7 @@ import static com.example.hotsix_be.common.exception.ExceptionCode.NOT_FOUND_MEM
 import static com.example.hotsix_be.common.exception.ExceptionCode.NOT_FOUND_MEMBER_BY_USERNAME;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class MemberService {
 
@@ -34,6 +34,7 @@ public class MemberService {
         return memberRepository.findById(id).orElseThrow(() -> new BadRequestException(NOT_FOUND_MEMBER_BY_ID));
     }
 
+    @Transactional
     public void save(MemberRegisterRequest memberRegisterRequest) {
 
         final Member member = new Member(
@@ -59,6 +60,7 @@ public class MemberService {
         return MemberInfoResponse.of(member);
     }
 
+    @Transactional
     public void changePassword(Long memberId, String password) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new AuthException(NOT_FOUND_MEMBER_BY_ID));
@@ -68,11 +70,13 @@ public class MemberService {
         memberRepository.save(member);
     }
 
-    @Transactional(readOnly = true)
+
     public boolean isExistNickname(String nickname) {
         return memberRepository.existsByNickname(nickname);
     }
 
+
+    @Transactional
     public void changeNickname(Long memberId, String nickname) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new AuthException(NOT_FOUND_MEMBER_BY_ID));
@@ -82,6 +86,7 @@ public class MemberService {
         memberRepository.save(member);
     }
 
+    @Transactional
     public void changeImageUrl(Long memberId, final List<MultipartFile> multipartFiles) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new AuthException(NOT_FOUND_MEMBER_BY_ID));
