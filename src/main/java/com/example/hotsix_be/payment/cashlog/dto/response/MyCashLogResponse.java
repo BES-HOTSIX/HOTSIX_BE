@@ -19,6 +19,9 @@ public class MyCashLogResponse {
     @Schema(description = "현재 로그인한 유저의 캐시 잔액", example = "1000000")
     private final Long restCash;
 
+    @Schema(description = "현재 로그인한 유저의 이메일", example = "test1@gmail.com")
+    private final String email;
+
     @Schema(description = "현재 로그인한 유저의 캐시 사용 내역 페이지")
     private final PageImpl<CashLogConfirmResponse> cashLogConfirmPage;
 
@@ -29,6 +32,7 @@ public class MyCashLogResponse {
         return new MyCashLogResponse(
                 member.getUsername(),
                 member.getRestCash(),
+                member.getEmail(),
                 cashLogConfirmPage
         );
     }

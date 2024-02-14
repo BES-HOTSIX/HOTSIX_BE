@@ -27,8 +27,6 @@ public class CashLog extends DateEntity {
 
     private Long price;
 
-    // toss 결제 시 발생 TODO 일반 결제에도 발생하도록 수정 예정
-    // 하나의 예약에 관련한 (충전, 결제, 취소) 모든 cashLog가 한 orderId를 공유
     private String orderId;
 
     @JsonIgnore
@@ -47,5 +45,5 @@ public class CashLog extends DateEntity {
     @OneToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "recharge_id")
-    private Recharge recharge; // TODO relTypeCode 같은 구분법 만들기
+    private Recharge recharge;
 }
