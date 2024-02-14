@@ -26,20 +26,24 @@
 </tr>
 <tr>
 <td align="center">
-      <img src='https://github.com/BES-HOTSIX/HOTSIX_BE/assets/96820952/8c81b663-61f4-4dcb-84c7-f842b5313db0'>
+      <img src='https://github.com/BES-HOTSIX/HOTSIX_BE/assets/96820952/2f8ef39b-d7b3-400a-81fc-a8fe8682b03d'>
     </td>
 </tr>
 </table>
 
 |                                                        숙소 등록                                                        |                                                         숙소 예약                                                         |
 | :---------------------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------: |
-| <img src='https://github.com/BES-HOTSIX/HOTSIX_BE/assets/96820952/7571cfcc-d7d2-4279-8495-673caf4836b1'> | <img src='https://github.com/BES-HOTSIX/HOTSIX_BE/assets/96820952/3ed49ac9-4db5-42f0-b026-96a5f25dcd62'> |
+| <img src='https://github.com/BES-HOTSIX/HOTSIX_BE/assets/96820952/7571cfcc-d7d2-4279-8495-673caf4836b1'> | <img src='https://github.com/BES-HOTSIX/HOTSIX_BE/assets/96820952/4dfc2a2d-a128-4794-b833-42db81cd7b92'> |
 |                                                     <b>숙소 결제</b>                                                      |                                                <b>리뷰 남기기</b>                                                |
-| <img src='https://github.com/BES-HOTSIX/HOTSIX_BE/assets/96820952/8c81b663-61f4-4dcb-84c7-f842b5313db0'> | <img src='https://github.com/BES-HOTSIX/HOTSIX_BE/assets/96820952/5e690cec-e3ec-422e-9cdf-0574d174f35a'> |
+| <img src='https://github.com/BES-HOTSIX/HOTSIX_BE/assets/96820952/10df2906-9dde-4ef1-b8cc-20d8d6df0517'> | <img src='https://github.com/BES-HOTSIX/HOTSIX_BE/assets/96820952/b2d28a96-45b6-4923-aab6-b33dbf93973d'> |
+|                                                     <b>로그인, 회원가입</b>                                                      |                                                <b>마이페이지</b>                                                |
+| <img src='https://github.com/BES-HOTSIX/HOTSIX_BE/assets/96820952/e83f7dc3-fb10-42a9-815b-ccea533df783'> | <img src='https://github.com/BES-HOTSIX/HOTSIX_BE/assets/96820952/7d2d8389-26e3-4c0e-911a-54c00e3f4aea'> |
+
 
 
 
 <br/>
+
 
 
 <br>
