@@ -102,7 +102,7 @@ public class RechargeService {
 
         return Optional.of(pageRecharge)
                 .filter(Slice::hasContent)
-                .orElseThrow(() -> new PaymentException(INVALID_REQUEST));
+                .orElse(Page.empty());
     }
 
     public Recharge findByOrderIdAndMemberId(String orderId, Long memberId) {

@@ -1,41 +1,32 @@
-
 package com.example.hotsix_be.hotel.service;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import com.example.hotsix_be.hotel.dto.request.HotelInfoRequest;
 import com.example.hotsix_be.hotel.dto.request.HotelUpdateRequest;
 import com.example.hotsix_be.hotel.dto.response.HotelDetailResponse;
 import com.example.hotsix_be.hotel.entity.Hotel;
 import com.example.hotsix_be.hotel.repository.HotelRepository;
-
 import com.example.hotsix_be.image.service.ImageService;
 import com.example.hotsix_be.member.entity.Member;
 import com.example.hotsix_be.member.repository.MemberRepository;
-import java.util.ArrayList;
-
-import java.util.List;
-import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
-
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -173,4 +164,3 @@ class HotelServiceTest {
     }
 
 }
-
