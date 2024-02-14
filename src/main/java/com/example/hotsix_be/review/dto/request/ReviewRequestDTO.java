@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor(access = PRIVATE)
 public class ReviewRequestDTO {
-    @NotBlank
+
     private String body;
 
     private Double amenities;
@@ -21,8 +21,6 @@ public class ReviewRequestDTO {
     private Double cleanliness;
 
     private Double rating;
-
-    //private Long hotelId;
 
 
     public Double getRating() {

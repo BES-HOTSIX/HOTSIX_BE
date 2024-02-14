@@ -7,6 +7,8 @@ import com.example.hotsix_be.reservation.entity.Reservation;
 import com.example.hotsix_be.review.dto.request.ReviewRequestDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.OnDelete;
@@ -24,16 +26,27 @@ public class Review extends DateEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "리뷰 내용을 입력해주세요")
     private String body;
 
     private Double rating;
 
+    @NotNull(message = "별점을 입력해주세요")
     private Double amenities;
 
+    @NotNull(message = "별점을 입력해주세요")
     private Double staffService;
 
+    @NotNull(message = "별점을 입력해주세요")
     private Double cleanliness;
 
+    private Double totalAmenities;
+
+    private Double totalCleanliness;
+
+    private Double totalStaffService;
+
+    private Double totalRating;
     @JsonIgnore
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -58,8 +71,9 @@ public class Review extends DateEntity {
             final Double cleanliness,
             final Double rating,
             final Hotel hotel,
-            final Reservation reservation
-    ) {
+            final Reservation reservation,
+            final Member member
+    ){
         this.body = body;
         this.amenities = amenities;
         this.staffService = staffService;
@@ -67,6 +81,7 @@ public class Review extends DateEntity {
         this.rating = rating;
         this.hotel = hotel;
         this.reservation = reservation;
+        this.member = member;
     }
 
     public void update(final ReviewRequestDTO reviewRequestDTO) {
@@ -75,6 +90,12 @@ public class Review extends DateEntity {
         this.amenities = reviewRequestDTO.getAmenities();
         this.staffService = reviewRequestDTO.getStaffService();
         this.cleanliness = reviewRequestDTO.getCleanliness();
-        //this.hotel = hotel;
+    }
+
+    public void updateAverages(double totalRating, double totalAmenities, double totalStaffService, double totalCleanliness) {
+        this.totalRating = totalRating;
+        this.totalAmenities = totalAmenities;
+        this.totalStaffService = totalStaffService;
+        this.totalCleanliness = totalCleanliness;
     }
 }
