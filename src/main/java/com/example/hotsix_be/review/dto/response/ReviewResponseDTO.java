@@ -1,13 +1,11 @@
 package com.example.hotsix_be.review.dto.response;
 
-import com.example.hotsix_be.hotel.entity.Hotel;
+import static lombok.AccessLevel.PRIVATE;
+
 import com.example.hotsix_be.member.entity.Member;
 import com.example.hotsix_be.review.entity.Review;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-
-import static lombok.AccessLevel.PRIVATE;
 
 @Getter
 @RequiredArgsConstructor(access = PRIVATE)
