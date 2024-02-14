@@ -104,11 +104,11 @@ public class RechargeController implements RechargeApi {
     public ResponseEntity<ResponseDto<EmptyResponse>> tossWebhook(
             @RequestBody TossWebhookRequest tossWebhookRequest
     ) {
-        String orderId = tossWebhookRequest.getOrderId();
-        String secret = tossWebhookRequest.getSecret();
-        Recharge recharge = rechargeService.findByOrderId(orderId);
-        if (!secret.equals(recharge.getSecret())) throw new PaymentException(INVALID_REQUEST);
-        rechargeService.processVirtualRecharge(recharge);
+            String orderId = tossWebhookRequest.getOrderId();
+            String secret = tossWebhookRequest.getSecret();
+            Recharge recharge = rechargeService.findByOrderId(orderId);
+            if (!secret.equals(recharge.getSecret())) throw new PaymentException(INVALID_REQUEST);
+            rechargeService.processVirtualRecharge(recharge);
 
         return ResponseEntity.ok(
                 new ResponseDto<>(

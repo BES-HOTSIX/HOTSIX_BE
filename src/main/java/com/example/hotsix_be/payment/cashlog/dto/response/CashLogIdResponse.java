@@ -15,6 +15,6 @@ public class CashLogIdResponse {
     private final Long cashLogId;
 
     public static CashLogIdResponse of(final Long cashLogId) {
-        return CashLogIdResponse.of(cashLogId);
+        return new CashLogIdResponse(cashLogId);
     }
 }
