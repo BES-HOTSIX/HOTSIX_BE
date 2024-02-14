@@ -14,6 +14,7 @@ import com.example.hotsix_be.member.openapi.MemberApi;
 import com.example.hotsix_be.member.service.MemberService;
 import com.example.hotsix_be.reservation.dto.response.ReservationDetailResponse;
 import com.example.hotsix_be.reservation.service.ReservationService;
+import com.example.hotsix_be.review.service.ReviewService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
@@ -36,6 +37,7 @@ public class MemberController implements MemberApi {
     private final ReservationService reservationService;
     private final HotelService hotelService;
     private final LikeService likeService;
+    private final ReviewService reviewService;
 
     @PostMapping("/register")
     public ResponseEntity<ResponseDto<?>> registerMember(@RequestBody MemberRegisterRequest memberRegisterRequest) {

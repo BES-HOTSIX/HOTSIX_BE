@@ -70,4 +70,8 @@ public class ReviewService {
         return ReviewResponseDTO.of(
                 reviewRepository.findById(id).orElseThrow(() -> new ReviewException(NOT_FOUND_REVIEW_ID)));
     }
+
+    public boolean hasMemberReviewedHotel(Long memberId, Long hotelId) {
+        return reviewRepository.existsByMemberIdAndHotelId(memberId, hotelId);
+    }
 }
