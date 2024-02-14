@@ -12,8 +12,10 @@ import com.example.hotsix_be.member.dto.request.MemberRegisterRequest;
 import com.example.hotsix_be.member.dto.response.MemberInfoResponse;
 import com.example.hotsix_be.member.openapi.MemberApi;
 import com.example.hotsix_be.member.service.MemberService;
-import com.example.hotsix_be.reservation.dto.response.ReservationDetailResponse;
+import com.example.hotsix_be.reservation.dto.response.MemberReservationResponseDTO;
 import com.example.hotsix_be.reservation.service.ReservationService;
+import com.example.hotsix_be.review.dto.response.MemberReviewResponseDTO;
+import com.example.hotsix_be.review.service.ReviewService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
@@ -36,6 +38,7 @@ public class MemberController implements MemberApi {
     private final ReservationService reservationService;
     private final HotelService hotelService;
     private final LikeService likeService;
+    private final ReviewService reviewService;
 
     @PostMapping("/register")
     public ResponseEntity<ResponseDto<?>> registerMember(@RequestBody MemberRegisterRequest memberRegisterRequest) {
@@ -100,11 +103,11 @@ public class MemberController implements MemberApi {
 
     @GetMapping("/me/reservations")
     @MemberOnly
-    public ResponseEntity<ResponseDto<Page<ReservationDetailResponse>>> getMyReservations(
+    public ResponseEntity<ResponseDto<Page<MemberReservationResponseDTO>>> getMyReservations(
             @Auth final Accessor accessor,
             @RequestParam(value = "page", defaultValue = "0") int page
     ) {
-        Page<ReservationDetailResponse> reservationDetailResponses = reservationService.findByMemberIdAndIsPaid(accessor.getMemberId(), page);
+        Page<MemberReservationResponseDTO> reservationDetailResponses = reservationService.findByMemberIdAndIsPaid(accessor.getMemberId(), page);
         return ResponseEntity.ok(
                 new ResponseDto<>(
                         HttpStatus.OK.value(),
@@ -212,6 +215,23 @@ public class MemberController implements MemberApi {
                         HttpStatus.OK.value(),
                         "프로필 사진 변경이 성공적으로 완료되었습니다.", null,
                         null, null
+                )
+        );
+    }
+
+    @GetMapping("/me/reviews")
+    @MemberOnly
+    public ResponseEntity<ResponseDto<Page<MemberReviewResponseDTO>>> getMyReviews(
+            @Auth final Accessor accessor,
+            @RequestParam(value = "page", defaultValue = "0") int page
+    ) {
+        Page<MemberReviewResponseDTO> memberReviewResponseDTOList = reviewService.getMemberReview(accessor.getMemberId(), page);
+
+        return ResponseEntity.ok(
+                new ResponseDto<>(
+                        HttpStatus.OK.value(),
+                        "리뷰 조회가 성공적으로 완료되었습니다.", null,
+                        null, memberReviewResponseDTOList
                 )
         );
     }
