@@ -42,7 +42,7 @@ public class ReservationInfoResponse {
                 hotel.getNickname(),
                 hotel.getDescription(),
                 imageUrl,
-                hotel.getOwner().getUsername(),
+                hotel.getOwner().getNickname(),
                 reservation.getCheckInDate(),
                 reservation.getCheckOutDate(),
                 reservation.getCreatedAt(),
