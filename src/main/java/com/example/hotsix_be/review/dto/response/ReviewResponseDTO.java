@@ -1,5 +1,6 @@
 package com.example.hotsix_be.review.dto.response;
 
+import static lombok.AccessLevel.PRIVATE;
 
 import com.example.hotsix_be.member.entity.Member;
 import com.example.hotsix_be.review.entity.Review;
@@ -8,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
 
-import static lombok.AccessLevel.PRIVATE;
 
 @Getter
 @RequiredArgsConstructor(access = PRIVATE)
