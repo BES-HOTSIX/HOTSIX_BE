@@ -8,6 +8,7 @@ import com.example.hotsix_be.hotel.repository.HotelRepository;
 import com.example.hotsix_be.member.entity.Member;
 import com.example.hotsix_be.member.repository.MemberRepository;
 import com.example.hotsix_be.reservation.dto.request.ReservationInfoRequest;
+import com.example.hotsix_be.reservation.dto.response.MemberReservationResponseDTO;
 import com.example.hotsix_be.reservation.dto.response.ReservationDetailResponse;
 import com.example.hotsix_be.reservation.dto.response.ReservationInfoResponse;
 import com.example.hotsix_be.reservation.dto.response.ReservedDatesOfHotelResponse;
@@ -36,14 +37,17 @@ public class ReservationService {
     private final MemberRepository memberRepository;
     private final ReviewRepository reviewRepository;
 
-    public Page<ReservationDetailResponse> findByMemberIdAndIsPaid(Long memberId, int page) {
+    public Page<MemberReservationResponseDTO> findByMemberIdAndIsPaid(Long memberId, int page) {
         Pageable pageable = Pageable.ofSize(4).withPage(page);
 
         return reservationRepository.findByMemberIdAndIsPaidTrueOrderByIdDesc(pageable, memberId)
-                .map(reservation -> ReservationDetailResponse.of(
-                        reservation.getHotel(),
-                        reservation
-                ));
+                .map(reservation -> {
+                    return MemberReservationResponseDTO.of(
+                            reservation.getHotel(),
+                            reservation,
+                            reviewRepository.findByReservationId(reservation.getId()).orElse(null)
+                    );
+                });
     }
 
     public ReservationDetailResponse getDetailById(final Reservation reservation, final Long memberId) {

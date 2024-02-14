@@ -2,6 +2,7 @@ package com.example.hotsix_be.reservation.dto.response;
 
 import com.example.hotsix_be.hotel.entity.Hotel;
 import com.example.hotsix_be.reservation.entity.Reservation;
+import com.example.hotsix_be.review.entity.Review;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -12,7 +13,7 @@ import static lombok.AccessLevel.PRIVATE;
 
 @Getter
 @RequiredArgsConstructor(access = PRIVATE)
-public class ReservationDetailResponse {
+public class MemberReservationResponseDTO {
     private final Long id;
     private final String hotelNickname;
     private final String hotelDescription;
@@ -29,14 +30,15 @@ public class ReservationDetailResponse {
     private final String buyerName;
     private final Long buyerRestCash;
     private final String buyerEmail;
+    private final boolean hasMemberReviewedHotel;
 
-    public static ReservationDetailResponse of(final Hotel hotel, final Reservation reservation) {
+    public static MemberReservationResponseDTO of(final Hotel hotel, final Reservation reservation, final Review review) {
         String imageUrl = "";
         if (!hotel.getImages().isEmpty()) {
             imageUrl = hotel.getImages().get(0).getUrl(); // 첫 번째 이미지의 URL을 가져옵니다.
         }
 
-        return new ReservationDetailResponse(
+        return new MemberReservationResponseDTO(
                 reservation.getId(),
                 hotel.getNickname(),
                 hotel.getDescription(),
@@ -52,7 +54,8 @@ public class ReservationDetailResponse {
                 hotel.getId(),
                 reservation.getMember().getUsername(),
                 reservation.getMember().getRestCash(),
-                reservation.getMember().getEmail()
+                reservation.getMember().getEmail(),
+                review != null
         );
     }
 }

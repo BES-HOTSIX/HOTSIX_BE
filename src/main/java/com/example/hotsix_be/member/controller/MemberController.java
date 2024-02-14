@@ -12,7 +12,7 @@ import com.example.hotsix_be.member.dto.request.MemberRegisterRequest;
 import com.example.hotsix_be.member.dto.response.MemberInfoResponse;
 import com.example.hotsix_be.member.openapi.MemberApi;
 import com.example.hotsix_be.member.service.MemberService;
-import com.example.hotsix_be.reservation.dto.response.ReservationDetailResponse;
+import com.example.hotsix_be.reservation.dto.response.MemberReservationResponseDTO;
 import com.example.hotsix_be.reservation.service.ReservationService;
 import com.example.hotsix_be.review.dto.response.MemberReviewResponseDTO;
 import com.example.hotsix_be.review.service.ReviewService;
@@ -103,11 +103,11 @@ public class MemberController implements MemberApi {
 
     @GetMapping("/me/reservations")
     @MemberOnly
-    public ResponseEntity<ResponseDto<Page<ReservationDetailResponse>>> getMyReservations(
+    public ResponseEntity<ResponseDto<Page<MemberReservationResponseDTO>>> getMyReservations(
             @Auth final Accessor accessor,
             @RequestParam(value = "page", defaultValue = "0") int page
     ) {
-        Page<ReservationDetailResponse> reservationDetailResponses = reservationService.findByMemberIdAndIsPaid(accessor.getMemberId(), page);
+        Page<MemberReservationResponseDTO> reservationDetailResponses = reservationService.findByMemberIdAndIsPaid(accessor.getMemberId(), page);
         return ResponseEntity.ok(
                 new ResponseDto<>(
                         HttpStatus.OK.value(),
