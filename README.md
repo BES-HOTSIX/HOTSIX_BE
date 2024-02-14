@@ -60,6 +60,10 @@
 
 ![HOTSHARE_INFRA](https://github.com/BES-HOTSIX/HOTSIX_BE/assets/96820952/55205781-503d-4ed8-8d61-d5d4b720e227)
 
+## 서비스 요청 흐름도
+
+![HOTSHARE_CLIENT](https://github.com/BES-HOTSIX/HOTSIX_BE/assets/96820952/2e804753-51e1-4060-8ca0-98712cd40285)
+
 ## CI/CD
 
 ![HOTSHARE_CI_CD](https://github.com/BES-HOTSIX/HOTSIX_BE/assets/96820952/41add0f2-7967-4409-b3bc-d2c6bb4c6f7c)
