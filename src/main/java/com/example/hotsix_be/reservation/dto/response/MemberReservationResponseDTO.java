@@ -8,13 +8,13 @@ import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 import static lombok.AccessLevel.PRIVATE;
 
 @Getter
 @RequiredArgsConstructor(access = PRIVATE)
-public class ReservationInfoResponse {
+public class MemberReservationResponseDTO {
+    private final Long id;
     private final String hotelNickname;
     private final String hotelDescription;
     private final String hotelPhotoUrl;
@@ -25,20 +25,21 @@ public class ReservationInfoResponse {
     private final LocalDateTime cancelDate;
     private final Long numOfGuests;
     private final Long paidPrice;
+    private final boolean isPaid;
     private final Long hotelId;
-    private final Long reviewId;
+    private final String buyerName;
+    private final Long buyerRestCash;
+    private final String buyerEmail;
+    private final boolean hasMemberReviewedHotel;
 
-    public static ReservationInfoResponse of(final Hotel hotel, final Reservation reservation, final Review review) {
+    public static MemberReservationResponseDTO of(final Hotel hotel, final Reservation reservation, final Review review) {
         String imageUrl = "";
         if (!hotel.getImages().isEmpty()) {
             imageUrl = hotel.getImages().get(0).getUrl(); // 첫 번째 이미지의 URL을 가져옵니다.
         }
 
-        Long reviewId = Optional.ofNullable(review)
-                .map(Review::getId)
-                .orElse(0L);
-
-        return new ReservationInfoResponse(
+        return new MemberReservationResponseDTO(
+                reservation.getId(),
                 hotel.getNickname(),
                 hotel.getDescription(),
                 imageUrl,
@@ -49,8 +50,12 @@ public class ReservationInfoResponse {
                 reservation.getCancelDate(),
                 reservation.getGuests(),
                 reservation.getPrice(),
+                reservation.isPaid(),
                 hotel.getId(),
-                reviewId
+                reservation.getMember().getUsername(),
+                reservation.getMember().getRestCash(),
+                reservation.getMember().getEmail(),
+                review != null
         );
     }
 }
