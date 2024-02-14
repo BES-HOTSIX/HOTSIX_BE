@@ -33,7 +33,7 @@
 
 |                                                        숙소 등록                                                        |                                                         숙소 예약                                                         |
 | :---------------------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------: |
-| <img src='https://github.com/BES-HOTSIX/HOTSIX_BE/assets/96820952/7571cfcc-d7d2-4279-8495-673caf4836b1'> | <img src='https://github.com/BES-HOTSIX/HOTSIX_BE/assets/96820952/8c81b663-61f4-4dcb-84c7-f842b5313db0'> |
+| <img src='https://github.com/BES-HOTSIX/HOTSIX_BE/assets/96820952/7571cfcc-d7d2-4279-8495-673caf4836b1'> | <img src='https://github.com/BES-HOTSIX/HOTSIX_BE/assets/96820952/3ed49ac9-4db5-42f0-b026-96a5f25dcd62'> |
 |                                                     <b>숙소 결제</b>                                                      |                                                <b>리뷰 남기기</b>                                                |
 | <img src='https://github.com/BES-HOTSIX/HOTSIX_BE/assets/96820952/8c81b663-61f4-4dcb-84c7-f842b5313db0'> | <img src='https://github.com/BES-HOTSIX/HOTSIX_BE/assets/96820952/5e690cec-e3ec-422e-9cdf-0574d174f35a'> |
 
