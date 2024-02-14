@@ -1,7 +1,14 @@
 package com.example.hotsix_be.review.controller;
+<<<<<<< HEAD
 
+=======
+import com.example.hotsix_be.auth.Auth;
+import com.example.hotsix_be.auth.MemberOnly;
+import com.example.hotsix_be.auth.util.Accessor;
+>>>>>>> 2baeb0c1c7c28de853ccd48d7251a090ad8b28f8
 import com.example.hotsix_be.common.dto.ResponseDto;
 import com.example.hotsix_be.review.dto.request.ReviewRequestDTO;
+import com.example.hotsix_be.review.dto.response.ReviewListWithSummaryResponse;
 import com.example.hotsix_be.review.dto.response.ReviewResponseDTO;
 import com.example.hotsix_be.review.service.ReviewService;
 import jakarta.validation.Valid;
@@ -20,13 +27,13 @@ import java.util.List;
 public class ReviewController {
     private final ReviewService reviewService;
 
+    @MemberOnly
     @PostMapping("/add/{hotelId}/{reservationId}")
-    public ResponseEntity<?> addReview(@Valid @RequestBody final ReviewRequestDTO reviewRequestDTO,
+    public ResponseEntity<?> addReview(@RequestBody final ReviewRequestDTO reviewRequestDTO,
                                        @PathVariable final Long hotelId,
-                                       @PathVariable final Long reservationId) {
-
-        log.info("Received review request: {}", reviewRequestDTO);
-        reviewService.addReview(reviewRequestDTO, hotelId, reservationId);
+                                       @PathVariable final Long reservationId,
+                                       @Auth final Accessor accessor) {
+        reviewService.addReview(reviewRequestDTO, hotelId, reservationId, accessor.getMemberId());
         return ResponseEntity.ok(
                 new ResponseDto<>(
                         HttpStatus.OK.value(),
@@ -39,13 +46,20 @@ public class ReviewController {
     @GetMapping("/{hotelId}")
     @ResponseBody
     public ResponseEntity<List<ReviewResponseDTO>> getReviewsOrderByCreatedAtDesc(@PathVariable final Long hotelId) {
+<<<<<<< HEAD
         List<ReviewResponseDTO> reviews = reviewService.getReviewsOrderByCreatedAtDesc(hotelId);
+=======
+        ReviewListWithSummaryResponse response = reviewService.getReviewsOrderByCreatedAtDesc(hotelId);
+        List<ReviewResponseDTO> reviews = response.getReviews();
+>>>>>>> 2baeb0c1c7c28de853ccd48d7251a090ad8b28f8
         return ResponseEntity.ok(reviews);
     }
 
+    @MemberOnly
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteReview(@PathVariable final Long id) {
-        reviewService.deleteReview(id);
+    public ResponseEntity<?> deleteReview(@PathVariable final Long id,
+                                          @Auth final Accessor accessor) {
+        reviewService.deleteReview(id, accessor.getMemberId());
         return ResponseEntity.ok(new ResponseDto<>(HttpStatus.OK.value(), "리뷰가 성공적으로 삭제되었습니다.", null, null, null));
     }
 
@@ -55,19 +69,13 @@ public class ReviewController {
         return ResponseEntity.ok(review);
     }
 
+    @MemberOnly
     @PutMapping("/modify/{id}")
-    public ResponseEntity<?> modifyReview(
-            @PathVariable Long id,
-            @Valid @RequestBody ReviewRequestDTO modifiedReviewDTO
+    public ResponseEntity<?> modifyReview(@PathVariable final Long id,
+                                          @Valid @RequestBody final ReviewRequestDTO modifiedReviewDTO,
+                                          @Auth final Accessor accessor
     ) {
-        log.info("Received modify review request for reviewId: {}", id);
-
-//        Long hotelId = modifiedReviewDTO.getHotelId();
-//
-//        Hotel hotel = hotelRepository.findById(hotelId)
-//                .orElseThrow(() -> new HotelException(NOT_FOUND_HOTEL_ID));
-
-        reviewService.modifyReview(id, modifiedReviewDTO);
+        reviewService.modifyReview(id, modifiedReviewDTO, accessor.getMemberId());
 
         return ResponseEntity.ok(
                 new ResponseDto<>(
@@ -77,6 +85,10 @@ public class ReviewController {
                 )
         );
     }
+<<<<<<< HEAD
 
 }
     
+=======
+}
+>>>>>>> 2baeb0c1c7c28de853ccd48d7251a090ad8b28f8

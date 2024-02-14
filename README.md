@@ -33,9 +33,10 @@
 
 |                                                        숙소 등록                                                        |                                                         숙소 예약                                                         |
 | :---------------------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------: |
-| <img src='https://github.com/BES-HOTSIX/HOTSIX_BE/assets/96820952/8c81b663-61f4-4dcb-84c7-f842b5313db0'> | <img src='https://github.com/BES-HOTSIX/HOTSIX_BE/assets/96820952/8c81b663-61f4-4dcb-84c7-f842b5313db0'> |
+| <img src='https://github.com/BES-HOTSIX/HOTSIX_BE/assets/96820952/7571cfcc-d7d2-4279-8495-673caf4836b1'> | <img src='https://github.com/BES-HOTSIX/HOTSIX_BE/assets/96820952/3ed49ac9-4db5-42f0-b026-96a5f25dcd62'> |
 |                                                     <b>숙소 결제</b>                                                      |                                                <b>리뷰 남기기</b>                                                |
-| <img src='https://github.com/BES-HOTSIX/HOTSIX_BE/assets/96820952/8c81b663-61f4-4dcb-84c7-f842b5313db0'> | <img src='https://github.com/BES-HOTSIX/HOTSIX_BE/assets/96820952/8c81b663-61f4-4dcb-84c7-f842b5313db0'> |
+| <img src='https://github.com/BES-HOTSIX/HOTSIX_BE/assets/96820952/8c81b663-61f4-4dcb-84c7-f842b5313db0'> | <img src='https://github.com/BES-HOTSIX/HOTSIX_BE/assets/96820952/5e690cec-e3ec-422e-9cdf-0574d174f35a'> |
+
 
 
 <br/>
@@ -59,6 +60,10 @@
 
 ![HOTSHARE_INFRA](https://github.com/BES-HOTSIX/HOTSIX_BE/assets/96820952/55205781-503d-4ed8-8d61-d5d4b720e227)
 
+## 서비스 요청 흐름도
+
+![HOTSHARE_CLIENT](https://github.com/BES-HOTSIX/HOTSIX_BE/assets/96820952/2e804753-51e1-4060-8ca0-98712cd40285)
+
 ## CI/CD
 
 ![HOTSHARE_CI_CD](https://github.com/BES-HOTSIX/HOTSIX_BE/assets/96820952/41add0f2-7967-4409-b3bc-d2c6bb4c6f7c)
@@ -72,6 +77,10 @@
 |<img src="https://avatars.githubusercontent.com/u/96820952?v=4" width="100" height="100">|<img src ="https://avatars.githubusercontent.com/u/61774034?v=4" width="100" height="100">|<img src ="https://avatars.githubusercontent.com/u/146146134?v=4" width="100" height="100">|<img src="https://avatars.githubusercontent.com/u/62785408?v=4" width="100" height="100">|<img src ="https://avatars.githubusercontent.com/u/128708536?v=4" width="100" height="100">|<img src ="https://avatars.githubusercontent.com/u/148306166?v=4" width="100" height="100">
 |:-:|:-:|:-:|:-:|:-:|:-:|
 |[김겸호](https://github.com/js030)|[금시연](https://github.com/jkeum-dev)|[김경환](https://github.com/hagd0520)|[정주영](https://github.com/git990412)|[이유현](https://github.com/leeyuhyun0104)|[배현준](https://github.com/bhj2bb)|
+
+<br>
+<br>
+
 
 
 

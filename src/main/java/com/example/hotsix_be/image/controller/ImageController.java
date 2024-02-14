@@ -1,6 +1,7 @@
 package com.example.hotsix_be.image.controller;
 
 import com.example.hotsix_be.common.dto.ResponseDto;
+import com.example.hotsix_be.image.openapi.ImageApi;
 import com.example.hotsix_be.image.service.ImageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -15,11 +16,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/images")
-public class ImageController {
+public class ImageController implements ImageApi {
     private final ImageService imageService;
 
     @DeleteMapping
-    public ResponseEntity<?> deleteImage(@RequestParam("imageUrl") String imageUrl) {
+    public ResponseEntity<ResponseDto<?>> deleteImage(@RequestParam("imageUrl") String imageUrl) {
         String imageId = imageService.getImageIdAndDeleteImage(
                 imageUrl); // ImageRepository 이미지 삭제 및 S3 버켓 이미지 ID 반환
         imageService.deleteImageInS3Bucket(imageId); // S3 버켓 이미지 삭제

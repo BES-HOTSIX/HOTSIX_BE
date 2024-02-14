@@ -13,6 +13,7 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -23,6 +24,7 @@ import static com.example.hotsix_be.common.exception.ExceptionCode.NOT_FOUND_MEM
 @Component
 @RequiredArgsConstructor
 @Profile("dev")
+@Transactional
 @Order(2)
 public class ReservationInit implements ApplicationRunner {
     private final ReservationRepository reservationRepository;
@@ -62,7 +64,7 @@ public class ReservationInit implements ApplicationRunner {
 
                 Reservation reservation3 = new Reservation(
                         LocalDate.parse("2024-02-22"),
-                        LocalDate.parse("2024-02-28"),
+                        LocalDate.parse("2024-02-26"),
                         4L,
                         1000000L,
                         true,
@@ -70,6 +72,28 @@ public class ReservationInit implements ApplicationRunner {
                         member
                 );
                 reservationRepository.save(reservation3);
+
+                Reservation reservation4 = new Reservation(
+                        LocalDate.parse("2024-02-14"),
+                        LocalDate.parse("2024-02-15"),
+                        2L,
+                        1000000L,
+                        true,
+                        lastHotel,
+                        member
+                );
+                reservationRepository.save(reservation4);
+
+                Reservation reservation5 = new Reservation(
+                        LocalDate.parse("2024-02-17"),
+                        LocalDate.parse("2024-02-18"),
+                        4L,
+                        1000000L,
+                        true,
+                        lastHotel,
+                        member
+                );
+                reservationRepository.save(reservation5);
 
                 List<Reservation> reservations = reservationRepository.findAll();
                 if (!reservations.isEmpty()) {
