@@ -42,6 +42,7 @@
 
 
 
+
 <br/>
 
 
@@ -66,7 +67,7 @@
 
 ## 서비스 요청 흐름도
 
-![HOTSHARE_CLIENT](https://github.com/BES-HOTSIX/HOTSIX_BE/assets/96820952/2e804753-51e1-4060-8ca0-98712cd40285)
+![HOTSHARE_CLIENT](https://github.com/BES-HOTSIX/HOTSIX_BE/assets/96820952/0f19c6e9-277a-45d7-b222-ab46548aa111)
 
 ## CI/CD
 
@@ -77,8 +78,11 @@
 ![HOTSHARE_MONITOR](https://github.com/BES-HOTSIX/HOTSIX_BE/assets/96820952/251a0f83-9c01-4466-b867-82c7ccf593b4)
 
 
+
+
+
 ## 멤버
-|<img src="https://avatars.githubusercontent.com/u/96820952?v=4" width="100" height="100">|<img src ="https://avatars.githubusercontent.com/u/61774034?v=4" width="100" height="100">|<img src ="https://avatars.githubusercontent.com/u/146146134?v=4" width="100" height="100">|<img src="https://avatars.githubusercontent.com/u/62785408?v=4" width="100" height="100">|<img src ="https://avatars.githubusercontent.com/u/128708536?v=4" width="100" height="100">|<img src ="https://avatars.githubusercontent.com/u/148306166?v=4" width="100" height="100">
+|<img src="https://github.com/BES-HOTSIX/HOTSIX_BE/assets/96820952/c601a2f4-db66-40d3-8d7d-079ee1f9bee1" width="100" height="100">|<img src ="https://github.com/BES-HOTSIX/HOTSIX_BE/assets/96820952/ea331acd-c248-45a3-844d-289e2ce3b0d3" width="100" height="100">|<img src ="https://github.com/BES-HOTSIX/HOTSIX_BE/assets/96820952/21b246bc-6147-4eb8-bd9a-e3843608fb00" width="100" height="100">|<img src="https://github.com/BES-HOTSIX/HOTSIX_BE/assets/96820952/fce2229f-8811-4bfa-80a2-a6f3423f2739" width="100" height="100">|<img src ="https://github.com/BES-HOTSIX/HOTSIX_BE/assets/96820952/b0e7f298-8889-4287-b009-268546f0f24d" width="100" height="100">|<img src ="https://github.com/BES-HOTSIX/HOTSIX_BE/assets/96820952/41fd57fc-abc5-4fdc-ba3b-b0606269da15" width="100" height="100">
 |:-:|:-:|:-:|:-:|:-:|:-:|
 |[김겸호](https://github.com/js030)|[금시연](https://github.com/jkeum-dev)|[김경환](https://github.com/hagd0520)|[정주영](https://github.com/git990412)|[이유현](https://github.com/leeyuhyun0104)|[배현준](https://github.com/bhj2bb)|
 
