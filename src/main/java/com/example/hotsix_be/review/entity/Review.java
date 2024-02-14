@@ -7,6 +7,8 @@ import com.example.hotsix_be.reservation.entity.Reservation;
 import com.example.hotsix_be.review.dto.request.ReviewRequestDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.OnDelete;
@@ -23,14 +25,18 @@ public class Review extends DateEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "리뷰 내용을 입력해주세요")
     private String body;
 
     private Double rating;
 
+    @NotNull(message = "별점을 입력해주세요")
     private Double amenities;
 
+    @NotNull(message = "별점을 입력해주세요")
     private Double staffService;
 
+    @NotNull(message = "별점을 입력해주세요")
     private Double cleanliness;
 
     private Double totalAmenities;

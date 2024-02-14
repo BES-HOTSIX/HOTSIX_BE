@@ -95,13 +95,11 @@ public class ReviewService {
     }
 
     private ReviewSummaryResponse calculateSummaryForReview(Review review) {
-        // Implement the logic to calculate summary for a single review
         Double amenities = review.getAmenities();
         Double cleanliness = review.getCleanliness();
         Double staffService = review.getStaffService();
         Double rating = review.getRating();
 
-        // Example: Calculate average values
         double totalAmenities = amenities;
         double totalCleanliness = cleanliness;
         double totalStaffService = staffService;
@@ -121,7 +119,6 @@ public class ReviewService {
         double totalStaffService = staffServiceStats.getAverage();
         double totalRating = ratingStats.getAverage();
 
-        // Update each review with the calculated averages
         for (ReviewResponseDTO review : reviews) {
             Review existingReview = reviewRepository.findById(review.getId()).orElseThrow(() -> new ReviewException(NOT_FOUND_REVIEW_ID));
             existingReview.updateAverages(totalAmenities, totalCleanliness, totalStaffService, totalRating);

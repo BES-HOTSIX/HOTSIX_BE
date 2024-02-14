@@ -22,8 +22,6 @@ public class ReviewRequestDTO {
 
     private Double rating;
 
-    //private Long hotelId;
-
 
     public Double getRating() {
         this.rating = (this.amenities + this.staffService + this.cleanliness) / 3.0;
