@@ -1,6 +1,5 @@
 package com.example.hotsix_be.payment.cashlog.controller;
 
-
 import com.example.hotsix_be.auth.Auth;
 import com.example.hotsix_be.auth.MemberOnly;
 import com.example.hotsix_be.auth.util.Accessor;
@@ -43,7 +42,7 @@ public class CashLogController implements CashLogApi {
     private final ReservationService reservationService;
     private final TossService tossService;
 
-    @GetMapping("/me") // TODO 예약 내역도 추가
+    @GetMapping("/me")
     @MemberOnly
     public ResponseEntity<ResponseDto<MyCashLogResponse>> showMyCashLogs(
             final Pageable pageable,

@@ -1,8 +1,6 @@
 package com.example.hotsix_be.review.dto.request;
 
 import static lombok.AccessLevel.PRIVATE;
-
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

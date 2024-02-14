@@ -18,6 +18,7 @@ public class ReservedDatesOfHotelResponse {
     private final List<LocalDate> reservedDates;
 
     public static ReservedDatesOfHotelResponse of(final List<Reservation> reservations) {
+
         List<LocalDate> allReservedDates = new ArrayList<>();
         // 모든 예약으로부터 예약된 날짜 범위를 추출
         for (Reservation reservation : reservations) {
