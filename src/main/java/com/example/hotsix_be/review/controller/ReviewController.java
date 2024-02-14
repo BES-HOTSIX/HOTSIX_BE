@@ -1,11 +1,7 @@
 package com.example.hotsix_be.review.controller;
-<<<<<<< HEAD
-
-=======
 import com.example.hotsix_be.auth.Auth;
 import com.example.hotsix_be.auth.MemberOnly;
 import com.example.hotsix_be.auth.util.Accessor;
->>>>>>> 2baeb0c1c7c28de853ccd48d7251a090ad8b28f8
 import com.example.hotsix_be.common.dto.ResponseDto;
 import com.example.hotsix_be.review.dto.request.ReviewRequestDTO;
 import com.example.hotsix_be.review.dto.response.ReviewListWithSummaryResponse;
@@ -46,12 +42,9 @@ public class ReviewController {
     @GetMapping("/{hotelId}")
     @ResponseBody
     public ResponseEntity<List<ReviewResponseDTO>> getReviewsOrderByCreatedAtDesc(@PathVariable final Long hotelId) {
-<<<<<<< HEAD
-        List<ReviewResponseDTO> reviews = reviewService.getReviewsOrderByCreatedAtDesc(hotelId);
-=======
+
         ReviewListWithSummaryResponse response = reviewService.getReviewsOrderByCreatedAtDesc(hotelId);
         List<ReviewResponseDTO> reviews = response.getReviews();
->>>>>>> 2baeb0c1c7c28de853ccd48d7251a090ad8b28f8
         return ResponseEntity.ok(reviews);
     }
 
@@ -85,10 +78,4 @@ public class ReviewController {
                 )
         );
     }
-<<<<<<< HEAD
-
 }
-    
-=======
-}
->>>>>>> 2baeb0c1c7c28de853ccd48d7251a090ad8b28f8
