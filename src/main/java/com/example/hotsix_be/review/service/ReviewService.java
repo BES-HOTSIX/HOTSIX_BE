@@ -1,4 +1,5 @@
 package com.example.hotsix_be.review.service;
+
 import com.example.hotsix_be.common.exception.AuthException;
 import com.example.hotsix_be.hotel.entity.Hotel;
 import com.example.hotsix_be.hotel.exception.HotelException;
@@ -9,12 +10,17 @@ import com.example.hotsix_be.reservation.entity.Reservation;
 import com.example.hotsix_be.reservation.exception.ReservationException;
 import com.example.hotsix_be.reservation.repository.ReservationRepository;
 import com.example.hotsix_be.review.dto.request.ReviewRequestDTO;
+import com.example.hotsix_be.review.dto.response.MemberReviewResponseDTO;
+import com.example.hotsix_be.review.dto.response.ReviewListWithSummaryResponse;
 import com.example.hotsix_be.review.dto.response.ReviewResponseDTO;
+import com.example.hotsix_be.review.dto.response.ReviewSummaryResponse;
 import com.example.hotsix_be.review.entity.Review;
 import com.example.hotsix_be.review.exception.ReviewException;
 import com.example.hotsix_be.review.repository.ReviewRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,12 +28,10 @@ import java.util.DoubleSummaryStatistics;
 import java.util.List;
 
 import static com.example.hotsix_be.common.exception.ExceptionCode.*;
-import com.example.hotsix_be.review.dto.response.ReviewListWithSummaryResponse;
-import com.example.hotsix_be.review.dto.response.ReviewSummaryResponse;
 
 @RequiredArgsConstructor
 @Service
-@Transactional(readOnly=true)
+@Transactional(readOnly = true)
 public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final HotelRepository hotelRepository;
@@ -129,7 +133,10 @@ public class ReviewService {
         return new ReviewListWithSummaryResponse(reviews, summary);
     }
 
-    public boolean hasMemberReviewedHotel(Long memberId, Long hotelId) {
-        return reviewRepository.existsByMemberIdAndHotelId(memberId, hotelId);
+    public Page<MemberReviewResponseDTO> getMemberReview(final Long memberId, int page) {
+        Pageable pageable = Pageable.ofSize(4).withPage(page);
+
+        return reviewRepository.findReviewsByMemberIdOrderByCreatedAtDesc(memberId, pageable)
+                .map(MemberReviewResponseDTO::of);
     }
 }

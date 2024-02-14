@@ -2,6 +2,8 @@ package com.example.hotsix_be.review.repository;
 
 import com.example.hotsix_be.review.dto.response.ReviewResponseDTO;
 import com.example.hotsix_be.review.entity.Review;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -14,5 +16,5 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
 
     Optional<Review> findByReservationId(Long id);
 
-    boolean existsByMemberIdAndHotelId(Long memberId, Long hotelId);
+    Page<Review> findReviewsByMemberIdOrderByCreatedAtDesc(Long memberId, Pageable pageable);
 }
