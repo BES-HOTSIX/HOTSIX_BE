@@ -215,14 +215,14 @@
 |😭 시도| getRating 메서드를 수정해서 ReviewRequestDTO 클래스에서 계산된 값이 rating 필드에 저장되도록 변경 |
 |😄 해결|ReviewService의 addReview 메서드에서 ReviewRequestDTO에서 rating 값을 가져와서 review 객체 생성 시에 설정하도록 수정 |
 
-### 문제6
+### 숙소 등록 Swagger 테스트 시 문제 발생 
 
 |진행 순서| 내용|
 |:---|:---|
-| 😱 문제 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|
-|🤔 원인|
-|😭 시도|  |
-|😄 해결| |
+| 😱 문제 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| 숙소 등록 시 숙소의 정보와 사진을 함께 받아야 해서 서버에 http 요청 헤더에 mutipart/form-data를 붙이고 숙소 정보는 application/json 그리고 사진을  mutipart/form-data  헤더로 요청을 보내 인자에 값을 넣을 때 각각의 스프링 컨버터로 역직렬화 하여 서비스 로직을 통해 저장하는 형태였다. 하지만 스웨거에서 인자들에 붙어있는 어노테이션이나 메서드 레벨에 붙어있는 어노테이션으로 자동화를 해주면 테스트 시   역직렬화가 되지 않는 오류가 발생.|
+|🤔 원인|스웨거가 메서드 인자들에 붙어있는 어노테이션이나 메서드 레벨에 있는 어노테이션을 보고 자동으로 api 문서를 만들어주지만 추가 설정을 해주지 않으면 테스트에 번번히 실패. |
+|😭 시도| 스웨거에서도 http요청을 mutipart/form-data로 보내고 숙소 정보, 사진 파일을 각각 application/json, mutipart/form-data로 요청해 역직렬화가 가능하게 만드는 설정들을 계속 찾아보았다.   |
+|😄 해결|@Schema(type = "string", format = "binary"))를 숙소 정보 DTO 앞에 붙여주면 숙소 정보 또한 json 형식의 파일을 첨부할 수 있게 되고 사진, 숙소 정보가 각각 역직렬화 되어 테스트를 실행할 수 있었다. |
 
 </details>
 
