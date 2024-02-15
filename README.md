@@ -166,61 +166,54 @@
 
 <summary>BACK-END</summary>
 
-### 문제1
+### 예약 페이지 날짜 선택 시 예약되어 있는 날짜는 선택 불가능
 
 |진행 순서| 내용|
 |:---|:---|
-| 😱 문제 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|
-|🤔 원인|
-|😭 시도|  |
-|😄 해결| |
+| 😱 문제 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| 예약 페이지에서 이미 예약되어 있는 날짜는 선택이 불가능해야 하고, 날짜 선택 시 체크인 날짜와 체크아웃 날짜는 동일하게 선택되면 안 된다. 그런데 비활성화 된 날짜 사이에 하루만 예약되어 있지 않은 날짜가 있는 경우, 그 날짜가 체크인 날짜로 선택 가능해지면서 체크아웃 날짜가 예약이 불가능한 그 다음날로 선택되었다.|
+|🤔 원인| 초기의 체크아웃 날짜를 무조건 체크인 날짜의 다음 날로 지정했다. 사용자가 날짜를 선택하지 않으면 비활성화 시키는 날짜 목록에 들어있는 날짜도 선택된 것처럼 변수에 값이 들어가고 있었다.|
+|😭 시도|애초에 예약되어 있는 날짜 목록을 보낼 때, 중간에 하루만 선택 가능한 날짜가 있으면 그 날짜도 목록에 포함시켜서 비활성화 시키고자 했다.  |
+|😄 해결|예약 내역 테이블에서 해당 숙소로 예약되어 있는 모든 데이터를 불러와서 체크인/체크아웃 날짜를 현재 날짜와 비교했다. 현재 날짜부터 그 이후의 날짜들 중 체크인 날짜부터 체크아웃 날짜 사이의 모든 날짜를 리스트에 추가했다. 날짜 리스트를 정렬한 뒤, 연속되지 않는 날짜가 나올 때 그 간격을 식별해서 간격이 하루인 경우 그 날짜도 리스트에 추가했다. 이렇게 예약 기능에서 체크인 날짜와 체크아웃 날짜가 동일할 수 없다는 것을 고려하여 예약이 불가능한 날짜 사이에 선택이 가능한 날짜가 하루만 들어있는 경우가 생기는 것을 배제했더니 날짜 선택 로직 구현이 간단해졌다.|
 
 
-### 문제2
-
-|진행 순서| 내용|
-|:---|:---|
-| 😱 문제 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|
-|🤔 원인|
-|😭 시도|  |
-|😄 해결| |
-
-### 문제3
+### 스웨거 API 테스트 쿠키 생성 문제
 
 |진행 순서| 내용|
 |:---|:---|
-| 😱 문제 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|
-|🤔 원인|
-|😭 시도|  |
-|😄 해결| |
+| 😱 문제 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| 스웨거 환경을 구성하면서 Refresh Token이 필요한 API 테스트 도중 쿠키가 안넘어가는 문제가 생김|
+|🤔 원인 | Spring boot 에서 보내는 Cookie의 도메인 설정(127.0.0.1)이 스웨거 URL(localhost)의 도메인과 맞지 않아 스웨거 URL에서 쿠키 생성이 되지 않음|
+|😭 시도| - 스웨거에서 로그인 API를 통해 쿠키를 받아옴, 하지만 결국 Spring boot 에서 쿠키에 설정된 도메인이 스웨거 URL과 다르기때문에 쿠키 생성이 안됨<br> - 스웨거에서 직접 쿠키값을 헤더에 설정해서 API 요청함, 이 경우 스웨거 공식 문서에서 스웨거에서 쿠키를 직접 헤더에 포함시키는건 지원이 안된다고 확인|
+|😄 해결| Spring boot의 설정 파일에서 Cookie의 도메인을 localhost로 변경하여 해결  |
 
-### 문제3
-
-|진행 순서| 내용|
-|:---|:---|
-| 😱 문제 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|
-|🤔 원인|
-|😭 시도|  |
-|😄 해결| |
-
-### 문제4
+### 잘못된 provider 응답
 
 |진행 순서| 내용|
 |:---|:---|
-| 😱 문제 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|
-|🤔 원인|
-|😭 시도|  |
-|😄 해결| |
+| 😱 문제 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| 클라이언트가 OAuthLogin 엔드포인트를 통해 잘못된 provider 를 제공하는 경우에도 200으로 응답|
+|🤔 원인|OAuthLogin 메소드에서는 제공된 provider에 따라 다른 동작을 수행하도록 구현되어 있지만, 잘못된 provider에 대한 처리가 없어서 잘못된 provider가 제공될 경우에도 기본적으로 성공 상태 코드(200)가 반환됨|
+|😭 시도|잘못된 provider에 대해서는 HTTP 응답 코드를 400으로 변경  |
+|😄 해결|OAuthLogin 메소드에서는 provider가 유효한지 먼저 확인하고 잘못된 provider를 사용할 경우 400 Bad Request를 클라이언트에게 반환하여 오류 해결 가능 |
 
 
-### 문제5
+
+### WebClient 비동기 환경 내 Transactional 작업 이슈
 
 |진행 순서| 내용|
 |:---|:---|
-| 😱 문제 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|
-|🤔 원인|
-|😭 시도|  |
-|😄 해결| |
+| 😱 문제 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| WebClient 를 사용할 경우 CRUD 중 Create 와 Read 에는 문제가 없지만 Update 와 Delete 가 처리되지 않았다.|
+|🤔 원인| WebClient 는 비동기를 지원한다. JPA 의 더티체킹은 스레드에 트랜잭션을 할당하고 해당 트랜잭션이 끝나는 시저멩 변화가 있는 모든 엔티티 객체를 데이터베이스에 자동으로 반영해주는데 비동기를 사용할 경우 별도의 스레드를 사용하기 때문에 영속성 컨텍스트의 더티체킹이 적용되지 않는다|
+|😭 시도| 생성이나 조회 작업의 경우 WebClient 의 비동기 작업 흐름에 두고 수정과 삭제 작업은 따로 분리하여 수행시키도록 코드를 분리 <br> 하지만 WebClient 흐름 내에서 생성된 값을 사용하지 못할 경우 수행할 수 없는 작업들에서 문제가 잔재|
+|😄 해결| block() 메소드를 사용하여 비동기 흐름을 끊고 응답값을 가져와 직접 활용|
+
+
+### Review 엔티티 필드에 값이 저장되지 않는 문제
+
+|진행 순서| 내용|
+|:---|:---|
+| 😱 문제 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|리뷰 등록 시 rating 값이 항상 null로 저장되는 문제|
+|🤔 원인|ReviewService에서 계산된 값이 rating 필드에 저장되지 않음 |
+|😭 시도| getRating 메서드를 수정해서 ReviewRequestDTO 클래스에서 계산된 값이 rating 필드에 저장되도록 변경 |
+|😄 해결|ReviewService의 addReview 메서드에서 ReviewRequestDTO에서 rating 값을 가져와서 review 객체 생성 시에 설정하도록 수정 |
 
 ### 문제6
 
