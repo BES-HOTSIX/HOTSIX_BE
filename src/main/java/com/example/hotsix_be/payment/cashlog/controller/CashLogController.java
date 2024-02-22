@@ -4,6 +4,8 @@ import com.example.hotsix_be.auth.Auth;
 import com.example.hotsix_be.auth.MemberOnly;
 import com.example.hotsix_be.auth.util.Accessor;
 import com.example.hotsix_be.common.dto.ResponseDto;
+import com.example.hotsix_be.member.entity.Member;
+import com.example.hotsix_be.member.service.MemberService;
 import com.example.hotsix_be.payment.cashlog.dto.response.CashLogConfirmResponse;
 import com.example.hotsix_be.payment.cashlog.dto.response.CashLogIdResponse;
 import com.example.hotsix_be.payment.cashlog.dto.response.ConfirmResponse;
@@ -22,14 +24,11 @@ import com.example.hotsix_be.reservation.service.ReservationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
-
-import java.util.List;
 
 import static com.example.hotsix_be.common.exception.ExceptionCode.*;
 
@@ -40,32 +39,21 @@ import static com.example.hotsix_be.common.exception.ExceptionCode.*;
 public class CashLogController implements CashLogApi {
     private final CashLogService cashLogService;
     private final ReservationService reservationService;
+    private final MemberService memberService;
     private final TossService tossService;
 
     @GetMapping("/me")
-    @MemberOnly
     public ResponseEntity<ResponseDto<MyCashLogResponse>> showMyCashLogs(
             final Pageable pageable,
             @Auth final Accessor accessor
     ) {
-        Long memberId = accessor.getMemberId();
+        Member member = memberService.getMemberById(accessor.getMemberId());
 
-        Page<CashLog> cashLogs = cashLogService.findMyPageList(memberId, pageable);
-
-        List<CashLogConfirmResponse> cashLogConfirmResponses =
-                cashLogs.stream()
-                        .map(CashLogConfirmResponse::of)
-                        .toList();
-
-        PageImpl<CashLogConfirmResponse> cashLogConfirmPage =
-                new PageImpl<>(
-                        cashLogConfirmResponses,
-                        pageable,
-                        cashLogs.getTotalElements());
+        Page<CashLogConfirmResponse> cashLogConfirmResponses = cashLogService.findMyPageList(member, pageable).map(CashLogConfirmResponse::of);
 
         MyCashLogResponse myCashLogResponse = cashLogService.getMyCashLogById(
-                memberId,
-                cashLogConfirmPage
+                member,
+                cashLogConfirmResponses
         );
 
         return ResponseEntity.ok(new ResponseDto<>(
@@ -96,7 +84,8 @@ public class CashLogController implements CashLogApi {
     public ResponseEntity<ResponseDto<CashLogIdResponse>> payByCash(@PathVariable final Long reserveId) {
         Reservation reservation = reservationService.findUnpaidById(reserveId).orElseThrow(() -> new PaymentException(INVALID_REQUEST));
 
-        if (!cashLogService.canPay(reservation, reservation.getPrice())) throw new PaymentException(INSUFFICIENT_DEPOSIT);
+        if (!cashLogService.canPay(reservation, reservation.getPrice()))
+            throw new PaymentException(INSUFFICIENT_DEPOSIT);
 
         // 이용자 결제
         CashLog cashLog = cashLogService.payByCashOnly(reservation);
@@ -118,7 +107,7 @@ public class CashLogController implements CashLogApi {
             @PathVariable final Long reserveId
     ) {
         Reservation reservation = reservationService.findUnpaidById(reserveId).orElseThrow(() -> new ReservationException(NOT_FOUND_RESERVATION_ID));
-        if (!cashLogService.canPay(reserveId, Long.parseLong(tossConfirmRequest.getAmount())))
+        if (!cashLogService.canPay(reservation, Long.parseLong(tossConfirmRequest.getAmount())))
             throw new PaymentException(INSUFFICIENT_DEPOSIT);
 
         Mono<TossPaymentRequest> tossPaymentResponseMono = tossService.confirmTossPayment(tossConfirmRequest);
@@ -165,13 +154,14 @@ public class CashLogController implements CashLogApi {
         // 조회
         Reservation reservation = reservationService.findPaidById(reserveId).orElseThrow(() -> new ReservationException(NOT_FOUND_RESERVATION_ID));
 
-        if (!reservation.getMember().getId().equals(accessor.getMemberId())) throw new ReservationException(INVALID_AUTHORITY);
+        if (!reservation.getMember().getId().equals(accessor.getMemberId()))
+            throw new ReservationException(INVALID_AUTHORITY);
 
         if (!reservation.isCancelable()) throw new ReservationException(CANCELLATION_PERIOD_EXPIRED);
 
         CashLog cashLog = cashLogService.cancelReservation(reservation);
 
-        CashLogIdResponse cashLogIdResponse = CashLogIdResponse.of(cashLog.getId());
+        CashLogIdResponse cashLogIdResponse = cashLogService.getCashLogIdById(cashLog.getId());
 
         return ResponseEntity.ok(
                 new ResponseDto<>(

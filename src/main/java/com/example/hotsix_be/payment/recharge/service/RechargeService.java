@@ -93,10 +93,7 @@ public class RechargeService {
     public Page<Recharge> findMyPageList(final Long memberId, final Pageable pageable) {
         Member member = memberService.getMemberById(memberId);
 
-        Pageable sortedPageable = PageRequest.of(
-                pageable.getPageNumber(),
-                pageable.getPageSize(),
-                Sort.by("createdAt").descending());
+        Pageable sortedPageable = ((PageRequest) pageable).withSort(Sort.by("createdAt").descending());
 
         Page<Recharge> pageRecharge = rechargeRepository.findAllByRecipient(member, sortedPageable);
 
@@ -113,7 +110,7 @@ public class RechargeService {
 
     @Transactional
     public void cancelRecharge(Recharge recharge) {
-        if(recharge.isPaid()) throw new PaymentException(CANCELLATION_NOT_POSSIBLE);
+        if (recharge.isPaid()) throw new PaymentException(CANCELLATION_NOT_POSSIBLE);
         recharge.cancelDone();
     }
 }

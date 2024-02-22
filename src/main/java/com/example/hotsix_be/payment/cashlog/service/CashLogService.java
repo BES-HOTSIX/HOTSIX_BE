@@ -15,7 +15,6 @@ import com.example.hotsix_be.payment.payment.dto.request.TossConfirmRequest;
 import com.example.hotsix_be.payment.payment.exception.PaymentException;
 import com.example.hotsix_be.payment.recharge.entity.Recharge;
 import com.example.hotsix_be.reservation.entity.Reservation;
-import com.example.hotsix_be.reservation.exception.ReservationException;
 import com.example.hotsix_be.reservation.service.ReservationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +26,6 @@ import java.util.Optional;
 
 import static com.aventrix.jnanoid.jnanoid.NanoIdUtils.randomNanoId;
 import static com.example.hotsix_be.common.exception.ExceptionCode.INVALID_REQUEST;
-import static com.example.hotsix_be.common.exception.ExceptionCode.NOT_FOUND_RESERVATION_ID;
 import static com.example.hotsix_be.payment.cashlog.entity.EventType.*;
 
 @Service
@@ -77,13 +75,9 @@ public class CashLogService {
     }
 
     // 개인 캐시 사용 내역 페이지의 cashLog 리스트
-    public Page<CashLog> findMyPageList(final Long memberId, final Pageable pageable) {
-        Member member = memberService.getMemberById(memberId);
+    public Page<CashLog> findMyPageList(final Member member, final Pageable pageable) {
 
-        Pageable sortedPageable = PageRequest.of(
-                pageable.getPageNumber(),
-                pageable.getPageSize(),
-                Sort.by("createdAt").descending());
+        Pageable sortedPageable = ((PageRequest) pageable).withSort(Sort.by("createdAt").descending());
 
         Page<CashLog> pageCashLog = cashLogRepository.findAllByMember(member, sortedPageable);
 
@@ -108,9 +102,7 @@ public class CashLogService {
         return CashLogIdResponse.of(id);
     }
 
-    public MyCashLogResponse getMyCashLogById(final Long id, final PageImpl<CashLogConfirmResponse> cashLogConfirmPage) {
-        Member member = memberService.getMemberById(id);
-
+    public MyCashLogResponse getMyCashLogById(final Member member, final Page<CashLogConfirmResponse> cashLogConfirmPage) {
         return MyCashLogResponse.of(member, cashLogConfirmPage);
     }
 
@@ -166,12 +158,6 @@ public class CashLogService {
         addCash(reservation.getHotel().getOwner(), reservation.getPrice() * -1, reservation, 정산__예약취소);
 
         return addCash(reservation.getMember(), reservation.getPrice(), reservation, 취소__예치금);
-    }
-
-    public boolean canPay(final Long reservationId, final Long pgPayPrice) {
-        Reservation reservation = reservationService.findUnpaidById(reservationId).orElseThrow(() -> new ReservationException(NOT_FOUND_RESERVATION_ID));
-
-        return canPay(reservation, pgPayPrice);
     }
 
     public boolean canPay(final Reservation reservation, final Long pgPayPrice) {

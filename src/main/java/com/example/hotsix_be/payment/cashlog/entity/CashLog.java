@@ -6,10 +6,15 @@ import com.example.hotsix_be.payment.recharge.entity.Recharge;
 import com.example.hotsix_be.reservation.entity.Reservation;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+
+import static jakarta.persistence.FetchType.LAZY;
 
 @Getter
 @SuperBuilder(toBuilder = true)
@@ -30,13 +35,13 @@ public class CashLog extends DateEntity {
     private String orderId;
 
     @JsonIgnore
-    @ManyToOne
+    @ManyToOne(fetch = LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "member_id")
     private Member member;
 
     @JsonIgnore
-    @ManyToOne
+    @ManyToOne(fetch = LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "reservation_id")
     private Reservation reservation;

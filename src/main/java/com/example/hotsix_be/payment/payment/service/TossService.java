@@ -1,7 +1,6 @@
 package com.example.hotsix_be.payment.payment.service;
 
 
-import com.example.hotsix_be.payment.cashlog.service.CashLogService;
 import com.example.hotsix_be.payment.payment.dto.request.TossConfirmRequest;
 import com.example.hotsix_be.payment.payment.dto.request.TossPaymentRequest;
 import com.example.hotsix_be.payment.payment.exception.PaymentException;
@@ -24,7 +23,6 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 @Transactional(readOnly = true)
 public class TossService {
     private final WebClient webClient;
-    private final CashLogService cashLogService;
 
     private static String authorization;
 

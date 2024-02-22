@@ -9,5 +9,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface CashLogRepository extends JpaRepository<CashLog, Long> {
     Page<CashLog> findAllByMember(Member member, Pageable sortedPageable);
 
-    long countByMemberId(final Long id);
+    Long countByMemberId(final Long id);
 }

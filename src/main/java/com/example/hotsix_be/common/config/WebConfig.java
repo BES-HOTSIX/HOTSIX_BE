@@ -17,5 +17,4 @@ public class WebConfig implements WebMvcConfigurer {
                 .exposedHeaders(HttpHeaders.LOCATION);
         WebMvcConfigurer.super.addCorsMappings(registry);
     }
-
 }
