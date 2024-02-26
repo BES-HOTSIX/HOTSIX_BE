@@ -1,7 +1,6 @@
 package com.example.hotsix_be.payment.payment.service;
 
 
-import com.example.hotsix_be.payment.cashlog.service.CashLogService;
 import com.example.hotsix_be.payment.payment.dto.request.TossConfirmRequest;
 import com.example.hotsix_be.payment.payment.dto.request.TossPaymentRequest;
 import com.example.hotsix_be.payment.payment.exception.PaymentException;
@@ -24,19 +23,17 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 @Transactional(readOnly = true)
 public class TossService {
     private final WebClient webClient;
-    private final CashLogService cashLogService;
 
     private static String authorization;
 
     @Value("${custom.tossPayments.widget.secretKey}")
-    private void setTossPaymentsWidgetSecretKey(String tossPaymentsWidgetSecretKey) {
+    private void setTossPaymentsWidgetSecretKey(final String tossPaymentsWidgetSecretKey) {
         String encodedKey = Base64.getEncoder().encodeToString((tossPaymentsWidgetSecretKey + ":").getBytes(UTF_8));
         authorization = "Basic " + encodedKey;
     }
 
     @Transactional
     public Mono<TossPaymentRequest> confirmTossPayment(final TossConfirmRequest tossConfirmRequest) {
-
         return webClient.post()
                 .uri("https://api.tosspayments.com/v1/payments/confirm")
                 .contentType(MediaType.APPLICATION_JSON)
