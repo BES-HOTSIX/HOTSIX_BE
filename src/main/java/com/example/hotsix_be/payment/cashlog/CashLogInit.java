@@ -34,10 +34,9 @@ public class CashLogInit implements ApplicationRunner {
             IntStream.rangeClosed(1, 50).forEach(i -> {
                 CashLog cashLog = CashLog.builder()
                         .eventType(충전__무통장입금)
-                        .price(50_000L)
+                        .amount(50_000L)
                         .member(member)
                         .orderId(randomNanoId())
-                        .reservation(null)
                         .build();
 
                 cashLogRepository.save(cashLog);

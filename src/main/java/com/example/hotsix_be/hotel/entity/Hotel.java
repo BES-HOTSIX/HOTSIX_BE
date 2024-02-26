@@ -91,7 +91,7 @@ public class Hotel extends DateEntity {
     @OneToMany(mappedBy = "hotel", cascade = {REMOVE, PERSIST}, orphanRemoval = true)
     private List<Image> images = new ArrayList<>();
 
-    @OneToMany(mappedBy = "hotel", cascade = { REMOVE }, orphanRemoval = true)
+    @OneToMany(mappedBy = "hotel", cascade = {REMOVE}, orphanRemoval = true)
     private List<Reservation> reservations = new ArrayList<>();
 
     @JsonIgnore

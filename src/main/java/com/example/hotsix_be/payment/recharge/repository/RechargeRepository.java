@@ -11,7 +11,7 @@ import java.util.Optional;
 public interface RechargeRepository extends JpaRepository<Recharge, Long> {
     Optional<Recharge> findByOrderId(String orderId);
 
-    Page<Recharge> findAllByRecipient(Member recipient, Pageable sortedPageable);
+    Page<Recharge> findAllByMember(Member recipient, Pageable sortedPageable);
 
-    Optional<Recharge> findByOrderIdContainingAndRecipient(String orderId, Member member);
+    Optional<Recharge> findByOrderIdContainingAndMember(String orderId, Member member);
 }

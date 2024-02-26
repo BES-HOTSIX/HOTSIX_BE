@@ -29,38 +29,27 @@ public class RechargeService {
     private final CashLogService cashLogService;
     private final MemberService memberService;
 
-    @Transactional
-    public Recharge requestVirtualRecharge(final TossPaymentRequest res, final Member member) {
-        return doRecharge(res, member, false, 충전__무통장입금);
+    @Transactional // 가상계좌 충전 신청
+    public void requestVirtualRecharge(final TossPaymentRequest res, final Member member) {
+        doRecharge(res, member, 충전__무통장입금);
     }
 
-    @Transactional
-    public Recharge processVirtualRecharge(final Recharge recharge) {
+    @Transactional // 충전 진행
+    public void processRecharge(final Recharge recharge) {
         if (recharge.isCancelled()) throw new PaymentException(PAYMENT_NOT_POSSIBLE);
 
-        recharge.payDone();
-        cashLogService.addCash(
-                recharge.getRecipient(),
-                recharge.getAmount(),
-                recharge
-        );
-
-        return recharge;
+        cashLogService.addCashDone(recharge);
     }
 
-    @Transactional
-    public Recharge easyPayRecharge(final TossPaymentRequest res, final Member member) {
-        Recharge recharge = doRecharge(res, member, true, 충전__토스페이먼츠);
+    @Transactional // 간편결제 충전 진행
+    public void easyPayRecharge(final TossPaymentRequest res, final Member member) {
+        Recharge recharge = doRecharge(res, member, 충전__토스페이먼츠);
 
-        cashLogService.addCash(member, res.getTotalAmount(), recharge);
-
-        return recharge;
+        processRecharge(recharge);
     }
 
-    private Recharge doRecharge(final TossPaymentRequest res, final Member member, final Boolean isPaid, final EventType eventType) {
-        String depositor = null;
-        String accountNumber = null;
-        String secret = null;
+    private Recharge doRecharge(final TossPaymentRequest res, final Member member, final EventType eventType) {
+        String depositor = null, accountNumber = null, secret = null;
 
         if (isVirtual(res)) {
             depositor = res.getVirtualAccount().getCustomerName();
@@ -69,15 +58,18 @@ public class RechargeService {
         }
 
         Recharge recharge = Recharge.builder()
-                .amount(res.getTotalAmount())
-                .orderId(res.getOrderId())
-                .eventType(eventType)
-                .isPaid(isPaid)
                 .depositor(depositor)
                 .accountNumber(accountNumber)
                 .secret(secret)
-                .recipient(member)
                 .build();
+
+        recharge = cashLogService.addCash(
+                member,
+                res.getTotalAmount(),
+                res.getOrderId(),
+                eventType,
+                recharge
+        );
 
         return rechargeRepository.save(recharge);
     }
@@ -93,27 +85,24 @@ public class RechargeService {
     public Page<Recharge> findMyPageList(final Long memberId, final Pageable pageable) {
         Member member = memberService.getMemberById(memberId);
 
-        Pageable sortedPageable = PageRequest.of(
-                pageable.getPageNumber(),
-                pageable.getPageSize(),
-                Sort.by("createdAt").descending());
+        Pageable sortedPageable = ((PageRequest) pageable).withSort(Sort.by("createdAt").descending());
 
-        Page<Recharge> pageRecharge = rechargeRepository.findAllByRecipient(member, sortedPageable);
+        Page<Recharge> pageRecharge = rechargeRepository.findAllByMember(member, sortedPageable);
 
         return Optional.of(pageRecharge)
                 .filter(Slice::hasContent)
                 .orElse(Page.empty());
     }
 
-    public Recharge findByOrderIdAndMemberId(String orderId, Long memberId) {
+    public Recharge findByOrderIdAndMemberId(final String orderId, final Long memberId) {
         Member member = memberService.getMemberById(memberId);
 
-        return rechargeRepository.findByOrderIdContainingAndRecipient(orderId, member).orElseThrow(() -> new PaymentException(INVALID_REQUEST));
+        return rechargeRepository.findByOrderIdContainingAndMember(orderId, member).orElseThrow(() -> new PaymentException(INVALID_REQUEST));
     }
 
     @Transactional
-    public void cancelRecharge(Recharge recharge) {
-        if(recharge.isPaid()) throw new PaymentException(CANCELLATION_NOT_POSSIBLE);
+    public void cancelRecharge(final Recharge recharge) {
+        if (recharge.isPaid()) throw new PaymentException(CANCELLATION_NOT_POSSIBLE);
         recharge.cancelDone();
     }
 }

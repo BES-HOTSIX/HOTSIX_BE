@@ -1,24 +1,16 @@
 package com.example.hotsix_be.login;
 
 
-import static com.example.hotsix_be.common.exception.ExceptionCode.INVALID_REQUEST;
-import static com.example.hotsix_be.common.exception.ExceptionCode.NOT_FOUND_REFRESH_TOKEN;
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-
-
 import com.example.hotsix_be.auth.Auth;
 import com.example.hotsix_be.auth.util.Accessor;
 import com.example.hotsix_be.common.exception.BadRequestException;
 import com.example.hotsix_be.login.domain.MemberTokens;
-import com.example.hotsix_be.login.repository.RefreshTokenRepository;
 import com.example.hotsix_be.login.exception.RefreshTokenException;
+import com.example.hotsix_be.login.repository.RefreshTokenRepository;
 import com.example.hotsix_be.login.util.BearerAuthorizationExtractor;
 import com.example.hotsix_be.login.util.JwtProvider;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
-
-import java.util.Arrays;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.MethodParameter;
@@ -27,6 +19,12 @@ import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
+
+import java.util.Arrays;
+
+import static com.example.hotsix_be.common.exception.ExceptionCode.INVALID_REQUEST;
+import static com.example.hotsix_be.common.exception.ExceptionCode.NOT_FOUND_REFRESH_TOKEN;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -44,8 +42,7 @@ public class LoginArgumentResolver implements HandlerMethodArgumentResolver {
 
     @Override
     public boolean supportsParameter(final MethodParameter parameter) {
-        return parameter.withContainingClass(Long.class)
-                .hasParameterAnnotation(Auth.class);
+        return parameter.hasParameterAnnotation(Auth.class);
     }
 
     @Override
