@@ -73,7 +73,7 @@ public class Review extends DateEntity {
             final Hotel hotel,
             final Reservation reservation,
             final Member member
-    ){
+    ) {
         this.body = body;
         this.amenities = amenities;
         this.staffService = staffService;

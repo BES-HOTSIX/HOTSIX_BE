@@ -45,7 +45,7 @@ public class ConfirmResponse {
             final Reservation reservation,
             final Hotel hotel
     ) {
-        Long price = cashLog.getPrice();
+        Long price = cashLog.getAmount();
         if (price < 0) price *= -1;
 
         return new ConfirmResponse(

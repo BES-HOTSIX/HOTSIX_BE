@@ -30,7 +30,6 @@ import static com.example.hotsix_be.common.exception.ExceptionCode.*;
 @RequiredArgsConstructor
 @Slf4j
 public class LoginService {
-
     public static final int COOKIE_AGE_SECONDS = 604800;
     public static final String COOKIE_SAME_SITE = "Strict";
 

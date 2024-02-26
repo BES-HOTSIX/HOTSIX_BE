@@ -20,7 +20,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-
 @Table(name = "reservations")
 @SuperBuilder(toBuilder = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -126,12 +125,12 @@ public class Reservation extends DateEntity {
         return checkInDate.isAfter(LocalDate.now());
     }
 
-	public void update(final ReservationInfoRequest reservationInfoRequest, final Hotel hotel) {
+    public void update(final ReservationInfoRequest reservationInfoRequest, final Hotel hotel) {
         this.checkInDate = reservationInfoRequest.getCheckInDate();
         this.checkOutDate = reservationInfoRequest.getCheckOutDate();
         this.guests = reservationInfoRequest.getNumOfGuests();
         this.price = reservationInfoRequest.getPrice();
         this.isPaid = reservationInfoRequest.isPaid();
         this.hotel = hotel;
-	}
+    }
 }
