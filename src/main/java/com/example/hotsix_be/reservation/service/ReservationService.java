@@ -137,4 +137,8 @@ public class ReservationService {
 
         return reservation;
     }
+
+    public Optional<Reservation> findByOrderId(String orderId) {
+        return reservationRepository.findByOrderId(orderId);
+    }
 }

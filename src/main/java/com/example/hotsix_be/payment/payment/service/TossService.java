@@ -27,14 +27,13 @@ public class TossService {
     private static String authorization;
 
     @Value("${custom.tossPayments.widget.secretKey}")
-    private void setTossPaymentsWidgetSecretKey(String tossPaymentsWidgetSecretKey) {
+    private void setTossPaymentsWidgetSecretKey(final String tossPaymentsWidgetSecretKey) {
         String encodedKey = Base64.getEncoder().encodeToString((tossPaymentsWidgetSecretKey + ":").getBytes(UTF_8));
         authorization = "Basic " + encodedKey;
     }
 
     @Transactional
     public Mono<TossPaymentRequest> confirmTossPayment(final TossConfirmRequest tossConfirmRequest) {
-
         return webClient.post()
                 .uri("https://api.tosspayments.com/v1/payments/confirm")
                 .contentType(MediaType.APPLICATION_JSON)

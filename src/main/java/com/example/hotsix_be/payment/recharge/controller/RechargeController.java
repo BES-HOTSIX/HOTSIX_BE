@@ -28,14 +28,14 @@ import static com.example.hotsix_be.common.exception.ExceptionCode.INVALID_REQUE
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/cashLog/me/recharge")
+@RequestMapping("/api/v1/recharge")
 @Slf4j
 public class RechargeController implements RechargeApi {
     private final RechargeService rechargeService;
     private final MemberService memberService;
     private final TossService tossService;
 
-    @GetMapping
+    @GetMapping("/me")
     @MemberOnly
     public ResponseEntity<ResponseDto<Page<RechargeConfirmResponse>>> showMyRecharge(
             final Pageable pageable,
@@ -96,7 +96,7 @@ public class RechargeController implements RechargeApi {
 
         if (!secret.equals(recharge.getSecret())) throw new PaymentException(INVALID_REQUEST);
 
-        rechargeService.processVirtualRecharge(recharge);
+        rechargeService.processRecharge(recharge);
 
         return ResponseEntity.ok(
                 new ResponseDto<>(
