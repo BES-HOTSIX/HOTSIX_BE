@@ -19,6 +19,7 @@ public enum ExceptionCode {
     NOT_FOUND_RECHARGE_ID(2006, "요청한 ID에 해당하는 캐시 충전 신청이 존재하지 않습니다."),
     CANCELLATION_NOT_POSSIBLE(2007, "이미 결제가 완료되어 취소가 불가능합니다."),
     PAYMENT_NOT_POSSIBLE(2008, "이미 취소가 완료되어 결제가 불가능합니다."),
+    ALREADY_BEEN_INITIALIZED(2009, "이미 초기화된 CashLog 입니다."),
 
     EXCEED_IMAGE_CAPACITY(5001, "업로드 가능한 이미지 용량을 초과했습니다."),
     NULL_IMAGE(5002, "업로드한 이미지 파일이 NULL입니다."),
