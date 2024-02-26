@@ -26,12 +26,10 @@ public class PayService {
 
     // 예치금 사용 결제
     @Transactional
-    public Pay pay(final Reservation reservation) {
+    public Pay doPay(final Reservation reservation) {
         Member buyer = reservation.getMember();
         Long payPrice = reservation.getPrice();
         Member owner = reservation.getHotel().getOwner();
-
-        reservation.updateOrderId(randomNanoId());
 
         Pay pay = Pay.builder()
                 .reservation(reservation)
@@ -46,15 +44,23 @@ public class PayService {
                 pay
         );
 
+        // Reservation 객체의 isPaid 값 true 설정
+        reservation.payDone();
+
+        cashLogService.addCashDone(pay);
+
         return payRepository.save(pay);
     }
 
     @Transactional
     public CashLog payByCashOnly(final Reservation reservation) {
-        Pay pay = pay(reservation);
+        reservation.updateOrderId(randomNanoId());
+
+        Pay pay = doPay(reservation);
 
 //        addCash(owner, payPrice, reservation, EventType.정산__예치금); // TODO 정산 로직 필요
-        cashLogService.addCashDone(pay);
+
+        reservation.payDone();
 
         return pay;
     }
@@ -75,14 +81,9 @@ public class PayService {
 
         rechargeService.easyPayRecharge(tossPaymentRequest, buyer); // TODO 가상계좌 입금도 구현하기
 
-        CashLog cashLog = pay(reservation);
-
 //        addCash(owner, payPrice, reservation, EventType.정산__예치금);
 
-        // 결제 완료 처리
-        reservation.payDone();
-
-        return cashLog;
+        return doPay(reservation);
     }
 
     public boolean canPay(final Reservation reservation, final Long pgPayPrice) {
