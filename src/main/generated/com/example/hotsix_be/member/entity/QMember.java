@@ -38,6 +38,8 @@ public class QMember extends EntityPathBase<Member> {
 
     public final NumberPath<Long> restCash = createNumber("restCash", Long.class);
 
+    public final EnumPath<Role> role = createEnum("role", Role.class);
+
     public final StringPath socialLoginId = createString("socialLoginId");
 
     public final EnumPath<SocialProvider> socialProvider = createEnum("socialProvider", SocialProvider.class);
