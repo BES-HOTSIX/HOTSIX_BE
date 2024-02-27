@@ -41,8 +41,23 @@ public class DataInit implements ApplicationRunner {
         LocalDate endDate = LocalDate.parse("2024-01-10");
 
         if (memberRepository.count() <= 0 && hotelRepository.count() <= 0) {
-            IntStream.rangeClosed(1, 50).forEach(i -> {
-                Member member = new Member("test" + i, passwordEncoder.encode("test" + i), "test" + i, "https://t4.ftcdn.net/jpg/02/15/84/43/360_F_215844325_ttX9YiIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg", "test" + i);
+
+            Member admin = new Member("admin", passwordEncoder.encode("admin"), "admin",
+                    "https://t4.ftcdn.net/jpg/02/15/84/43/360_F_215844325_ttX9YiIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg",
+                    "admin@naver.com");
+            memberRepository.save(admin);
+
+            Hotel hotel1 = new Hotel("호텔", "서울1", "구로구1" , 3L, 2L, 3L, 5L, List.of("주방"), "test1",
+                    "test1" , 10000L, admin);
+
+            hotel1.addImage(new Image("test1", "test1",
+                    "https://kr.object.ncloudstorage.com/hotsix.accomodation.bucket/ACCOMMODATION/2024/02/ACCOMMODATION_123_1afd0e02-780f-4732-8d62-a7453667d9de_pension1.jpg",
+                    30L));
+
+            hotelRepository.save(hotel1);
+
+            IntStream.rangeClosed(2, 50).forEach(i -> {
+                Member member = new Member("test" + i, passwordEncoder.encode("test" + i), "test" + i, "https://t4.ftcdn.net/jpg/02/15/84/43/360_F_215844325_ttX9YiIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg", "test" + i + "naver.com");
 
                 memberRepository.save(member);
 
