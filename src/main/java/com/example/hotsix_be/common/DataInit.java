@@ -23,7 +23,7 @@ import java.util.stream.IntStream;
 
 @Component
 @RequiredArgsConstructor
-//@Profile("dev")
+@Profile("dev")
 @Transactional
 @Order(1)
 public class DataInit implements ApplicationRunner {

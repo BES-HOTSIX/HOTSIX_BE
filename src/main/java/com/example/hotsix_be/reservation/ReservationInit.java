@@ -23,7 +23,7 @@ import static com.example.hotsix_be.common.exception.ExceptionCode.NOT_FOUND_MEM
 
 @Component
 @RequiredArgsConstructor
-//@Profile("dev")
+@Profile("dev")
 @Transactional
 @Order(2)
 public class ReservationInit implements ApplicationRunner {
