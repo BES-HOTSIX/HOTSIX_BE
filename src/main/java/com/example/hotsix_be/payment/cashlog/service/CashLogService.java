@@ -83,7 +83,7 @@ public class CashLogService {
 
         Pageable sortedPageable = ((PageRequest) pageable).withSort(Sort.by("createdAt").descending());
 
-        Page<CashLogConfirmResponse> cashLogResPage = cashLogRepository.getCashLogConfirmResByMember(member, sortedPageable);
+        Page<CashLogConfirmResponse> cashLogResPage = cashLogRepository.getCashLogConfirmResForPayByMember(member, sortedPageable);
 
         return Optional.of(cashLogResPage)
                 .filter(Slice::hasContent)

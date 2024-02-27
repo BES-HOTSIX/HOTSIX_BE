@@ -6,5 +6,5 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface CashLogRepositoryCustom {
-    Page<CashLogConfirmResponse> getCashLogConfirmResByMember(Member member, Pageable pageable);
+    Page<CashLogConfirmResponse> getCashLogConfirmResForPayByMember(Member member, Pageable pageable);
 }

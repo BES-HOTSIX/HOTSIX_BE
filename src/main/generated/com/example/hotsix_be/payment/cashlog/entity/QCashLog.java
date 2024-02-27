@@ -29,6 +29,8 @@ public class QCashLog extends EntityPathBase<CashLog> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
+    public final StringPath dtype = createString("dtype");
+
     public final EnumPath<EventType> eventType = createEnum("eventType", EventType.class);
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
