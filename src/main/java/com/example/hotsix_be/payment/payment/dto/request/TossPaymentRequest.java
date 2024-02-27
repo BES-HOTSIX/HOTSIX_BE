@@ -26,6 +26,9 @@ public class TossPaymentRequest {
     @Schema(description = "가상계좌 시크릿키", example = "ps_E92LAa5PVbqlR7g5qzJJ37YmpXyJ")
     private String secret;
 
-    @Schema(description = "가상계좌번호")
+    @Schema(description = "은행코드", example = "20")
+    private String bankCode;
+
+    @Schema(description = "가상계좌번호", example = "X6516292118962")
     private VirtualAccountRequest virtualAccount;
 }
