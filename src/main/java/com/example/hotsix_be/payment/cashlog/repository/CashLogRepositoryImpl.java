@@ -4,16 +4,18 @@ import com.example.hotsix_be.member.entity.Member;
 import com.example.hotsix_be.payment.cashlog.dto.response.CashLogConfirmResponse;
 import com.example.hotsix_be.payment.cashlog.entity.CashLog;
 import com.example.hotsix_be.payment.cashlog.entity.QCashLog;
+import com.example.hotsix_be.payment.pay.entity.Pay;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.PathBuilder;
 import com.querydsl.core.types.dsl.Wildcard;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -25,7 +27,7 @@ public class CashLogRepositoryImpl implements CashLogRepositoryCustom {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public Page<CashLogConfirmResponse> getCashLogConfirmResByMember(Member member, Pageable pageable) {
+    public Page<CashLogConfirmResponse> getCashLogConfirmResForPayByMember(Member member, Pageable pageable) {
         QCashLog cashLog = QCashLog.cashLog;
 
         List<OrderSpecifier<?>> orders = new ArrayList<>();
@@ -50,6 +52,7 @@ public class CashLogRepositoryImpl implements CashLogRepositoryCustom {
                 )
                 .from(cashLog)
                 .where(cashLog.member.eq(member))
+                .where(cashLog.dtype.eq(Pay.class.getSimpleName()))
                 .limit(pageable.getPageSize())
                 .offset(pageable.getOffset())
                 .orderBy(order)
@@ -65,11 +68,12 @@ public class CashLogRepositoryImpl implements CashLogRepositoryCustom {
                         tuple.get(cashLog.createdAt)
                 )).toList();
 
-        Long totalCount = jpaQueryFactory.select(Wildcard.count)
+        // count 쿼리 최적화를 위해 JPAQuery<> 값을 받아 PageableExcution
+        JPAQuery<Long> totalCount = jpaQueryFactory.select(Wildcard.count)
                 .from(cashLog)
                 .where(cashLog.member.eq(member))
-                .fetch().getFirst();
+                .where(cashLog.dtype.eq(Pay.class.getSimpleName()));
 
-        return new PageImpl<>(res, pageable, totalCount);
+        return PageableExecutionUtils.getPage(res, pageable, totalCount::fetchOne);
     }
 }

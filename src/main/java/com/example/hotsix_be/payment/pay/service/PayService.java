@@ -2,6 +2,7 @@ package com.example.hotsix_be.payment.pay.service;
 
 import com.example.hotsix_be.member.entity.Member;
 import com.example.hotsix_be.payment.cashlog.entity.CashLog;
+import com.example.hotsix_be.payment.cashlog.entity.EventType;
 import com.example.hotsix_be.payment.cashlog.service.CashLogService;
 import com.example.hotsix_be.payment.pay.entity.Pay;
 import com.example.hotsix_be.payment.pay.repository.PayRepository;
@@ -26,7 +27,7 @@ public class PayService {
 
     // 예치금 사용 결제
     @Transactional
-    public Pay doPay(final Reservation reservation) {
+    public Pay doPay(final Reservation reservation, final EventType eventType) {
         Member buyer = reservation.getMember();
         Long payPrice = reservation.getPrice();
         Member owner = reservation.getHotel().getOwner();
@@ -40,7 +41,7 @@ public class PayService {
                 buyer,
                 payPrice * -1,
                 reservation.getOrderId(),
-                결제__예치금,
+                eventType,
                 pay
         );
 
@@ -56,7 +57,7 @@ public class PayService {
     public CashLog payByCashOnly(final Reservation reservation) {
         reservation.updateOrderId(randomNanoId());
 
-        Pay pay = doPay(reservation);
+        Pay pay = doPay(reservation, 결제__예치금);
 
 //        addCash(owner, payPrice, reservation, EventType.정산__예치금); // TODO 정산 로직 필요
 
@@ -83,7 +84,7 @@ public class PayService {
 
 //        addCash(owner, payPrice, reservation, EventType.정산__예치금);
 
-        return doPay(reservation);
+        return doPay(reservation, EventType.결제__토스페이먼츠);
     }
 
     public boolean canPay(final Reservation reservation, final Long pgPayPrice) {
