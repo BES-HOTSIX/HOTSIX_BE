@@ -26,6 +26,9 @@ import static jakarta.persistence.InheritanceType.JOINED;
 @Entity
 public class CashLog extends DateEntity {
 
+    @Column(name = "dtype", insertable = false, updatable = false)
+    private String dtype;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

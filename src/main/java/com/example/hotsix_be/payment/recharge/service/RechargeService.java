@@ -49,16 +49,18 @@ public class RechargeService {
     }
 
     private Recharge doRecharge(final TossPaymentRequest res, final Member member, final EventType eventType) {
-        String depositor = null, accountNumber = null, secret = null;
+        String depositor = null, accountNumber = null, secret = null, bankCode = null;
 
         if (isVirtual(res)) {
             depositor = res.getVirtualAccount().getCustomerName();
             accountNumber = res.getVirtualAccount().getAccountNumber();
             secret = res.getSecret();
+            bankCode = res.getBankCode();
         }
 
         Recharge recharge = Recharge.builder()
                 .depositor(depositor)
+                .bankCode(bankCode)
                 .accountNumber(accountNumber)
                 .secret(secret)
                 .build();
