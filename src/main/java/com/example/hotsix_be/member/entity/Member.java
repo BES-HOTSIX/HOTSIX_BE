@@ -27,6 +27,9 @@ public class Member extends DateEntity {
 
     private String password;
 
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
     @Column(unique = true)
     private String nickname;
 
