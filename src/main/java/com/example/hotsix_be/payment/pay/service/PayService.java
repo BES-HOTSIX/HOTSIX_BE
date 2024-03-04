@@ -84,7 +84,7 @@ public class PayService {
 
 //        addCash(owner, payPrice, reservation, EventType.정산__예치금);
 
-        return doPay(reservation, EventType.결제__토스페이먼츠);
+        return doPay(reservation, EventType.결제__토스페이먼츠); // TODO 토스페이먼츠 결제와 포인트 복합 결제 명확히 하기
     }
 
     public boolean canPay(final Reservation reservation, final Long pgPayPrice) {
