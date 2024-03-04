@@ -1,15 +1,18 @@
 package com.example.hotsix_be.chat.entity;
 
-import static jakarta.persistence.GenerationType.*;
-
 import com.example.hotsix_be.member.entity.Member;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 public class ChatRoom {
     @Id
     @GeneratedValue(strategy = IDENTITY)
