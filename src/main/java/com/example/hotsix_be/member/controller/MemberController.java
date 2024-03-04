@@ -9,6 +9,7 @@ import com.example.hotsix_be.hotel.service.HotelService;
 import com.example.hotsix_be.like.service.LikeService;
 import com.example.hotsix_be.member.dto.request.MemberPasswordChangeRequest;
 import com.example.hotsix_be.member.dto.request.MemberRegisterRequest;
+import com.example.hotsix_be.member.dto.request.MemberRoleRequest;
 import com.example.hotsix_be.member.dto.response.MemberInfoResponse;
 import com.example.hotsix_be.member.openapi.MemberApi;
 import com.example.hotsix_be.member.service.MemberService;
@@ -107,7 +108,8 @@ public class MemberController implements MemberApi {
             @Auth final Accessor accessor,
             @RequestParam(value = "page", defaultValue = "0") int page
     ) {
-        Page<MemberReservationResponseDTO> reservationDetailResponses = reservationService.findByMemberIdAndIsPaid(accessor.getMemberId(), page);
+        Page<MemberReservationResponseDTO> reservationDetailResponses = reservationService.findByMemberIdAndIsPaid(
+                accessor.getMemberId(), page);
         return ResponseEntity.ok(
                 new ResponseDto<>(
                         HttpStatus.OK.value(),
@@ -141,7 +143,8 @@ public class MemberController implements MemberApi {
             @Auth final Accessor accessor,
             @RequestParam(value = "page", defaultValue = "0") int page
     ) {
-        Page<HotelDetailResponse> hotelDetailResponses = likeService.findLikedHotelsByMemberId(accessor.getMemberId(), page);
+        Page<HotelDetailResponse> hotelDetailResponses = likeService.findLikedHotelsByMemberId(accessor.getMemberId(),
+                page);
 
         return ResponseEntity.ok(
                 new ResponseDto<>(
@@ -225,13 +228,31 @@ public class MemberController implements MemberApi {
             @Auth final Accessor accessor,
             @RequestParam(value = "page", defaultValue = "0") int page
     ) {
-        Page<MemberReviewResponseDTO> memberReviewResponseDTOList = reviewService.getMemberReview(accessor.getMemberId(), page);
+        Page<MemberReviewResponseDTO> memberReviewResponseDTOList = reviewService.getMemberReview(
+                accessor.getMemberId(), page);
 
         return ResponseEntity.ok(
                 new ResponseDto<>(
                         HttpStatus.OK.value(),
                         "리뷰 조회가 성공적으로 완료되었습니다.", null,
                         null, memberReviewResponseDTOList
+                )
+        );
+    }
+
+    @PostMapping("/role")
+    @MemberOnly
+    public ResponseEntity<ResponseDto<?>> assignRole(
+            @Auth final Accessor accessor,
+            @RequestBody final MemberRoleRequest memberRoleRequest
+    ) {
+        memberService.assignRole(accessor.getMemberId(), memberRoleRequest.getRole());
+
+        return ResponseEntity.ok(
+                new ResponseDto<>(
+                        HttpStatus.OK.value(),
+                        "역할이 성공적으로 설정되었습니다.", null,
+                        null, null
                 )
         );
     }

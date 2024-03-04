@@ -8,6 +8,7 @@ import com.example.hotsix_be.image.service.ImageService;
 import com.example.hotsix_be.member.dto.request.MemberRegisterRequest;
 import com.example.hotsix_be.member.dto.response.MemberInfoResponse;
 import com.example.hotsix_be.member.entity.Member;
+import com.example.hotsix_be.member.entity.Role;
 import com.example.hotsix_be.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -95,6 +96,16 @@ public class MemberService {
                 member.getNickname());
 
         member.changeImageUrl(newImages.getFirst().getUrl());
+
+        memberRepository.save(member);
+    }
+
+    @Transactional
+    public void assignRole(Long memberId, Role role) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new AuthException(NOT_FOUND_MEMBER_BY_ID));
+
+        member.assignRole(role);
 
         memberRepository.save(member);
     }

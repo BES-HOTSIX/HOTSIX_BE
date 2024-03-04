@@ -55,7 +55,8 @@ public class Member extends DateEntity {
         this.imageUrl = imageUrl;
     }
 
-    public Member(final String username, final String password, final String nickname, final String imageUrl, final String email) {
+    public Member(final String username, final String password, final String nickname, final String imageUrl,
+                  final String email) {
         this.username = username;
         this.password = password;
         this.nickname = nickname;
@@ -67,6 +68,10 @@ public class Member extends DateEntity {
         this.nickname = nickname;
         this.imageUrl = profileImageUrl;
         this.socialProvider = socialProvider;
+    }
+
+    public void assignRole(final Role role) {
+        this.role = role;
     }
 
     public boolean isNicknameChanged(final String inputNickname) {
