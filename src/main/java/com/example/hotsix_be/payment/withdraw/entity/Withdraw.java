@@ -1,4 +1,5 @@
-package com.example.hotsix_be.payment.recharge.entity;
+package com.example.hotsix_be.payment.withdraw.entity;
+
 
 import com.example.hotsix_be.payment.cashlog.entity.CashLogMarker;
 import jakarta.persistence.Entity;
@@ -16,27 +17,13 @@ import static lombok.AccessLevel.PROTECTED;
 @AllArgsConstructor(access = PROTECTED)
 @NoArgsConstructor(access = PROTECTED)
 @Entity
-public class Recharge extends CashLogMarker {
-
-    // 입금자명
-    private String depositor;
-
-    // 은행코드
+public class Withdraw extends CashLogMarker {
+    // 은행 코드
     private String bankCode;
 
-    // 가상계좌
+    // 환전 계좌w
     private String accountNumber;
 
-    // 웹훅과 비교할 때 사용할 시크릿
-    private String secret;
-
-    private LocalDateTime cancelDate; // 충전 신청 취소 시
-
-    public void cancelDone() {
-        this.cancelDate = LocalDateTime.now();
-    }
-
-    public boolean isCancelled() {
-        return this.cancelDate != null;
-    }
+    // 취소일자 (취소되지 않았을 경우 null)
+    private LocalDateTime cancelDate;
 }

@@ -2,6 +2,7 @@ package com.example.hotsix_be.payment.pay.service;
 
 import com.example.hotsix_be.member.entity.Member;
 import com.example.hotsix_be.payment.cashlog.entity.CashLog;
+import com.example.hotsix_be.payment.cashlog.entity.EventType;
 import com.example.hotsix_be.payment.cashlog.service.CashLogService;
 import com.example.hotsix_be.payment.pay.entity.Pay;
 import com.example.hotsix_be.payment.pay.repository.PayRepository;
@@ -26,12 +27,10 @@ public class PayService {
 
     // 예치금 사용 결제
     @Transactional
-    public Pay pay(final Reservation reservation) {
+    public Pay doPay(final Reservation reservation, final EventType eventType) {
         Member buyer = reservation.getMember();
         Long payPrice = reservation.getPrice();
         Member owner = reservation.getHotel().getOwner();
-
-        reservation.updateOrderId(randomNanoId());
 
         Pay pay = Pay.builder()
                 .reservation(reservation)
@@ -42,19 +41,27 @@ public class PayService {
                 buyer,
                 payPrice * -1,
                 reservation.getOrderId(),
-                결제__예치금,
+                eventType,
                 pay
         );
+
+        // Reservation 객체의 isPaid 값 true 설정
+        reservation.payDone();
+
+        cashLogService.addCashDone(pay);
 
         return payRepository.save(pay);
     }
 
     @Transactional
     public CashLog payByCashOnly(final Reservation reservation) {
-        Pay pay = pay(reservation);
+        reservation.updateOrderId(randomNanoId());
+
+        Pay pay = doPay(reservation, 결제__예치금);
 
 //        addCash(owner, payPrice, reservation, EventType.정산__예치금); // TODO 정산 로직 필요
-        cashLogService.addCashDone(pay);
+
+        reservation.payDone();
 
         return pay;
     }
@@ -75,14 +82,9 @@ public class PayService {
 
         rechargeService.easyPayRecharge(tossPaymentRequest, buyer); // TODO 가상계좌 입금도 구현하기
 
-        CashLog cashLog = pay(reservation);
-
 //        addCash(owner, payPrice, reservation, EventType.정산__예치금);
 
-        // 결제 완료 처리
-        reservation.payDone();
-
-        return cashLog;
+        return doPay(reservation, EventType.결제__토스페이먼츠);
     }
 
     public boolean canPay(final Reservation reservation, final Long pgPayPrice) {

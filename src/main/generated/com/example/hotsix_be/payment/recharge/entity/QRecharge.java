@@ -21,6 +21,8 @@ public class QRecharge extends EntityPathBase<Recharge> {
 
     public final StringPath accountNumber = createString("accountNumber");
 
+    public final StringPath bankCode = createString("bankCode");
+
     public final DateTimePath<java.time.LocalDateTime> cancelDate = createDateTime("cancelDate", java.time.LocalDateTime.class);
 
     public final BooleanPath cancelled = createBoolean("cancelled");
