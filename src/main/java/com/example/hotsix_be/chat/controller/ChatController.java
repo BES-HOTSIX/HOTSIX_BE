@@ -11,6 +11,7 @@ import com.example.hotsix_be.common.dto.ResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -40,8 +41,8 @@ public class ChatController {
 		);
 	}
 
-	@MessageMapping("/chat.sendMessage")
-	public void sendMessage(Message message) {
-		messagingTemplate.convertAndSend("/topic/messages", message);
+	@MessageMapping("/chat.sendMessage/{roomId}")
+	public void sendMessage(final @DestinationVariable String roomId, final Message message) {
+		messagingTemplate.convertAndSend(String.format("/topic/messages/%s", roomId), message);
 	}
 }

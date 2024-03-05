@@ -26,18 +26,24 @@ public class ChatService {
 	private final ChatRoomRepository chatRoomRepository;
 
 	@Transactional
-	public ChatRoomCreateResponse save(final ChatRoomCreateRequest chatCreateRequest, final Long memberId) {
+	public ChatRoomCreateResponse save(final ChatRoomCreateRequest chatRoomCreateRequest, final Long memberId) {
 		Member user = memberRepository.findById(memberId).orElseThrow(() -> new AuthException(INVALID_AUTHORITY));
 
-		Hotel hotel = hotelRepository.findById(chatCreateRequest.getHotelId()).orElseThrow(() -> new HotelException(NOT_FOUND_HOTEL_ID));
+		Hotel hotel = hotelRepository.findById(chatRoomCreateRequest.getHotelId()).orElseThrow(() -> new HotelException(NOT_FOUND_HOTEL_ID));
 
-		final ChatRoom chatRoom = new ChatRoom(
-				hotel.getOwner(),
-				user
-		);
+		ChatRoom chatRoom = chatRoomRepository.findByHostId(hotel.getOwner().getId()).orElse(null);
 
-		ChatRoom chatRoomResult = chatRoomRepository.save(chatRoom);
+		if (chatRoom == null) {
+			ChatRoom chatRoomResult = chatRoomRepository.save(
+					new ChatRoom(
+						hotel.getOwner(),
+						user
+					)
+			);
 
-		return ChatRoomCreateResponse.of(chatRoomResult);
+			return ChatRoomCreateResponse.of(chatRoomResult);
+		}
+
+		return ChatRoomCreateResponse.of(chatRoom);
 	}
 }
