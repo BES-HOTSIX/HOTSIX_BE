@@ -23,4 +23,12 @@ public class ChatRoom {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Member user;
+
+    public ChatRoom(
+            final Member host,
+            final Member user
+    ) {
+        this.host = host;
+        this.user = user;
+    }
 }
