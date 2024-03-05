@@ -24,8 +24,12 @@ public class QCashLog extends EntityPathBase<CashLog> {
 
     public final com.example.hotsix_be.common.entity.QDateEntity _super = new com.example.hotsix_be.common.entity.QDateEntity(this);
 
+    public final NumberPath<Long> amount = createNumber("amount", Long.class);
+
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
+
+    public final StringPath dtype = createString("dtype");
 
     public final EnumPath<EventType> eventType = createEnum("eventType", EventType.class);
 
@@ -35,11 +39,7 @@ public class QCashLog extends EntityPathBase<CashLog> {
 
     public final StringPath orderId = createString("orderId");
 
-    public final NumberPath<Long> price = createNumber("price", Long.class);
-
-    public final com.example.hotsix_be.payment.recharge.entity.QRecharge recharge;
-
-    public final com.example.hotsix_be.reservation.entity.QReservation reservation;
+    public final DateTimePath<java.time.LocalDateTime> payDate = createDateTime("payDate", java.time.LocalDateTime.class);
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;
@@ -63,8 +63,6 @@ public class QCashLog extends EntityPathBase<CashLog> {
     public QCashLog(Class<? extends CashLog> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.member = inits.isInitialized("member") ? new com.example.hotsix_be.member.entity.QMember(forProperty("member")) : null;
-        this.recharge = inits.isInitialized("recharge") ? new com.example.hotsix_be.payment.recharge.entity.QRecharge(forProperty("recharge"), inits.get("recharge")) : null;
-        this.reservation = inits.isInitialized("reservation") ? new com.example.hotsix_be.reservation.entity.QReservation(forProperty("reservation"), inits.get("reservation")) : null;
     }
 
 }

@@ -14,7 +14,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springdoc.core.converters.models.PageableAsQueryParam;
-import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,7 +34,7 @@ public interface RechargeApi {
             @ApiResponse(responseCode = "500", description = "서버 에러",
                     content = @Content(schema = @Schema(implementation = EmptyResponse.class)))})
     @PageableAsQueryParam
-    ResponseEntity<ResponseDto<PageImpl<RechargeConfirmResponse>>> showMyRecharge(
+    ResponseEntity<ResponseDto<Page<RechargeConfirmResponse>>> showMyRecharge(
             final Pageable pageable,
             @Auth final Accessor accessor
     );
