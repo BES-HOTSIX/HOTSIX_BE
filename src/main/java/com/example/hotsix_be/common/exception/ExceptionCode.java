@@ -21,6 +21,8 @@ public enum ExceptionCode {
     PAYMENT_NOT_POSSIBLE(2008, "이미 취소가 완료되어 결제가 불가능합니다."),
     ALREADY_BEEN_INITIALIZED(2009, "이미 초기화된 CashLog 입니다."),
 
+    NOT_FOUND_CHATROOM_ID(4001, "요청한 ID에 해당하는 채팅방이 존재하지 않습니다."),
+
     EXCEED_IMAGE_CAPACITY(5001, "업로드 가능한 이미지 용량을 초과했습니다."),
     NULL_IMAGE(5002, "업로드한 이미지 파일이 NULL입니다."),
     EMPTY_IMAGE_LIST(5003, "최소 한 장 이상의 이미지를 업로드해야합니다."),
