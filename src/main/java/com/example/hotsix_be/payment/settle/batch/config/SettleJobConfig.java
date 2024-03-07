@@ -61,7 +61,6 @@ public class SettleJobConfig {
     @StepScope
     @Bean
     public ItemReader<Reservation> settelItemReader(
-//            @Value("#{jobParameters['startDate']}") LocalDateTime startDate, // TODO 혹시 몰라 냅둔 코드 ( 추후 삭제 )
             @Value("#{jobParameters['endDay']}") LocalDate endDay
     ) {
         return new RepositoryItemReaderBuilder<Reservation>()

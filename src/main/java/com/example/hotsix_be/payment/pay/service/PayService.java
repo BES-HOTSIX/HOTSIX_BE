@@ -57,8 +57,6 @@ public class PayService {
 
         Pay pay = doPay(reservation, 결제__예치금);
 
-//        addCash(owner, payPrice, reservation, EventType.정산__예치금); // TODO 정산 로직 필요
-
         reservation.payDone();
 
         return pay;
@@ -78,9 +76,7 @@ public class PayService {
         // orderId 입력
         reservation.updateOrderId(orderId);
 
-        rechargeService.easyPayRecharge(tossPaymentRequest, buyer); // TODO 가상계좌 입금도 구현하기
-
-//        addCash(owner, payPrice, reservation, EventType.정산__예치금);
+        rechargeService.easyPayRecharge(tossPaymentRequest, buyer);
 
         return doPay(reservation, EventType.결제__토스페이먼츠); // TODO 토스페이먼츠 결제와 포인트 복합 결제 명확히 하기
     }

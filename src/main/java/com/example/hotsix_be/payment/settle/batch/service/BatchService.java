@@ -28,15 +28,7 @@ public class BatchService {
         LocalDate endDay = currentDateTime
                 .with(TemporalAdjusters.previous(DayOfWeek.SUNDAY));
 
-//        LocalDateTime startDate = endDay // TODO 혹시 몰라 냅둔 코드
-//                .minusDays(6)
-//                .atStartOfDay();
-
-//        LocalDateTime endDate = endDay // TODO 혹시 몰라 냅둔 코드
-//                .atTime(LocalTime.MAX);
-
         JobParameters jobParameters = new JobParametersBuilder()
-//                .addLocalDateTime("startDate", startDate) // // TODO 혹시 몰라 냅둔 코드
                 .addLocalDate("endDay", endDay)
                 .toJobParameters();
 
