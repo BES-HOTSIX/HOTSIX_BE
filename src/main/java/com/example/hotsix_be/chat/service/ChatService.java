@@ -5,6 +5,7 @@ import com.example.hotsix_be.chat.dto.request.ChatRoomCreateRequest;
 import com.example.hotsix_be.chat.dto.response.ChatMessageResponse;
 import com.example.hotsix_be.chat.dto.response.ChatRoomCreateResponse;
 import com.example.hotsix_be.chat.dto.response.ChatRoomInfoResponse;
+import com.example.hotsix_be.chat.dto.response.MessagesResponse;
 import com.example.hotsix_be.chat.entity.ChatRoom;
 import com.example.hotsix_be.chat.entity.Message;
 import com.example.hotsix_be.chat.exception.ChatException;
@@ -19,6 +20,8 @@ import com.example.hotsix_be.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 import static com.example.hotsix_be.common.exception.ExceptionCode.*;
 
@@ -56,6 +59,8 @@ public class ChatService {
 	public ChatRoomInfoResponse getChatRoom(final Long roomId, final Long memberId) {
 		ChatRoom chatRoom = chatRoomRepository.findById(roomId).orElseThrow(() -> new ChatException(NOT_FOUND_CHATROOM_ID));
 
+		memberRepository.findById(memberId).orElseThrow(() -> new AuthException(INVALID_AUTHORITY));
+
 		if (!(memberId.equals(chatRoom.getHost().getId()) || memberId.equals(chatRoom.getUser().getId())))
 			throw new AuthException(INVALID_AUTHORITY);
 
@@ -77,5 +82,15 @@ public class ChatService {
 		Message messageResult = messageRepository.save(message);
 
 		return ChatMessageResponse.of(messageResult);
+	}
+
+	public MessagesResponse getMessages(final Long roomId, final Long memberId) {
+		chatRoomRepository.findById(roomId).orElseThrow(() -> new ChatException(NOT_FOUND_CHATROOM_ID));
+
+		memberRepository.findById(memberId).orElseThrow(() -> new AuthException(INVALID_AUTHORITY));
+
+		List<Message> messageList = messageRepository.findAllByChatRoomId(roomId);
+
+		return MessagesResponse.of(messageList);
 	}
 }

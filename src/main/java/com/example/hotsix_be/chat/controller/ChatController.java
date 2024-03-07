@@ -6,6 +6,7 @@ import com.example.hotsix_be.auth.util.Accessor;
 import com.example.hotsix_be.chat.dto.request.ChatRoomCreateRequest;
 import com.example.hotsix_be.chat.dto.response.ChatRoomCreateResponse;
 import com.example.hotsix_be.chat.dto.response.ChatRoomInfoResponse;
+import com.example.hotsix_be.chat.dto.response.MessagesResponse;
 import com.example.hotsix_be.chat.service.ChatService;
 import com.example.hotsix_be.common.dto.ResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -49,6 +50,23 @@ public class ChatController {
 						HttpStatus.OK.value(),
 						"채팅방 정보를 불러왔습니다.", null,
 						null, chatRoomInfoResponse
+				)
+		);
+	}
+
+	@GetMapping("/messages/{roomId}")
+	@MemberOnly
+	public ResponseEntity<?> getChatMessages(
+			@PathVariable(value = "roomId") final Long roomId,
+			@Auth final Accessor accessor
+	) {
+		MessagesResponse messagesResponse = chatService.getMessages(roomId, accessor.getMemberId());
+
+		return ResponseEntity.ok(
+				new ResponseDto<>(
+						HttpStatus.OK.value(),
+						"채팅 내역을 불러왔습니다.", null,
+						null, messagesResponse
 				)
 		);
 	}
