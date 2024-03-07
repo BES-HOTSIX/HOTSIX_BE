@@ -37,7 +37,7 @@ public class PayService {
                 .recipient(owner)
                 .build();
 
-        pay = cashLogService.addCash(
+        pay = cashLogService.addCashLog(
                 buyer,
                 payPrice * -1,
                 reservation.getOrderId(),
@@ -47,8 +47,6 @@ public class PayService {
 
         // Reservation 객체의 isPaid 값 true 설정
         reservation.payDone();
-
-        cashLogService.addCashDone(pay);
 
         return payRepository.save(pay);
     }
