@@ -22,7 +22,12 @@ public class QMessage extends EntityPathBase<Message> {
 
     public static final QMessage message = new QMessage("message");
 
+    public final com.example.hotsix_be.common.entity.QDateEntity _super = new com.example.hotsix_be.common.entity.QDateEntity(this);
+
     public final QChatRoom chatRoom;
+
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
@@ -30,7 +35,8 @@ public class QMessage extends EntityPathBase<Message> {
 
     public final com.example.hotsix_be.member.entity.QMember sender;
 
-    public final DateTimePath<java.time.LocalDateTime> timestamp = createDateTime("timestamp", java.time.LocalDateTime.class);
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;
 
     public QMessage(String variable) {
         this(Message.class, forVariable(variable), INITS);
