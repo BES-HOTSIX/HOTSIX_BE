@@ -8,10 +8,7 @@ import com.example.hotsix_be.hotel.repository.HotelRepository;
 import com.example.hotsix_be.member.entity.Member;
 import com.example.hotsix_be.member.repository.MemberRepository;
 import com.example.hotsix_be.reservation.dto.request.ReservationInfoRequest;
-import com.example.hotsix_be.reservation.dto.response.MemberReservationResponseDTO;
-import com.example.hotsix_be.reservation.dto.response.ReservationDetailResponse;
-import com.example.hotsix_be.reservation.dto.response.ReservationInfoResponse;
-import com.example.hotsix_be.reservation.dto.response.ReservedDatesOfHotelResponse;
+import com.example.hotsix_be.reservation.dto.response.*;
 import com.example.hotsix_be.reservation.entity.Reservation;
 import com.example.hotsix_be.reservation.exception.ReservationException;
 import com.example.hotsix_be.reservation.repository.ReservationRepository;
@@ -84,7 +81,7 @@ public class ReservationService {
     }
 
     @Transactional
-    public Reservation save(final Long hotelId, final ReservationInfoRequest reservationInfoRequest, final Long memberId) {
+    public ReservationCreateResponse save(final Long hotelId, final ReservationInfoRequest reservationInfoRequest, final Long memberId) {
         Member member = memberRepository.findById(memberId).orElseThrow(() -> new AuthException(INVALID_AUTHORITY));
 
         Hotel hotel = hotelRepository.findById(hotelId).orElseThrow(() -> new HotelException(NOT_FOUND_HOTEL_ID));
@@ -99,7 +96,9 @@ public class ReservationService {
                 member
         );
 
-        return reservationRepository.save(reservation);
+        Reservation reservationResult = reservationRepository.save(reservation);
+
+        return ReservationCreateResponse.of(reservationResult);
     }
 
     public ReservedDatesOfHotelResponse findAllByHotelIdAndIsPaidTrue(final Long hotelId) {
@@ -127,7 +126,7 @@ public class ReservationService {
     }
 
     @Transactional
-    public Reservation modifyByReserveId(final Long hotelId, final Long reserveId, final ReservationInfoRequest reservationInfoRequest, final Long memberId) {
+    public ReservationCreateResponse modifyByReserveId(final Long hotelId, final Long reserveId, final ReservationInfoRequest reservationInfoRequest, final Long memberId) {
         memberRepository.findById(memberId).orElseThrow(() -> new AuthException(INVALID_AUTHORITY));
 
         Hotel hotel = hotelRepository.findById(hotelId).orElseThrow(() -> new HotelException(NOT_FOUND_HOTEL_ID));
@@ -135,7 +134,7 @@ public class ReservationService {
         Reservation reservation = reservationRepository.findById(reserveId).orElseThrow(() -> new ReservationException(NOT_FOUND_RESERVATION_ID));
         reservation.update(reservationInfoRequest, hotel);
 
-        return reservation;
+        return ReservationCreateResponse.of(reservation);
     }
 
     public Optional<Reservation> findByOrderId(String orderId) {
