@@ -30,15 +30,13 @@ public class RefundService {
                 .refunder(refunder)
                 .build();
 
-        refund = cashLogService.addCash(
+        refund = cashLogService.addCashLog(
                 member,
                 amount,
                 orderId,
                 EventType.취소__예치금,
                 refund
         );
-
-        cashLogService.addCashDone(refund);
 
         reservation.cancelDone();
 

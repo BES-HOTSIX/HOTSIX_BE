@@ -8,7 +8,6 @@ import com.example.hotsix_be.reservation.dto.request.ReservationInfoRequest;
 import com.example.hotsix_be.reservation.dto.response.ReservationCreateResponse;
 import com.example.hotsix_be.reservation.dto.response.ReservationInfoResponse;
 import com.example.hotsix_be.reservation.dto.response.ReservedDatesOfHotelResponse;
-import com.example.hotsix_be.reservation.entity.Reservation;
 import com.example.hotsix_be.reservation.service.ReservationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -43,8 +42,7 @@ public class ReservationController {
             @RequestBody final ReservationInfoRequest reservationInfoRequest,
             @Auth final Accessor accessor
     ) {
-        Reservation reservation = reservationService.save(hotelId, reservationInfoRequest, accessor.getMemberId());
-        ReservationCreateResponse reservationCreateResponse = ReservationCreateResponse.of(reservation);
+        ReservationCreateResponse reservationCreateResponse = reservationService.save(hotelId, reservationInfoRequest, accessor.getMemberId());
 
         return ResponseEntity.ok(
                 new ResponseDto<>(
@@ -78,8 +76,7 @@ public class ReservationController {
             @RequestBody final ReservationInfoRequest reservationInfoRequest,
             @Auth final Accessor accessor
     ) {
-        Reservation reservation = reservationService.modifyByReserveId(hotelId, reserveId, reservationInfoRequest, accessor.getMemberId());
-        ReservationCreateResponse reservationCreateResponse = ReservationCreateResponse.of(reservation);
+        ReservationCreateResponse reservationCreateResponse = reservationService.modifyByReserveId(hotelId, reserveId, reservationInfoRequest, accessor.getMemberId());
 
         return ResponseEntity.ok(
                 new ResponseDto<>(

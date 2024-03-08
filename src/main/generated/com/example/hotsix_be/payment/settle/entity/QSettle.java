@@ -19,17 +19,11 @@ public class QSettle extends EntityPathBase<Settle> {
 
     public static final QSettle settle = new QSettle("settle");
 
-    public final StringPath accountNumber = createString("accountNumber");
+    public final NumberPath<Long> commission = createNumber("commission", Long.class);
 
-    public final NumberPath<Long> actualAmount = createNumber("actualAmount", Long.class);
+    public final NumberPath<Integer> rateOfCommission = createNumber("rateOfCommission", Integer.class);
 
-    public final StringPath bankCode = createString("bankCode");
-
-    public final NumberPath<Integer> commission = createNumber("commission", Integer.class);
-
-    public final DatePath<java.time.LocalDate> endDate = createDate("endDate", java.time.LocalDate.class);
-
-    public final DatePath<java.time.LocalDate> startDate = createDate("startDate", java.time.LocalDate.class);
+    public final NumberPath<Long> totalAmount = createNumber("totalAmount", Long.class);
 
     public QSettle(String variable) {
         super(Settle.class, forVariable(variable));
