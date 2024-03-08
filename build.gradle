@@ -91,6 +91,13 @@ dependencies {
     implementation 'io.micrometer:micrometer-registry-prometheus'
 
     implementation 'com.github.maricn:logback-slack-appender:1.6.1'
+
+    // JTS
+    implementation 'org.locationtech.jts:jts-core:1.19.0'
+
+    // Hibernate Spatial
+    implementation 'org.hibernate:hibernate-spatial:6.4.4.Final'
+
 }
 
 def querydslSrcDir = 'src/main/generated'
