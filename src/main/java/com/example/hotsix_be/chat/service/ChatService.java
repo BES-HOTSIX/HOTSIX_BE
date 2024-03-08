@@ -53,6 +53,9 @@ public class ChatService {
 			return ChatRoomCreateResponse.of(chatRoomResult);
 		}
 
+		if (!(memberId.equals(chatRoom.getHost().getId()) || memberId.equals(chatRoom.getUser().getId())))
+			throw new AuthException(INVALID_AUTHORITY);
+
 		return ChatRoomCreateResponse.of(chatRoom);
 	}
 
