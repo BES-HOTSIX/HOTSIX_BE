@@ -90,7 +90,11 @@ public class Member extends DateEntity {
         this.imageUrl = imageUrl;
     }
 
-    public void updateRestCash(Long newRestCash) {
+    private void updateRestCash(Long newRestCash) {
         this.restCash = newRestCash;
+    }
+    
+    public void addCash(Long amount) {
+        updateRestCash(this.restCash + amount);
     }
 }

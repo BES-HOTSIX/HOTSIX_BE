@@ -20,6 +20,7 @@ public enum ExceptionCode {
     CANCELLATION_NOT_POSSIBLE(2007, "이미 결제가 완료되어 취소가 불가능합니다."),
     PAYMENT_NOT_POSSIBLE(2008, "이미 취소가 완료되어 결제가 불가능합니다."),
     ALREADY_BEEN_INITIALIZED(2009, "이미 초기화된 CashLog 입니다."),
+    ALREADY_BEEN_SETTLED(2010, "이미 정산된 예약입니다."),
 
     NOT_FOUND_CHATROOM_ID(4001, "요청한 ID에 해당하는 채팅방이 존재하지 않습니다."),
 
