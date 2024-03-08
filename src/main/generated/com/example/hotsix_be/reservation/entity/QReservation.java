@@ -35,6 +35,8 @@ public class QReservation extends EntityPathBase<Reservation> {
 
     public final NumberPath<Long> guests = createNumber("guests", Long.class);
 
+    public final com.example.hotsix_be.member.entity.QMember host;
+
     public final com.example.hotsix_be.hotel.entity.QHotel hotel;
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
@@ -48,6 +50,8 @@ public class QReservation extends EntityPathBase<Reservation> {
     public final NumberPath<Long> price = createNumber("price", Long.class);
 
     public final com.example.hotsix_be.review.entity.QReview review;
+
+    public final DateTimePath<java.time.LocalDateTime> settleDate = createDateTime("settleDate", java.time.LocalDateTime.class);
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;
@@ -70,6 +74,7 @@ public class QReservation extends EntityPathBase<Reservation> {
 
     public QReservation(Class<? extends Reservation> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
+        this.host = inits.isInitialized("host") ? new com.example.hotsix_be.member.entity.QMember(forProperty("host")) : null;
         this.hotel = inits.isInitialized("hotel") ? new com.example.hotsix_be.hotel.entity.QHotel(forProperty("hotel"), inits.get("hotel")) : null;
         this.member = inits.isInitialized("member") ? new com.example.hotsix_be.member.entity.QMember(forProperty("member")) : null;
         this.review = inits.isInitialized("review") ? new com.example.hotsix_be.review.entity.QReview(forProperty("review"), inits.get("review")) : null;

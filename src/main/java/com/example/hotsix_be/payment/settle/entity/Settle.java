@@ -7,8 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
-import java.time.LocalDate;
-
 import static lombok.AccessLevel.PROTECTED;
 
 @Getter
@@ -17,21 +15,18 @@ import static lombok.AccessLevel.PROTECTED;
 @NoArgsConstructor(access = PROTECTED)
 @Entity
 public class Settle extends CashLogMarker {
-    // 은행코드
-    private String bankCode;
+//    // 은행코드
+//    private String bankCode;
+//
+//    // 가상계좌
+//    private String accountNumber;
 
-    // 가상계좌
-    private String accountNumber;
+    // 수수료율
+    private Integer rateOfCommission;
 
     // 수수료
-    private Integer commission;
+    private Long commission;
 
     // 실 지급액
-    private Long actualAmount;
-
-    // 정산 시작일
-    private LocalDate startDate;
-
-    // 정산 끝일
-    private LocalDate endDate;
+    private Long totalAmount;
 }

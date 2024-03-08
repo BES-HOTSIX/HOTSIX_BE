@@ -37,7 +37,7 @@ public class PayService {
                 .recipient(owner)
                 .build();
 
-        pay = cashLogService.addCash(
+        pay = cashLogService.addCashLog(
                 buyer,
                 payPrice * -1,
                 reservation.getOrderId(),
@@ -48,8 +48,6 @@ public class PayService {
         // Reservation 객체의 isPaid 값 true 설정
         reservation.payDone();
 
-        cashLogService.addCashDone(pay);
-
         return payRepository.save(pay);
     }
 
@@ -58,8 +56,6 @@ public class PayService {
         reservation.updateOrderId(randomNanoId());
 
         Pay pay = doPay(reservation, 결제__예치금);
-
-//        addCash(owner, payPrice, reservation, EventType.정산__예치금); // TODO 정산 로직 필요
 
         reservation.payDone();
 
@@ -80,11 +76,9 @@ public class PayService {
         // orderId 입력
         reservation.updateOrderId(orderId);
 
-        rechargeService.easyPayRecharge(tossPaymentRequest, buyer); // TODO 가상계좌 입금도 구현하기
+        rechargeService.easyPayRecharge(tossPaymentRequest, buyer);
 
-//        addCash(owner, payPrice, reservation, EventType.정산__예치금);
-
-        return doPay(reservation, EventType.결제__토스페이먼츠);
+        return doPay(reservation, EventType.결제__토스페이먼츠); // TODO 토스페이먼츠 결제와 포인트 복합 결제 명확히 하기
     }
 
     public boolean canPay(final Reservation reservation, final Long pgPayPrice) {

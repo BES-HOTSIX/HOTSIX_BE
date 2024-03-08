@@ -38,7 +38,7 @@ public class RechargeService {
     public void processRecharge(final Recharge recharge) {
         if (recharge.isCancelled()) throw new PaymentException(PAYMENT_NOT_POSSIBLE);
 
-        cashLogService.addCashDone(recharge);
+        cashLogService.addCashLogDone(recharge);
     }
 
     @Transactional // 간편결제 충전 진행
@@ -65,7 +65,7 @@ public class RechargeService {
                 .secret(secret)
                 .build();
 
-        recharge = cashLogService.addCash(
+        recharge = cashLogService.initCashLog(
                 member,
                 res.getTotalAmount(),
                 res.getOrderId(),

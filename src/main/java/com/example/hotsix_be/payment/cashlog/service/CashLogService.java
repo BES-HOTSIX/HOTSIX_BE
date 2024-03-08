@@ -33,23 +33,15 @@ public class CashLogService {
     private final CashLogRepository cashLogRepository;
     private final ReservationService reservationService;
 
+    // 결제 초기 생성
     @Transactional
-    public <T extends CashLogMarker> void initializeCashLog(final T cashLogMarker, final CashLog cashLog) {
-        if (cashLogMarker.isInitialized()) throw new PaymentException(ALREADY_BEEN_INITIALIZED);
-
-        cashLogMarker.updateCashLog(cashLog);
-    }
-
-    // 전반적인 입출금
-    @Transactional
-    public <T extends CashLogMarker> T addCash(
+    public <T extends CashLogMarker> T initCashLog(
             final Member member,
             final Long price,
             final String orderId,
             final EventType eventType,
             final T cashLogMarker
     ) {
-
         CashLog cashLog = CashLog.builder()
                 .eventType(eventType)
                 .amount(price)
@@ -57,21 +49,35 @@ public class CashLogService {
                 .member(member)
                 .build();
 
-        initializeCashLog(cashLogMarker, cashLog);
+        if (cashLogMarker.isInitialized()) throw new PaymentException(ALREADY_BEEN_INITIALIZED);
+        cashLogMarker.updateCashLog(cashLog);
 
         return cashLogMarker;
     }
 
-    // 결제 마무리
+    // 결제 초기 생성 + 마무리
     @Transactional
-    public <T extends CashLogMarker> void addCashDone(final T cashLogMarker) {
+    public <T extends CashLogMarker> T addCashLog(
+            final Member member,
+            final Long price,
+            final String orderId,
+            final EventType eventType,
+            final T cashLogMarker
+    ) {
+        return addCashLogDone(initCashLog(member, price, orderId, eventType, cashLogMarker));
+    }
+
+    // 결제 마무리 ( 보유 캐시 수정 )
+    @Transactional
+    public <T extends CashLogMarker> T addCashLogDone(final T cashLogMarker) {
         Member member = cashLogMarker.getMember();
 
         // 금액 이동
-        Long newRestCash = member.getRestCash() + cashLogMarker.getAmount();
-        member.updateRestCash(newRestCash);
+        member.addCash(cashLogMarker.getAmount());
 
         cashLogMarker.payDone();
+
+        return cashLogMarker;
     }
 
     public Optional<CashLog> findById(final Long id) {
