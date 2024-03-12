@@ -97,8 +97,13 @@ dependencies {
 
     // WebSocket
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
-
     implementation 'com.squareup.okhttp3:okhttp:4.9.3'
+
+    // JTS
+    implementation 'org.locationtech.jts:jts-core:1.19.0'
+
+    // Hibernate Spatial
+    implementation 'org.hibernate:hibernate-spatial:6.4.4.Final'
 }
 
 def querydslSrcDir = 'src/main/generated'

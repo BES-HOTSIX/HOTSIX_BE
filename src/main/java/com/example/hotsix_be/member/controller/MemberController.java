@@ -108,6 +108,7 @@ public class MemberController implements MemberApi {
             @Auth final Accessor accessor,
             @RequestParam(value = "page", defaultValue = "0") int page
     ) {
+
         Page<MemberReservationResponseDTO> reservationDetailResponses = reservationService.findByMemberIdAndIsPaid(
                 accessor.getMemberId(), page);
         return ResponseEntity.ok(
@@ -228,6 +229,7 @@ public class MemberController implements MemberApi {
             @Auth final Accessor accessor,
             @RequestParam(value = "page", defaultValue = "0") int page
     ) {
+
         Page<MemberReviewResponseDTO> memberReviewResponseDTOList = reviewService.getMemberReview(
                 accessor.getMemberId(), page);
 
@@ -256,4 +258,5 @@ public class MemberController implements MemberApi {
                 )
         );
     }
+
 }
