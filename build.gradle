@@ -97,6 +97,8 @@ dependencies {
 
     // WebSocket
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
+
+    implementation 'com.squareup.okhttp3:okhttp:4.9.3'
 }
 
 def querydslSrcDir = 'src/main/generated'
