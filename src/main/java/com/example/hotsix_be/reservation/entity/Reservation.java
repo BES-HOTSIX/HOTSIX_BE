@@ -41,6 +41,8 @@ public class Reservation extends DateEntity {
     @Column(name = "cancel_date")
     private LocalDateTime cancelDate;
 
+    private LocalDateTime settleDate;
+
     private Long guests = 0L;
 
     private Long price = 0L;
@@ -60,6 +62,12 @@ public class Reservation extends DateEntity {
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "member_id")
     private Member member;
+
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "host_id")
+    private Member host;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "review_id")
@@ -82,6 +90,7 @@ public class Reservation extends DateEntity {
         this.isPaid = isPaid;
         this.hotel = hotel;
         this.member = member;
+        this.host = hotel.getOwner();
     }
 
     private void updateCancelDate(LocalDateTime date) {
@@ -94,6 +103,10 @@ public class Reservation extends DateEntity {
 
     public void updateOrderId(String orderId) {
         this.orderId = orderId;
+    }
+
+    public void settleDone() {
+        this.settleDate = LocalDateTime.now();
     }
 
     public List<LocalDate> getReservedDateRange() {
@@ -123,6 +136,10 @@ public class Reservation extends DateEntity {
 
     public boolean isCancelable() {
         return checkInDate.isAfter(LocalDate.now());
+    }
+
+    public boolean isSettled() {
+        return this.settleDate != null;
     }
 
     public void update(final ReservationInfoRequest reservationInfoRequest, final Hotel hotel) {
