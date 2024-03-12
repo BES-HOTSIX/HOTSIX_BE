@@ -17,7 +17,7 @@ public class MemberChatRoomResponse {
 	private final String contactImage;
 	private final LocalDateTime latestDate;
 
-	public MemberChatRoomResponse of(final ChatRoom chatRoom, final Member contact, final LocalDateTime latestDate) {
+	public static MemberChatRoomResponse of(final ChatRoom chatRoom, final Member contact, final LocalDateTime latestDate) {
 		return new MemberChatRoomResponse(
 				chatRoom.getId(),
 				contact.getNickname(),

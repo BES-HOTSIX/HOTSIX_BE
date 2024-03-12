@@ -2,10 +2,7 @@ package com.example.hotsix_be.chat.service;
 
 import com.example.hotsix_be.chat.dto.request.ChatMessageRequest;
 import com.example.hotsix_be.chat.dto.request.ChatRoomCreateRequest;
-import com.example.hotsix_be.chat.dto.response.ChatMessageResponse;
-import com.example.hotsix_be.chat.dto.response.ChatRoomCreateResponse;
-import com.example.hotsix_be.chat.dto.response.ChatRoomInfoResponse;
-import com.example.hotsix_be.chat.dto.response.MessagesResponse;
+import com.example.hotsix_be.chat.dto.response.*;
 import com.example.hotsix_be.chat.entity.ChatRoom;
 import com.example.hotsix_be.chat.entity.Message;
 import com.example.hotsix_be.chat.exception.ChatException;
@@ -18,9 +15,12 @@ import com.example.hotsix_be.hotel.repository.HotelRepository;
 import com.example.hotsix_be.member.entity.Member;
 import com.example.hotsix_be.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.example.hotsix_be.common.exception.ExceptionCode.*;
@@ -95,5 +95,24 @@ public class ChatService {
 		List<Message> messageList = messageRepository.findAllByChatRoomId(roomId);
 
 		return MessagesResponse.of(messageList);
+	}
+
+	public Page<MemberChatRoomResponse> getMemberChatRooms(final int page, final Long memberId) {
+		Pageable pageable = Pageable.ofSize(4).withPage(page);
+
+		Member member = memberRepository.findById(memberId).orElseThrow(() -> new AuthException(INVALID_AUTHORITY));
+
+		return chatRoomRepository.findByHostOrUserOrderByIdDesc(pageable, member, member)
+				.map(chatRoom -> {
+					Member contact = chatRoom.getHost().equals(member) ? chatRoom.getUser() : chatRoom.getHost();
+					LocalDateTime latestDate = messageRepository.findFirstByChatRoomIdOrderByCreatedAtDesc(chatRoom.getId())
+							.map(Message::getCreatedAt).orElse(null);
+
+					return MemberChatRoomResponse.of(
+							chatRoom,
+							contact,
+							latestDate
+					);
+				});
 	}
 }
