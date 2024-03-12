@@ -49,8 +49,9 @@ public class ReservationService {
 
     public ReservationDetailResponse getDetailById(final Reservation reservation, final Long memberId) {
         // 조회하는 사람이 본인이 아닐 경우 Exception 호출
-        if (!memberId.equals(reservation.getMember().getId()))
+        if (!memberId.equals(reservation.getMember().getId())) {
             throw new AuthException(INVALID_AUTHORITY);
+        }
 
         return ReservationDetailResponse.of(
                 reservation.getHotel(),
@@ -59,13 +60,15 @@ public class ReservationService {
     }
 
     public ReservationDetailResponse getPaidDetailById(final Long reserveId, final Long memberId) {
-        Reservation reservation = findPaidById(reserveId).orElseThrow(() -> new ReservationException(NOT_FOUND_RESERVATION_ID));
+        Reservation reservation = findPaidById(reserveId).orElseThrow(
+                () -> new ReservationException(NOT_FOUND_RESERVATION_ID));
 
         return getDetailById(reservation, memberId);
     }
 
     public ReservationDetailResponse getUnpaidDetailById(final Long reserveId, final Long memberId) {
-        Reservation reservation = findUnpaidById(reserveId).orElseThrow(() -> new ReservationException(NOT_FOUND_RESERVATION_ID));
+        Reservation reservation = findUnpaidById(reserveId).orElseThrow(
+                () -> new ReservationException(NOT_FOUND_RESERVATION_ID));
 
         return getDetailById(reservation, memberId);
     }
@@ -81,7 +84,8 @@ public class ReservationService {
     }
 
     @Transactional
-    public ReservationCreateResponse save(final Long hotelId, final ReservationInfoRequest reservationInfoRequest, final Long memberId) {
+    public ReservationCreateResponse save(final Long hotelId, final ReservationInfoRequest reservationInfoRequest,
+                                          final Long memberId) {
         Member member = memberRepository.findById(memberId).orElseThrow(() -> new AuthException(INVALID_AUTHORITY));
 
         Hotel hotel = hotelRepository.findById(hotelId).orElseThrow(() -> new HotelException(NOT_FOUND_HOTEL_ID));
@@ -110,11 +114,13 @@ public class ReservationService {
     }
 
     public ReservationInfoResponse getInfoById(final Long reserveId, final Long memberId) {
-        Reservation reservation = findPaidById(reserveId).orElseThrow(() -> new ReservationException(NOT_FOUND_RESERVATION_ID));
+        Reservation reservation = findPaidById(reserveId).orElseThrow(
+                () -> new ReservationException(NOT_FOUND_RESERVATION_ID));
 
         // 조회하는 사람이 본인이 아닐 경우 Exception 호출
-        if (!memberId.equals(reservation.getMember().getId()))
+        if (!memberId.equals(reservation.getMember().getId())) {
             throw new AuthException(INVALID_AUTHORITY);
+        }
 
         Review review = reviewRepository.findByReservationId(reserveId).orElse(null);
 
@@ -126,12 +132,15 @@ public class ReservationService {
     }
 
     @Transactional
-    public ReservationCreateResponse modifyByReserveId(final Long hotelId, final Long reserveId, final ReservationInfoRequest reservationInfoRequest, final Long memberId) {
+    public ReservationCreateResponse modifyByReserveId(final Long hotelId, final Long reserveId,
+                                                       final ReservationInfoRequest reservationInfoRequest,
+                                                       final Long memberId) {
         memberRepository.findById(memberId).orElseThrow(() -> new AuthException(INVALID_AUTHORITY));
 
         Hotel hotel = hotelRepository.findById(hotelId).orElseThrow(() -> new HotelException(NOT_FOUND_HOTEL_ID));
 
-        Reservation reservation = reservationRepository.findById(reserveId).orElseThrow(() -> new ReservationException(NOT_FOUND_RESERVATION_ID));
+        Reservation reservation = reservationRepository.findById(reserveId)
+                .orElseThrow(() -> new ReservationException(NOT_FOUND_RESERVATION_ID));
         reservation.update(reservationInfoRequest, hotel);
 
         return ReservationCreateResponse.of(reservation);
@@ -139,5 +148,18 @@ public class ReservationService {
 
     public Optional<Reservation> findByOrderId(String orderId) {
         return reservationRepository.findByOrderId(orderId);
+    }
+
+    public Page<HostReservationPageResponse> findReservationsByHotelAndCheckoutMonth(final Long hotelId, final int year, final int month,
+                                                                                     final int page) {
+        Pageable pageable = Pageable.ofSize(5).withPage(page);
+
+        return reservationRepository.findReservationsByHotelAndCheckoutMonth(hotelId, year, month, pageable)
+                .map(reservation -> {
+                    return HostReservationPageResponse.of(
+                            reservation.getHotel(),
+                            reservation
+                    );
+                });
     }
 }
