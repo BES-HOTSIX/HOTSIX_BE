@@ -1,5 +1,6 @@
 package com.example.hotsix_be.payment.settle.batch.service;
 
+<<<<<<< HEAD
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -43,4 +44,7 @@ public class BatchServiceTest {
         Assertions.assertEquals(jobExecution.getStatus(), BatchStatus.COMPLETED);
         Assertions.assertEquals(jobExecution.getExitStatus(), ExitStatus.COMPLETED);
     }
+=======
+public class BatchServiceTest {
+>>>>>>> 55fe32653994a3780e5fb7afea5eab11fabbddae
 }

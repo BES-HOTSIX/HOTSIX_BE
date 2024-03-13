@@ -33,6 +33,10 @@ public class SettleJobConfig {
 
     private final int CHUNK_SIZE = 20;
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 55fe32653994a3780e5fb7afea5eab11fabbddae
     @Bean
     public Job settleJob(JobRepository jobRepository, Step settleStep) {
         return new JobBuilder("settleJob", jobRepository)
@@ -65,7 +69,11 @@ public class SettleJobConfig {
         return new RepositoryItemReaderBuilder<Reservation>()
                 .name("settleStep")
                 .repository(reservationRepository)
+<<<<<<< HEAD
                 .methodName("findBySettleDateNullAndCheckOutDateLessThanEqual")
+=======
+                .methodName("findBySettleDateNullAndCheckInDateLessThanEqual")
+>>>>>>> 55fe32653994a3780e5fb7afea5eab11fabbddae
                 .pageSize(CHUNK_SIZE)
                 .arguments(endDay)
                 .sorts(Collections.singletonMap("id", Sort.Direction.ASC))

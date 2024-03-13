@@ -21,6 +21,12 @@ public enum ExceptionCode {
     PAYMENT_NOT_POSSIBLE(2008, "이미 취소가 완료되어 결제가 불가능합니다."),
     ALREADY_BEEN_INITIALIZED(2009, "이미 초기화된 CashLog 입니다."),
     ALREADY_BEEN_SETTLED(2010, "이미 정산된 예약입니다."),
+<<<<<<< HEAD
+=======
+
+    NOT_FIRST_RESERVATION(3001, "첫 예약이 아닙니다."),
+    ALREADY_ISSUED_FIRST_RESERVATION_COUPON(3002, "이미 첫 예약 쿠폰을 발행받으셨습니다."),
+>>>>>>> 55fe32653994a3780e5fb7afea5eab11fabbddae
 
     NOT_FOUND_CHATROOM_ID(4001, "요청한 ID에 해당하는 채팅방이 존재하지 않습니다."),
 
