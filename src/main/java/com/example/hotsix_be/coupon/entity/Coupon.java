@@ -18,9 +18,12 @@ public class Coupon {
     @Enumerated
     private CouponType couponType;
 
-    private Double discountRate; // 할인율
-
     @ManyToOne
     private Member member;
+
+    public Coupon(CouponType couponType, Member member) {
+        this.couponType = couponType;
+        this.member = member;
+    }
 
 }

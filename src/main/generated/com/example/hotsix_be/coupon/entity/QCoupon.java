@@ -24,8 +24,6 @@ public class QCoupon extends EntityPathBase<Coupon> {
 
     public final EnumPath<CouponType> couponType = createEnum("couponType", CouponType.class);
 
-    public final NumberPath<Double> discountRate = createNumber("discountRate", Double.class);
-
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
     public final com.example.hotsix_be.member.entity.QMember member;

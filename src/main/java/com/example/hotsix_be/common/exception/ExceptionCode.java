@@ -22,6 +22,8 @@ public enum ExceptionCode {
     ALREADY_BEEN_INITIALIZED(2009, "이미 초기화된 CashLog 입니다."),
     ALREADY_BEEN_SETTLED(2010, "이미 정산된 예약입니다."),
 
+    NOT_FIRST_RESERVATION(3001, "첫 예약이 아닙니다."),
+
     NOT_FOUND_CHATROOM_ID(4001, "요청한 ID에 해당하는 채팅방이 존재하지 않습니다."),
 
     EXCEED_IMAGE_CAPACITY(5001, "업로드 가능한 이미지 용량을 초과했습니다."),
