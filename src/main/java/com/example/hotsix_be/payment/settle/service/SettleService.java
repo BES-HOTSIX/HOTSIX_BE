@@ -1,17 +1,23 @@
 package com.example.hotsix_be.payment.settle.service;
 
 import com.example.hotsix_be.common.exception.ExceptionCode;
+import com.example.hotsix_be.common.utils.Ut;
 import com.example.hotsix_be.member.entity.Member;
 import com.example.hotsix_be.member.service.MemberService;
 import com.example.hotsix_be.payment.cashlog.entity.EventType;
 import com.example.hotsix_be.payment.cashlog.service.CashLogService;
 import com.example.hotsix_be.payment.payment.exception.PaymentException;
+import com.example.hotsix_be.payment.settle.dto.MySettleResponse;
 import com.example.hotsix_be.payment.settle.entity.Settle;
 import com.example.hotsix_be.payment.settle.repository.SettleRepository;
 import com.example.hotsix_be.reservation.entity.Reservation;
+import com.example.hotsix_be.reservation.service.ReservationService;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
 
 @Service
 @RequiredArgsConstructor
@@ -19,8 +25,10 @@ import org.springframework.transaction.annotation.Transactional;
 public class SettleService {
     private final CashLogService cashLogService;
     private final MemberService memberService;
+    private final ReservationService reservationService;
     private final SettleRepository settleRepository;
 
+    @Getter
     private final int RATE_OF_COMMISSION = 10; // 수수료
 
     // Reservation 을 Settle로 처리 (ItemProcessor)
@@ -68,5 +76,13 @@ public class SettleService {
     @Transactional
     public Settle save(final Settle settle) {
         return settleRepository.save(settle);
+    }
+
+    public MySettleResponse getMySettleByMemberId(final Long id) {
+        Member member = memberService.getMemberById(id);
+        LocalDate settleDate = Ut.getSettleDate();
+        Long expectedTotalSettleAmount = null;
+
+        return null;
     }
 }

@@ -27,6 +27,6 @@ public class Settle extends CashLogMarker {
     // 수수료
     private Long commission;
 
-    // 실 지급액
+    // 총 금액
     private Long totalAmount;
 }

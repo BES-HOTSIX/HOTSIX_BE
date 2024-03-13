@@ -21,5 +21,5 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     Optional<Reservation> findByOrderId(String orderId);
 
     // 정산용 메소드
-    Page<Reservation> findBySettleDateNullAndCheckInDateLessThanEqual(LocalDate endDay, Pageable pageable);
+    Page<Reservation> findBySettleDateNullAndCheckOutDateLessThanEqual(LocalDate endDay, Pageable pageable);
 }
