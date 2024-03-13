@@ -10,8 +10,12 @@ import org.springframework.data.domain.Page;
 @RequiredArgsConstructor(access = PRIVATE)
 public class HostReservationSummaryResponse {
 
-    private Page<HostReservationPageResponse> reservations;
-    private Long totalSales;
-    private Long completedReservationCount;
+    private final Page<HostReservationPageResponse> reservations;
+    private final Long totalSales;
+    private final Long completedReservationCount;
+
+    public static HostReservationSummaryResponse of(final Page<HostReservationPageResponse> reservations, final Long totalSales, final Long completedReservationCount) {
+        return new HostReservationSummaryResponse(reservations, totalSales, completedReservationCount);
+    }
 
 }

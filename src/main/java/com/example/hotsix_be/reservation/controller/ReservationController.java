@@ -6,6 +6,7 @@ import com.example.hotsix_be.auth.util.Accessor;
 import com.example.hotsix_be.common.dto.ResponseDto;
 import com.example.hotsix_be.reservation.dto.request.ReservationInfoRequest;
 import com.example.hotsix_be.reservation.dto.response.HostReservationPageResponse;
+import com.example.hotsix_be.reservation.dto.response.HostReservationSummaryResponse;
 import com.example.hotsix_be.reservation.dto.response.ReservationCreateResponse;
 import com.example.hotsix_be.reservation.dto.response.ReservationInfoResponse;
 import com.example.hotsix_be.reservation.dto.response.ReservedDatesOfHotelResponse;
@@ -102,7 +103,7 @@ public class ReservationController {
             @RequestParam(value = "month") final int month,
             @PathVariable(value = "hotelId") final Long hotelId
     ) {
-        Page<HostReservationPageResponse> reservationsByHotelAndCheckoutMonth = reservationService.findReservationsByHotelAndCheckoutMonth(
+        HostReservationSummaryResponse reservationsByHotelAndCheckoutMonth = reservationService.findReservationsByHotelAndCheckoutMonth(
                 hotelId, year, month, page);
 
         return ResponseEntity.ok(

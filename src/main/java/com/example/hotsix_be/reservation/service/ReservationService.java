@@ -14,6 +14,7 @@ import com.example.hotsix_be.reservation.exception.ReservationException;
 import com.example.hotsix_be.reservation.repository.ReservationRepository;
 import com.example.hotsix_be.review.entity.Review;
 import com.example.hotsix_be.review.repository.ReviewRepository;
+import java.math.BigDecimal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -150,16 +151,24 @@ public class ReservationService {
         return reservationRepository.findByOrderId(orderId);
     }
 
-    public Page<HostReservationPageResponse> findReservationsByHotelAndCheckoutMonth(final Long hotelId, final int year, final int month,
+    public HostReservationSummaryResponse findReservationsByHotelAndCheckoutMonth(final Long hotelId, final int year, final int month,
                                                                                      final int page) {
-        Pageable pageable = Pageable.ofSize(5).withPage(page);
+        Pageable pageable = Pageable.ofSize(10).withPage(page);
 
-        return reservationRepository.findReservationsByHotelAndCheckoutMonth(hotelId, year, month, pageable)
+        Page<HostReservationPageResponse> hotelsByCheckoutMonth = reservationRepository.findReservationsByHotelAndCheckoutMonth(hotelId,
+                        year, month, pageable)
                 .map(reservation -> {
                     return HostReservationPageResponse.of(
                             reservation.getHotel(),
                             reservation
                     );
                 });
+
+        // 전체 예약 대상 총 매출과 건수 계산
+        Long totalSales = reservationRepository.calculateTotalSales(hotelId, year, month);
+        Long completedReservationCount = reservationRepository.countCompletedReservations(hotelId, year, month);
+
+        return HostReservationSummaryResponse.of(hotelsByCheckoutMonth, totalSales, completedReservationCount);
+
     }
 }

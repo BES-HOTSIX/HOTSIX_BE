@@ -5,6 +5,7 @@ import com.example.hotsix_be.reservation.entity.Reservation;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import java.time.LocalDate;
 import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -40,6 +41,38 @@ public class ReservationRepositoryImpl implements ReservationRepositoryCustom {
                 .fetchCount();
 
         return new PageImpl<>(reservations, pageable, total);
+    }
+
+    @Override
+    public Long calculateTotalSales(Long hotelId, int year, int month) {
+        JPAQueryFactory queryFactory = new JPAQueryFactory(em);
+        QReservation reservation = QReservation.reservation;
+
+        return queryFactory
+                .select(reservation.price.sum())
+                .from(reservation)
+                .where(reservation.hotel.id.eq(hotelId),
+                        reservation.isPaid.isTrue(),
+                        reservation.checkOutDate.year().eq(year),
+                        reservation.checkOutDate.month().eq(month),
+                        reservation.checkOutDate.before(LocalDate.now()))
+                .fetchOne();
+    }
+
+    @Override
+    public Long countCompletedReservations(Long hotelId, int year, int month) {
+        JPAQueryFactory queryFactory = new JPAQueryFactory(em);
+        QReservation reservation = QReservation.reservation;
+
+        return queryFactory
+                .select(reservation.count())
+                .from(reservation)
+                .where(reservation.hotel.id.eq(hotelId),
+                        reservation.isPaid.isTrue(),
+                        reservation.checkOutDate.year().eq(year),
+                        reservation.checkOutDate.month().eq(month),
+                        reservation.checkOutDate.before(LocalDate.now()))
+                .fetchOne();
     }
 
 }
