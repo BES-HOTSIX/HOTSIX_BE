@@ -7,6 +7,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity
@@ -23,6 +26,9 @@ public class ChatRoom {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Member user;
+
+    @OneToMany(mappedBy = "chatRoom", fetch = FetchType.LAZY)
+    private List<Message> messages = new ArrayList<>();
 
     public ChatRoom(
             final Member host,

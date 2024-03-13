@@ -102,7 +102,7 @@ public class ChatService {
 
 		Member member = memberRepository.findById(memberId).orElseThrow(() -> new AuthException(INVALID_AUTHORITY));
 
-		return chatRoomRepository.findByHostOrUserOrderByIdDesc(pageable, member, member)
+		return chatRoomRepository.findChatRoomsByHostOrUserWithLatestMessage(pageable, member)
 				.map(chatRoom -> {
 					Member contact = chatRoom.getHost().equals(member) ? chatRoom.getUser() : chatRoom.getHost();
 					LocalDateTime latestDate = messageRepository.findFirstByChatRoomIdOrderByCreatedAtDesc(chatRoom.getId())
