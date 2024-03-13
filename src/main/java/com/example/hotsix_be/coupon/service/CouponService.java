@@ -24,6 +24,7 @@ public class CouponService {
     private final ReservationRepository reservationRepository;
     private final CouponRepository couponRepository;
 
+    @Transactional
     public void issueFirstReservationCoupon(final Long memberId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new AuthException(NOT_FOUND_MEMBER_BY_ID));
@@ -31,6 +32,11 @@ public class CouponService {
         if (!isFirstReservation(member)) {
             throw new CouponException(ExceptionCode.NOT_FIRST_RESERVATION);
         }
+
+        if (alreadyHasFistReservationCoupon(member, CouponType.신규회원)) {
+            throw new CouponException(ExceptionCode.ALREADY_ISSUED_FIRST_RESERVATION_COUPON);
+        }
+
         Coupon coupon = new Coupon(CouponType.신규회원, member);
         couponRepository.save(coupon);
     }
@@ -38,4 +44,9 @@ public class CouponService {
     private boolean isFirstReservation(Member member) {
         return reservationRepository.findFirstByMemberAndIsPaidTrue(member).isEmpty();
     }
+
+    private boolean alreadyHasFistReservationCoupon(Member member, CouponType couponType) {
+        return couponRepository.findByMemberAndCouponType(member, couponType).isPresent();
+    }
+
 }

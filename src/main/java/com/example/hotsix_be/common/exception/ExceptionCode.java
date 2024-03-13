@@ -23,6 +23,7 @@ public enum ExceptionCode {
     ALREADY_BEEN_SETTLED(2010, "이미 정산된 예약입니다."),
 
     NOT_FIRST_RESERVATION(3001, "첫 예약이 아닙니다."),
+    ALREADY_ISSUED_FIRST_RESERVATION_COUPON(3002, "이미 첫 예약 쿠폰을 발행받으셨습니다."),
 
     NOT_FOUND_CHATROOM_ID(4001, "요청한 ID에 해당하는 채팅방이 존재하지 않습니다."),
 
