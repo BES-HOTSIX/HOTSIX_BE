@@ -13,9 +13,11 @@ import com.example.hotsix_be.hotel.entity.Hotel;
 import com.example.hotsix_be.hotel.exception.HotelException;
 import com.example.hotsix_be.hotel.repository.HotelRepository;
 import com.example.hotsix_be.member.entity.Member;
+import com.example.hotsix_be.member.entity.Role;
 import com.example.hotsix_be.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +25,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.example.hotsix_be.common.exception.ExceptionCode.*;
 
@@ -111,7 +115,14 @@ public class ChatService {
 
 		Member member = memberRepository.findById(memberId).orElseThrow(() -> new AuthException(INVALID_AUTHORITY));
 
-		return chatRoomRepository.findChatRoomsByHostOrUserWithLatestMessage(pageable, member)
+		Page<ChatRoom> chatRoomsPage = chatRoomRepository.findChatRoomsByHostOrUserWithLatestMessage(pageable, member);
+
+		Stream<ChatRoom> chatRoomStream = chatRoomsPage.getContent().stream();
+		if (member.getRole().equals(Role.GUEST)) {
+			chatRoomStream = chatRoomStream.filter(chatRoom -> !chatRoom.isLeft());
+		}
+
+		List<MemberChatRoomResponse> filteredAndMappedChatRooms = chatRoomStream
 				.map(chatRoom -> {
 					Member contact = chatRoom.getHost().equals(member) ? chatRoom.getUser() : chatRoom.getHost();
 					LocalDateTime latestDate = messageRepository.findFirstByChatRoomIdOrderByCreatedAtDesc(chatRoom.getId())
@@ -122,7 +133,10 @@ public class ChatService {
 							contact,
 							latestDate
 					);
-				});
+				})
+				.collect(Collectors.toList());
+
+		return new PageImpl<>(filteredAndMappedChatRooms, pageable, chatRoomsPage.getTotalElements());
 	}
 
 	@Transactional
