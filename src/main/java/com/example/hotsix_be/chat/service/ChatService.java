@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import static com.example.hotsix_be.common.exception.ExceptionCode.*;
 
@@ -34,15 +35,23 @@ public class ChatService {
 	private final ChatRoomRepository chatRoomRepository;
 	private final MessageRepository messageRepository;
 
+	private ChatRoom isAllChatRoomExited(final List<ChatRoom> chatRoomList) {
+		Optional<ChatRoom> chatRoomOptional = chatRoomList.stream().filter(chatRoom -> !chatRoom.isLeft()).findAny();
+
+		return chatRoomOptional.orElse(null);
+	}
+
 	@Transactional
 	public ChatRoomCreateResponse saveChatRoom(final ChatRoomCreateRequest chatRoomCreateRequest, final Long memberId) {
 		Member user = memberRepository.findById(memberId).orElseThrow(() -> new AuthException(INVALID_AUTHORITY));
 
 		Hotel hotel = hotelRepository.findById(chatRoomCreateRequest.getHotelId()).orElseThrow(() -> new HotelException(NOT_FOUND_HOTEL_ID));
 
-		ChatRoom chatRoom = chatRoomRepository.findByHostId(hotel.getOwner().getId()).orElse(null);
+		List<ChatRoom> chatRoomList = chatRoomRepository.findAllByHostId(hotel.getOwner().getId());
 
-		if (chatRoom == null) {
+		ChatRoom chatRoom = isAllChatRoomExited(chatRoomList);
+
+		if (chatRoomList.isEmpty() || chatRoom == null) {
 			ChatRoom chatRoomResult = chatRoomRepository.save(
 					new ChatRoom(
 						hotel.getOwner(),
@@ -114,5 +123,12 @@ public class ChatService {
 							latestDate
 					);
 				});
+	}
+
+	@Transactional
+	public void exitChatRoom(final Long roomId) {
+		ChatRoom chatRoom = chatRoomRepository.findById(roomId).orElseThrow(() -> new ChatException(NOT_FOUND_CHATROOM_ID));
+
+		chatRoom.updateIsLeft(true);
 	}
 }

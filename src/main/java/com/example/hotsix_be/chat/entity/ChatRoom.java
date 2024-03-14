@@ -30,11 +30,17 @@ public class ChatRoom {
     @OneToMany(mappedBy = "chatRoom", fetch = FetchType.LAZY)
     private List<Message> messages = new ArrayList<>();
 
+    private boolean isLeft = false;
+
     public ChatRoom(
             final Member host,
             final Member user
     ) {
         this.host = host;
         this.user = user;
+    }
+
+    public void updateIsLeft(boolean isLeft) {
+        this.isLeft = isLeft;
     }
 }
