@@ -16,13 +16,15 @@ public class MemberChatRoomResponse {
 	private final String contactNickname;
 	private final String contactImage;
 	private final LocalDateTime latestDate;
+	private final boolean isLeft;
 
 	public static MemberChatRoomResponse of(final ChatRoom chatRoom, final Member contact, final LocalDateTime latestDate) {
 		return new MemberChatRoomResponse(
 				chatRoom.getId(),
 				contact.getNickname(),
 				contact.getImageUrl(),
-				latestDate
+				latestDate,
+				chatRoom.isLeft()
 		);
 	}
 }
