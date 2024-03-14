@@ -3,6 +3,8 @@ package com.example.hotsix_be.member.controller;
 import com.example.hotsix_be.auth.Auth;
 import com.example.hotsix_be.auth.MemberOnly;
 import com.example.hotsix_be.auth.util.Accessor;
+import com.example.hotsix_be.chat.dto.response.MemberChatRoomResponse;
+import com.example.hotsix_be.chat.service.ChatService;
 import com.example.hotsix_be.common.dto.ResponseDto;
 import com.example.hotsix_be.hotel.dto.response.HotelDetailResponse;
 import com.example.hotsix_be.hotel.service.HotelService;
@@ -40,6 +42,7 @@ public class MemberController implements MemberApi {
     private final HotelService hotelService;
     private final LikeService likeService;
     private final ReviewService reviewService;
+    private final ChatService chatService;
 
     @PostMapping("/register")
     public ResponseEntity<ResponseDto<?>> registerMember(@RequestBody MemberRegisterRequest memberRegisterRequest) {
@@ -253,6 +256,23 @@ public class MemberController implements MemberApi {
                         HttpStatus.OK.value(),
                         "역할이 성공적으로 설정되었습니다.", null,
                         null, null
+                )
+        );
+    }
+
+    @GetMapping("/me/chatRooms")
+    @MemberOnly
+    public ResponseEntity<ResponseDto<Page<MemberChatRoomResponse>>> getMyChatRooms(
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @Auth final Accessor accessor
+    ) {
+        Page<MemberChatRoomResponse> memberChatRoomResponseList = chatService.getMemberChatRooms(page, accessor.getMemberId());
+
+        return ResponseEntity.ok(
+                new ResponseDto<>(
+                        HttpStatus.OK.value(),
+                        "채팅방 조회가 성공적으로 완료되었습니다.", null,
+                        null, memberChatRoomResponseList
                 )
         );
     }
