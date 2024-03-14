@@ -17,6 +17,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,21 +32,22 @@ public class TouristSpotService {
 
     public TouristSpotService(
             @Value("${search.naver.client-id}") String naverApiClientId,
-            @Value("${search.naver.client-secret}") String naverApiClientSecret) {
+            @Value("${search.naver.client-secret}") String naverApiClientSecret)
+    {
         this.naverApiClientId = naverApiClientId;
         this.naverApiClientSecret = naverApiClientSecret;
     }
 
     public Object searchTouristSpot(String query) {
         try {
-            // 띄어쓰기를 기준으로 도시 이름 추출
             String city = query.split(" ")[0];
             String eventKeyword = city + " 축제";
 
             String url = "https://openapi.naver.com/v1/search/local.json";
             UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(url)
                     .queryParam("query", eventKeyword)
-                    .queryParam("display", 5);
+                    .queryParam("display", 5)
+                    .queryParam("sort", "comment");
             String apiUrl = builder.toUriString();
 
             // HTTP 요청 헤더 설정
@@ -72,8 +74,18 @@ public class TouristSpotService {
             JsonNode jsonNode = objectMapper.readTree(response);
             List<TouristSpotResponse> touristSpots = objectMapper.readValue(jsonNode.get("items").toString(), new TypeReference<List<TouristSpotResponse>>() {});
 
+            // 필터링된 결과를 저장할 리스트
+            List<TouristSpotResponse> filteredTouristSpots = new ArrayList<>();
+
+            // TouristSpotResponse의 category가 "여행" 또는 "명소"인 결과만 필터링하여 저장
+            for (TouristSpotResponse spot : touristSpots) {
+                if (spot.getCategory() != null && (spot.getCategory().contains("여행") || spot.getCategory().contains("명소"))) {
+                    filteredTouristSpots.add(spot);
+                }
+            }
+
             // 결과 반환
-            return touristSpots;
+            return filteredTouristSpots;
         } catch (HttpClientErrorException e) {
             // 에러 처리
             System.out.println("HTTP Error: " + e.getStatusCode() + " - " + e.getStatusText());
