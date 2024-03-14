@@ -1,15 +1,17 @@
 package com.example.hotsix_be.reservation.repository;
 
+import com.example.hotsix_be.member.entity.Member;
 import com.example.hotsix_be.reservation.entity.QReservation;
 import com.example.hotsix_be.reservation.entity.Reservation;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import java.time.LocalDate;
-import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+
+import java.time.LocalDate;
+import java.util.List;
 
 public class ReservationRepositoryImpl implements ReservationRepositoryCustom {
 
@@ -75,4 +77,15 @@ public class ReservationRepositoryImpl implements ReservationRepositoryCustom {
                 .fetchOne();
     }
 
+    @Override
+    public Long sumPriceByMemberIdAndSettleDateIsNotNull(Member host) {
+        JPAQueryFactory queryFactory = new JPAQueryFactory(em);
+        QReservation reservation = QReservation.reservation;
+
+        return queryFactory.select(reservation.price.sum())
+                .from(reservation)
+                .where(reservation.host.eq(host),
+                        reservation.settleDate.isNull())
+                .fetchOne();
+    }
 }

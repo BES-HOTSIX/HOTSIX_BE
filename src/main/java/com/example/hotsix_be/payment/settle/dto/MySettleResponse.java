@@ -12,7 +12,7 @@ import static lombok.AccessLevel.PRIVATE;
 @RequiredArgsConstructor(access = PRIVATE)
 public class MySettleResponse {
 
-    private final Long settledCash;
+    private final Long restCash;
 
     private final LocalDate settleDate;
 
@@ -20,12 +20,12 @@ public class MySettleResponse {
 
 
     public static MySettleResponse of(
-            final Long settledCash,
+            final Long restCash,
             final LocalDate settleDate,
             final Long expectedTotalSettleAmount
     ) {
         return new MySettleResponse(
-                settledCash,
+                restCash,
                 settleDate,
                 expectedTotalSettleAmount
         );

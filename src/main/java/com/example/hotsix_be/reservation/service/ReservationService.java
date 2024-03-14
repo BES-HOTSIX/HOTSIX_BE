@@ -14,7 +14,6 @@ import com.example.hotsix_be.reservation.exception.ReservationException;
 import com.example.hotsix_be.reservation.repository.ReservationRepository;
 import com.example.hotsix_be.review.entity.Review;
 import com.example.hotsix_be.review.repository.ReviewRepository;
-import java.math.BigDecimal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -151,6 +150,13 @@ public class ReservationService {
         return reservationRepository.findByOrderId(orderId);
     }
 
+    public Long findExpectedSettleByHost(Member host) {
+        return reservationRepository.sumPriceByMemberIdAndSettleDateIsNotNull(host);
+    }
+
+    public Page<Reservation> findByHost(Member host, Pageable pageable) {
+        return reservationRepository.findByHost(host, pageable);
+    }
     public HostReservationSummaryResponse findReservationsByHotelAndCheckoutMonth(final Long hotelId, final int year, final int month,
                                                                                      final int page) {
         Pageable pageable = Pageable.ofSize(10).withPage(page);
@@ -169,6 +175,5 @@ public class ReservationService {
         Long completedReservationCount = reservationRepository.countCompletedReservations(hotelId, year, month);
 
         return HostReservationSummaryResponse.of(hotelsByCheckoutMonth, totalSales, completedReservationCount);
-
     }
 }

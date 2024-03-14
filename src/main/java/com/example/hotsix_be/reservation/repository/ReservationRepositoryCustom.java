@@ -1,5 +1,6 @@
 package com.example.hotsix_be.reservation.repository;
 
+import com.example.hotsix_be.member.entity.Member;
 import com.example.hotsix_be.reservation.entity.Reservation;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -9,4 +10,5 @@ public interface ReservationRepositoryCustom {
     Long calculateTotalSales(Long hotelId, int year, int month);
     Long countCompletedReservations(Long hotelId, int year, int month);
 
+    Long sumPriceByMemberIdAndSettleDateIsNotNull(Member host);
 }

@@ -1,5 +1,7 @@
 package com.example.hotsix_be.payment.settle.dto;
 
+import com.example.hotsix_be.payment.settle.utils.SettleUt;
+import com.example.hotsix_be.reservation.entity.Reservation;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -24,6 +26,25 @@ public class ReservationForSettleResponse {
     private final LocalDate settleDue;
 
     public static ReservationForSettleResponse of(
+            final Reservation reservation
+    ) {
+        Long price = reservation.getPrice();
+        Long commission = SettleUt.calculateCommission(price);
+        Long expectedAmount = price - commission;
+        Long settledAmount = reservation.getSettleDate() != null ? expectedAmount : 0;
+        LocalDate settleDue = reservation.getSettleDate() != null ? reservation.getSettleDate().toLocalDate() : SettleUt.getSettleDate();
+
+        return ReservationForSettleResponse.of(
+                reservation.getOrderId(),
+                price - commission,
+                price,
+                commission,
+                settledAmount,
+                settleDue
+        );
+    }
+
+    private static ReservationForSettleResponse of(
             final String orderId,
             final Long expectedAmount,
             final Long price,
