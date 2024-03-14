@@ -1,5 +1,9 @@
 package com.example.hotsix_be.payment.pay.controller;
 
+import static com.example.hotsix_be.common.exception.ExceptionCode.INSUFFICIENT_DEPOSIT;
+import static com.example.hotsix_be.common.exception.ExceptionCode.INVALID_REQUEST;
+import static com.example.hotsix_be.common.exception.ExceptionCode.NOT_FOUND_RESERVATION_ID;
+
 import com.example.hotsix_be.auth.Auth;
 import com.example.hotsix_be.auth.MemberOnly;
 import com.example.hotsix_be.auth.util.Accessor;
@@ -18,13 +22,17 @@ import com.example.hotsix_be.reservation.entity.Reservation;
 import com.example.hotsix_be.reservation.exception.ReservationException;
 import com.example.hotsix_be.reservation.service.ReservationService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import static com.example.hotsix_be.common.exception.ExceptionCode.*;
-import static com.example.hotsix_be.common.exception.ExceptionCode.INSUFFICIENT_DEPOSIT;
-
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/pay")
@@ -41,7 +49,8 @@ public class PayController implements PayApi {
             @Auth final Accessor accessor
     ) {
         // 이 메소드에서 로그인한 사용자가 예약한 본인인지도 확인
-        ReservationDetailResponse reservationDetailResponse = reservationService.getUnpaidDetailById(reserveId, accessor.getMemberId());
+        ReservationDetailResponse reservationDetailResponse = reservationService.getUnpaidDetailById(reserveId,
+                accessor.getMemberId());
 
         return ResponseEntity.ok(new ResponseDto<>(
                 HttpStatus.OK.value(),
@@ -53,10 +62,12 @@ public class PayController implements PayApi {
     // 이미 생성되어있는 임시 예약
     @PostMapping("/{reserveId}/byCash")
     public ResponseEntity<ResponseDto<CashLogIdResponse>> payByCash(@PathVariable final Long reserveId) {
-        Reservation reservation = reservationService.findUnpaidById(reserveId).orElseThrow(() -> new PaymentException(INVALID_REQUEST));
+        Reservation reservation = reservationService.findUnpaidById(reserveId)
+                .orElseThrow(() -> new PaymentException(INVALID_REQUEST));
 
-        if (!payService.canPay(reservation, reservation.getPrice()))
+        if (!payService.canPay(reservation, reservation.getPrice(), 0L)) {
             throw new PaymentException(INSUFFICIENT_DEPOSIT);
+        }
 
         // 이용자 결제
         CashLog cashLog = payService.payByCashOnly(reservation);
@@ -77,9 +88,13 @@ public class PayController implements PayApi {
             @RequestBody final TossConfirmRequest tossConfirmRequest,
             @PathVariable final Long reserveId
     ) {
-        Reservation reservation = reservationService.findUnpaidById(reserveId).orElseThrow(() -> new ReservationException(NOT_FOUND_RESERVATION_ID));
-        if (!payService.canPay(reservation, Long.parseLong(tossConfirmRequest.getAmount())))
+        log.info("tossConfirmRequest DiscountAmount: {}", tossConfirmRequest.getDiscountAmount());
+
+        Reservation reservation = reservationService.findUnpaidById(reserveId)
+                .orElseThrow(() -> new ReservationException(NOT_FOUND_RESERVATION_ID));
+        if (!payService.canPay(reservation, Long.parseLong(tossConfirmRequest.getAmount()), tossConfirmRequest.getDiscountAmount())) {
             throw new PaymentException(INSUFFICIENT_DEPOSIT);
+        }
 
         TossPaymentRequest tossPaymentRequest = tossService.confirmTossPayment(tossConfirmRequest).block();
 

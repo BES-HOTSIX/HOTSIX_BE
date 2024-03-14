@@ -44,7 +44,7 @@ public interface PayApi {
                     content = @Content(schema = @Schema(implementation = EmptyResponse.class)))})
     ResponseEntity<ResponseDto<CashLogIdResponse>> payByCash(
             final Long reserveId
-    );
+            );
 
     @Operation(
             summary = "토스페이먼츠 결제",

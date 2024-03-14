@@ -63,7 +63,6 @@ public class PayService {
     }
 
 
-
     // 복합 결제 및 토스페이먼츠 결제
     @Transactional
     public CashLog payByTossPayments(
@@ -81,15 +80,17 @@ public class PayService {
         return doPay(reservation, EventType.결제__토스페이먼츠); // TODO 토스페이먼츠 결제와 포인트 복합 결제 명확히 하기
     }
 
-    public boolean canPay(final Reservation reservation, final Long pgPayPrice) {
+    public boolean canPay(final Reservation reservation, final Long pgPayPrice, final Long discountAmount) {
         Member member = reservation.getMember();
         Long restCash = member.getRestCash();
         Long price = reservation.getPrice();
 
         // 중복 결제 예방
-        if (reservation.isPaid()) throw new PaymentException(INVALID_REQUEST);
+        if (reservation.isPaid()) {
+            throw new PaymentException(INVALID_REQUEST);
+        }
 
         // 예치금이 충분한지 확인
-        return price <= restCash + pgPayPrice;
+        return price <= restCash + pgPayPrice + discountAmount;
     }
 }

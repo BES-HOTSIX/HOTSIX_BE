@@ -24,4 +24,7 @@ public class TossConfirmRequest {
 
     @Schema(description = "결제 키값", example = "5zJ4xY7m0kODnyRpQWGrN2xqGlNvLrKwv1M9ENjbeoPaZdL6")
     private String paymentKey;
+
+    private Long discountAmount;
+
 }

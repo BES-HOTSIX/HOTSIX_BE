@@ -33,7 +33,7 @@ public class CouponController {
         return ResponseEntity.ok(
                 new ResponseDto<>(
                         HttpStatus.OK.value(),
-                        "첫 예약 10% 할인 쿠폰이 성공적으로 발행되었습니다.", null,
+                        "신규 회원 10% 할인 쿠폰이 성공적으로 발행되었습니다.", null,
                         null, null
                 )
         );

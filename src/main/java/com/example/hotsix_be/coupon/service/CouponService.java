@@ -31,11 +31,7 @@ public class CouponService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new AuthException(NOT_FOUND_MEMBER_BY_ID));
 
-        if (!isFirstReservation(member)) {
-            throw new CouponException(ExceptionCode.NOT_FIRST_RESERVATION);
-        }
-
-        if (alreadyHasFistReservationCoupon(member, CouponType.신규회원)) {
+        if (alreadHasNewCustomerCoupon(member, CouponType.신규회원)) {
             throw new CouponException(ExceptionCode.ALREADY_ISSUED_FIRST_RESERVATION_COUPON);
         }
 
@@ -52,11 +48,8 @@ public class CouponService {
         return coupons.stream().map(CouponResponse::of).toList();
     }
 
-    private boolean isFirstReservation(Member member) {
-        return reservationRepository.findFirstByMemberAndIsPaidTrue(member).isEmpty();
-    }
 
-    private boolean alreadyHasFistReservationCoupon(Member member, CouponType couponType) {
+    private boolean alreadHasNewCustomerCoupon(Member member, CouponType couponType) {
         return couponRepository.findByMemberAndCouponType(member, couponType).isPresent();
     }
 
