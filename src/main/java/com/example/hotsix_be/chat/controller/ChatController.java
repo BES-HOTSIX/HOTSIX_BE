@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 public class ChatController {
 	private final ChatService chatService;
 
-	@PostMapping("/create")
+	@PostMapping("")
 	@MemberOnly
 	public ResponseEntity<?> createChatRoom(
 			@RequestBody final ChatRoomCreateRequest chatRoomCreateRequest,
@@ -67,6 +67,21 @@ public class ChatController {
 						HttpStatus.OK.value(),
 						"채팅 내역을 불러왔습니다.", null,
 						null, messagesResponse
+				)
+		);
+	}
+
+	@DeleteMapping("/{roomId}")
+	public ResponseEntity<?> exitChatRoom(
+			@PathVariable(value = "roomId") final Long roomId
+	) {
+		chatService.exitChatRoom(roomId);
+
+		return ResponseEntity.ok(
+				new ResponseDto<>(
+						HttpStatus.OK.value(),
+						"채팅방에서 퇴장했습니다.", null,
+						null, null
 				)
 		);
 	}

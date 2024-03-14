@@ -3,9 +3,9 @@ package com.example.hotsix_be.chat.repository;
 import com.example.hotsix_be.chat.entity.ChatRoom;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.Optional;
+import java.util.List;
 
-public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
+public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long>, ChatRoomRepositoryCustom {
 
-	Optional<ChatRoom> findByHostId(Long id);
+	List<ChatRoom> findAllByHostIdAndUserId(Long hostId, Long userId);
 }

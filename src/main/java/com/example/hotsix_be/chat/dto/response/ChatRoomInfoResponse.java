@@ -12,10 +12,13 @@ public class ChatRoomInfoResponse {
 	private final String hostNickname;
 	private final String userNickname;
 
+	private final boolean isLeft;
+
 	public static ChatRoomInfoResponse of(final ChatRoom chatRoom) {
 		return new ChatRoomInfoResponse(
 				chatRoom.getHost().getNickname(),
-				chatRoom.getUser().getNickname()
+				chatRoom.getUser().getNickname(),
+				chatRoom.isLeft()
 		);
 	}
 }
