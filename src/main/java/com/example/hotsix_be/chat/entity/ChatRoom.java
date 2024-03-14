@@ -1,5 +1,6 @@
 package com.example.hotsix_be.chat.entity;
 
+import com.example.hotsix_be.common.entity.DateEntity;
 import com.example.hotsix_be.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -16,7 +17,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class ChatRoom {
+public class ChatRoom extends DateEntity {
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;

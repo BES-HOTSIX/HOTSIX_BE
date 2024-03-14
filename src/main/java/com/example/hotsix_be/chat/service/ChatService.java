@@ -39,7 +39,7 @@ public class ChatService {
 	private final ChatRoomRepository chatRoomRepository;
 	private final MessageRepository messageRepository;
 
-	private ChatRoom isAllChatRoomExited(final List<ChatRoom> chatRoomList) {
+	private ChatRoom findAvailableChatRoom(final List<ChatRoom> chatRoomList) {
 		Optional<ChatRoom> chatRoomOptional = chatRoomList.stream().filter(chatRoom -> !chatRoom.isLeft()).findAny();
 
 		return chatRoomOptional.orElse(null);
@@ -51,9 +51,9 @@ public class ChatService {
 
 		Hotel hotel = hotelRepository.findById(chatRoomCreateRequest.getHotelId()).orElseThrow(() -> new HotelException(NOT_FOUND_HOTEL_ID));
 
-		List<ChatRoom> chatRoomList = chatRoomRepository.findAllByHostId(hotel.getOwner().getId());
+		List<ChatRoom> chatRoomList = chatRoomRepository.findAllByHostIdAndUserId(hotel.getOwner().getId(), memberId);
 
-		ChatRoom chatRoom = isAllChatRoomExited(chatRoomList);
+		ChatRoom chatRoom = findAvailableChatRoom(chatRoomList);
 
 		if (chatRoomList.isEmpty() || chatRoom == null) {
 			ChatRoom chatRoomResult = chatRoomRepository.save(

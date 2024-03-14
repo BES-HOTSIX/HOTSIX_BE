@@ -17,6 +17,7 @@ public class MemberChatRoomResponse {
 	private final String contactImage;
 	private final LocalDateTime latestDate;
 	private final boolean isLeft;
+	private final LocalDateTime createdAt;
 
 	public static MemberChatRoomResponse of(final ChatRoom chatRoom, final Member contact, final LocalDateTime latestDate) {
 		return new MemberChatRoomResponse(
@@ -24,7 +25,8 @@ public class MemberChatRoomResponse {
 				contact.getNickname(),
 				contact.getImageUrl(),
 				latestDate,
-				chatRoom.isLeft()
+				chatRoom.isLeft(),
+				chatRoom.getCreatedAt()
 		);
 	}
 }
