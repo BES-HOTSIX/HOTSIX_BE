@@ -4,15 +4,18 @@ import com.example.hotsix_be.auth.Auth;
 import com.example.hotsix_be.auth.MemberOnly;
 import com.example.hotsix_be.auth.util.Accessor;
 import com.example.hotsix_be.common.dto.ResponseDto;
-import com.example.hotsix_be.coupon.dto.response.CouponResponse;
+import com.example.hotsix_be.coupon.dto.request.CouponDeleteRequest;
+import com.example.hotsix_be.coupon.dto.response.CouponIssueResponse;
 import com.example.hotsix_be.coupon.service.CouponService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -41,9 +44,9 @@ public class CouponController {
 
     @GetMapping("/my")
     @MemberOnly
-    public ResponseEntity<ResponseDto<List<CouponResponse>>> getCouponsByMemberId(@Auth Accessor accessor) {
+    public ResponseEntity<ResponseDto<List<CouponIssueResponse>>> getCouponsByMemberId(@Auth Accessor accessor) {
 
-        List<CouponResponse> couponsByMemberId = couponService.getCouponsByMemberId(accessor.getMemberId());
+        List<CouponIssueResponse> couponsByMemberId = couponService.getCouponsByMemberId(accessor.getMemberId());
 
         return ResponseEntity.ok(
                 new ResponseDto<>(
@@ -52,5 +55,14 @@ public class CouponController {
                         null, couponsByMemberId
                 )
         );
+    }
+
+    @DeleteMapping("/delete")
+    @MemberOnly
+    public ResponseEntity<?> deleteCoupon(@RequestBody CouponDeleteRequest couponDeleteRequest, @Auth Accessor accessor) {
+
+        couponService.deleteCoupon(accessor.getMemberId(), couponDeleteRequest.getCouponType());
+
+        return ResponseEntity.ok().build();
     }
 }

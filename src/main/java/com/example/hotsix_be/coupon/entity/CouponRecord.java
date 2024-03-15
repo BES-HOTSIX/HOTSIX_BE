@@ -1,6 +1,7 @@
 package com.example.hotsix_be.coupon.entity;
 
 import com.example.hotsix_be.hotel.entity.Hotel;
+import com.example.hotsix_be.member.entity.Member;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -28,8 +29,15 @@ public class CouponRecord {
     @Enumerated(EnumType.STRING)
     private CouponType couponType;
 
+
+    @ManyToOne
+    @JoinColumn(name = "member_id")
+    private Member member; // 할인을 받은 회원
+
+/*
     @ManyToOne
     @JoinColumn(name = "hotel_id")
     private Hotel hotel; // 할인이 적용된 숙소
+  */
 
 }

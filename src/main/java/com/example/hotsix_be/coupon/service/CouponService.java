@@ -4,8 +4,9 @@ import static com.example.hotsix_be.common.exception.ExceptionCode.NOT_FOUND_MEM
 
 import com.example.hotsix_be.common.exception.AuthException;
 import com.example.hotsix_be.common.exception.ExceptionCode;
-import com.example.hotsix_be.coupon.dto.response.CouponResponse;
+import com.example.hotsix_be.coupon.dto.response.CouponIssueResponse;
 import com.example.hotsix_be.coupon.entity.Coupon;
+import com.example.hotsix_be.coupon.entity.CouponRecord;
 import com.example.hotsix_be.coupon.entity.CouponType;
 import com.example.hotsix_be.coupon.exception.CouponException;
 import com.example.hotsix_be.coupon.repository.CouponRepository;
@@ -39,13 +40,13 @@ public class CouponService {
         couponRepository.save(coupon);
     }
 
-    public List<CouponResponse> getCouponsByMemberId(final Long memberId) {
+    public List<CouponIssueResponse> getCouponsByMemberId(final Long memberId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new AuthException(NOT_FOUND_MEMBER_BY_ID));
 
         List<Coupon> coupons = couponRepository.findByMember(member);
 
-        return coupons.stream().map(CouponResponse::of).toList();
+        return coupons.stream().map(CouponIssueResponse::of).toList();
     }
 
 
@@ -53,4 +54,15 @@ public class CouponService {
         return couponRepository.findByMemberAndCouponType(member, couponType).isPresent();
     }
 
+    public void deleteCoupon(Long memberId, CouponType couponType) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new AuthException(NOT_FOUND_MEMBER_BY_ID));
+
+        // 멤버와 쿠폰 레코드를 기반으로 쿠폰 찾기
+        Coupon coupon = couponRepository.findByMemberAndCouponType(member, couponType)
+                .orElseThrow(() -> new CouponException(ExceptionCode.NOT_FOUND_COUPON_TYPE));
+
+        // 쿠폰 레코드 생성
+
+    }
 }

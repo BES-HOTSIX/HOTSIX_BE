@@ -28,9 +28,9 @@ public class QCouponRecord extends EntityPathBase<CouponRecord> {
 
     public final DatePath<java.util.Date> discountDate = createDate("discountDate", java.util.Date.class);
 
-    public final com.example.hotsix_be.hotel.entity.QHotel hotel;
-
     public final NumberPath<Long> id = createNumber("id", Long.class);
+
+    public final com.example.hotsix_be.member.entity.QMember member;
 
     public QCouponRecord(String variable) {
         this(CouponRecord.class, forVariable(variable), INITS);
@@ -50,7 +50,7 @@ public class QCouponRecord extends EntityPathBase<CouponRecord> {
 
     public QCouponRecord(Class<? extends CouponRecord> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.hotel = inits.isInitialized("hotel") ? new com.example.hotsix_be.hotel.entity.QHotel(forProperty("hotel"), inits.get("hotel")) : null;
+        this.member = inits.isInitialized("member") ? new com.example.hotsix_be.member.entity.QMember(forProperty("member")) : null;
     }
 
 }
