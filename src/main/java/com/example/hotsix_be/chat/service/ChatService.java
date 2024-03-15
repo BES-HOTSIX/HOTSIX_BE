@@ -13,7 +13,6 @@ import com.example.hotsix_be.hotel.entity.Hotel;
 import com.example.hotsix_be.hotel.exception.HotelException;
 import com.example.hotsix_be.hotel.repository.HotelRepository;
 import com.example.hotsix_be.member.entity.Member;
-import com.example.hotsix_be.member.entity.Role;
 import com.example.hotsix_be.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -116,11 +115,7 @@ public class ChatService {
 
 		Page<ChatRoom> chatRoomsPage = chatRoomRepository.findAvailableChatRoomsByHostOrUserWithLatestMessage(pageable, member);
 
-		List<ChatRoom> filteredChatRooms = chatRoomsPage.getContent().stream()
-				.filter(chatRoom -> !(member.getRole().equals(Role.GUEST) && chatRoom.isLeft()))
-				.collect(Collectors.toList());
-
-		List<MemberChatRoomResponse> filteredAndMappedChatRooms = filteredChatRooms.stream()
+		List<MemberChatRoomResponse> filteredAndMappedChatRooms = chatRoomsPage.stream()
 				.map(chatRoom -> {
 					Member contact = chatRoom.getHost().equals(member) ? chatRoom.getUser() : chatRoom.getHost();
 					LocalDateTime latestDate = messageRepository.findFirstByChatRoomIdOrderByCreatedAtDesc(chatRoom.getId())
@@ -134,9 +129,7 @@ public class ChatService {
 				})
 				.collect(Collectors.toList());
 
-		long totalElements = member.getRole().equals(Role.GUEST) ? filteredChatRooms.size() : chatRoomsPage.getTotalElements();
-
-		return new PageImpl<>(filteredAndMappedChatRooms, pageable, totalElements);
+		return new PageImpl<>(filteredAndMappedChatRooms, pageable, chatRoomsPage.getTotalElements());
 	}
 
 	public Page<MemberChatRoomResponse> getHostExitedChatRooms(final int page, final Long memberId) {
