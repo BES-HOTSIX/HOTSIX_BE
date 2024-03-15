@@ -10,5 +10,5 @@ public interface ReservationRepositoryCustom {
     Long calculateTotalSales(Long hotelId, int year, int month);
     Long countCompletedReservations(Long hotelId, int year, int month);
 
-    Long sumPriceByMemberIdAndSettleDateIsNotNull(Member host);
+    Long sumPriceByMemberIdAndSettleDateNull(Member host);
 }

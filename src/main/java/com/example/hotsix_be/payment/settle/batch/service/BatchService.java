@@ -22,7 +22,7 @@ public class BatchService {
     @Scheduled(cron = "0 0-30/10 0 ? * WED") // 매주 수요일 0시 0분에 실행, 10분마다 한번씩, 총 네번 실행
     public void runSettleJob() {
 
-        LocalDate endDay = SettleUt.getSettleDate();
+        LocalDate endDay = SettleUt.getBaseSettleDate();
 
         JobParameters jobParameters = new JobParametersBuilder()
                 .addLocalDate("endDay", endDay)

@@ -23,6 +23,7 @@ import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 import java.util.stream.IntStream;
 
+import static com.aventrix.jnanoid.jnanoid.NanoIdUtils.randomNanoId;
 import static com.example.hotsix_be.common.exception.ExceptionCode.NOT_FOUND_MEMBER_BY_ID;
 
 
@@ -58,6 +59,9 @@ public class ReservationInit implements ApplicationRunner {
                             lastHotel,
                             member
                     );
+
+                    reservation.updateOrderId("o" + randomNanoId());
+
                     reservationRepository.save(reservation);
                 });
 
@@ -73,6 +77,9 @@ public class ReservationInit implements ApplicationRunner {
                             lastHotel,
                             member
                     );
+
+                    reservation.updateOrderId("o" + randomNanoId());
+
                     reservationRepository.save(reservation);
                 });
 
@@ -88,6 +95,8 @@ public class ReservationInit implements ApplicationRunner {
                             lastHotel,
                             member
                     );
+
+                    reservation.updateOrderId("o" + randomNanoId());
 
                     Settle settle = settleService.doSettle(reservation);
 
@@ -108,6 +117,9 @@ public class ReservationInit implements ApplicationRunner {
                             lastHotel,
                             member
                     );
+
+                    reservation.updateOrderId("o" + randomNanoId());
+
                     reservationRepository.save(reservation);
                 });
 

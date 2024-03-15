@@ -78,14 +78,15 @@ public class ReservationRepositoryImpl implements ReservationRepositoryCustom {
     }
 
     @Override
-    public Long sumPriceByMemberIdAndSettleDateIsNotNull(Member host) {
+    public Long sumPriceByMemberIdAndSettleDateNull(Member host) {
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
         QReservation reservation = QReservation.reservation;
 
         return queryFactory.select(reservation.price.sum())
                 .from(reservation)
                 .where(reservation.host.eq(host),
-                        reservation.settleDate.isNull())
+                        reservation.settleDate.isNull(),
+                        reservation.cancelDate.isNull())
                 .fetchOne();
     }
 }

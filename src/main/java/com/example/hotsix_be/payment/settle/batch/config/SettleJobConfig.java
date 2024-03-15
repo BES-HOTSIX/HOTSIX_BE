@@ -65,7 +65,7 @@ public class SettleJobConfig {
         return new RepositoryItemReaderBuilder<Reservation>()
                 .name("settleStep")
                 .repository(reservationRepository)
-                .methodName("findBySettleDateNullAndCheckOutDateLessThanEqual")
+                .methodName("findBySettleDateNullAndCheckOutDateLessThanEqualAndCancelDateNull")
                 .pageSize(CHUNK_SIZE)
                 .arguments(endDay)
                 .sorts(Collections.singletonMap("id", Sort.Direction.ASC))

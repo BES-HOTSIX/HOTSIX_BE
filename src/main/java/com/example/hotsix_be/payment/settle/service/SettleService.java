@@ -80,7 +80,7 @@ public class SettleService {
     public MySettleResponse getMySettleByMemberId(final Long id) {
         Member host = memberService.getMemberById(id);
         Long restCash = host.getRestCash();
-        LocalDate settleDate = SettleUt.getSettleDate();
+        LocalDate settleDate = SettleUt.getExpectedSettleDate();
         Long expectedTotalSettleAmount = reservationService.findExpectedSettleByHost(host);
 
         return MySettleResponse.of(restCash, settleDate, expectedTotalSettleAmount);
@@ -93,9 +93,9 @@ public class SettleService {
         Member host = memberService.getMemberById(id);
 
         // TODO 원한다면 체크아웃 날짜와 체크인 날짜 순으로도 확인할 수 있도록 하기
-        Pageable sortedPageable = ((PageRequest) pageable).withSort(Sort.by("createAt").descending());
+        Pageable sortedPageable = ((PageRequest) pageable).withSort(Sort.by("createdAt").descending());
 
-        Page<Reservation> reservations = reservationService.findByHost(host, sortedPageable);
+        Page<Reservation> reservations = reservationService.findByHostAndCancelDateNull(host, sortedPageable);
 
         Page<ReservationForSettleResponse> resPage = reservations.map(ReservationForSettleResponse::of);
 

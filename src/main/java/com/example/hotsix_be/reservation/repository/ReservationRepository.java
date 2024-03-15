@@ -19,12 +19,14 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long>,
 
     Optional<Reservation> findByIdAndIsPaidFalse(Long reserveId);
 
-    Optional<Reservation> findByOrderId(String orderId);
+    Optional<Reservation> findByOrderIdContainingAndMember(String orderId, Member member);
 
     // 정산용 메소드
-    Page<Reservation> findBySettleDateNullAndCheckOutDateLessThanEqual(LocalDate endDay, Pageable pageable);
+    Page<Reservation> findBySettleDateNullAndCheckOutDateLessThanEqualAndCancelDateNull(LocalDate endDay, Pageable pageable);
 
     Optional<Reservation> findFirstByMemberAndIsPaidTrue(Member member);
 
-    Page<Reservation> findByHost(Member host, Pageable pageable);
+    Page<Reservation> findByHostAndCancelDateNull(Member host, Pageable pageable);
+
+    Optional<Reservation> findByOrderIdContainingAndHostId(String orderId, Long hostId);
 }

@@ -32,7 +32,7 @@ public class ReservationForSettleResponse {
         Long commission = SettleUt.calculateCommission(price);
         Long expectedAmount = price - commission;
         Long settledAmount = reservation.getSettleDate() != null ? expectedAmount : 0;
-        LocalDate settleDue = reservation.getSettleDate() != null ? reservation.getSettleDate().toLocalDate() : SettleUt.getSettleDate();
+        LocalDate settleDue = reservation.getSettleDate() != null ? reservation.getSettleDate().toLocalDate() : SettleUt.getExpectedSettleDate();
 
         return ReservationForSettleResponse.of(
                 reservation.getOrderId(),
