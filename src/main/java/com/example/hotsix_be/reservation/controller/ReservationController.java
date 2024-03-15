@@ -23,7 +23,7 @@ public class ReservationController {
 
     @GetMapping("/detail/{reserveId}")
     @MemberOnly
-    public ResponseEntity<?> getReservationDetail (
+    public ResponseEntity<?> getReservationDetail(
             @PathVariable(value = "reserveId") final String reserveId,
             @Auth final Accessor accessor
     ) {

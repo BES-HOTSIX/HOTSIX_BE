@@ -12,6 +12,7 @@ import com.example.hotsix_be.reservation.repository.ReservationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +29,7 @@ import static com.example.hotsix_be.common.exception.ExceptionCode.NOT_FOUND_MEM
 
 @Component
 @RequiredArgsConstructor
-//@Profile("dev")
+@Profile("dev")
 @Transactional
 @Order(2)
 public class ReservationInit implements ApplicationRunner {
