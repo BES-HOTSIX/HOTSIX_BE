@@ -99,7 +99,7 @@ public class CashLogService {
     public ConfirmResponse getConfirmRespById(final Long id) {
         CashLog cashLog = findById(id).orElseThrow(() -> new PaymentException(INVALID_REQUEST));
 
-        Reservation reservation = reservationService.findByOrderId(cashLog.getOrderId())
+        Reservation reservation = reservationService.findByOrderIdAndMember(cashLog.getOrderId(), cashLog.getMember())
                 .orElseThrow(() -> new ReservationException(NOT_FOUND_RESERVATION_ID));
 
         Hotel hotel = reservation.getHotel();
