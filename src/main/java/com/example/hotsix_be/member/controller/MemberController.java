@@ -260,13 +260,30 @@ public class MemberController implements MemberApi {
         );
     }
 
-    @GetMapping("/me/chatRooms")
+    @GetMapping("/me/chatRooms/available")
     @MemberOnly
-    public ResponseEntity<ResponseDto<Page<MemberChatRoomResponse>>> getMyChatRooms(
+    public ResponseEntity<ResponseDto<Page<MemberChatRoomResponse>>> getMyAvailableChatRooms(
             @RequestParam(value = "page", defaultValue = "0") int page,
             @Auth final Accessor accessor
     ) {
-        Page<MemberChatRoomResponse> memberChatRoomResponseList = chatService.getMemberChatRooms(page, accessor.getMemberId());
+        Page<MemberChatRoomResponse> memberChatRoomResponseList = chatService.getMemberAvailableChatRooms(page, accessor.getMemberId());
+
+        return ResponseEntity.ok(
+                new ResponseDto<>(
+                        HttpStatus.OK.value(),
+                        "채팅방 조회가 성공적으로 완료되었습니다.", null,
+                        null, memberChatRoomResponseList
+                )
+        );
+    }
+
+    @GetMapping("/me/chatRooms/exited")
+    @MemberOnly
+    public ResponseEntity<ResponseDto<Page<MemberChatRoomResponse>>> getMyExitedChatRooms(
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @Auth final Accessor accessor
+    ) {
+        Page<MemberChatRoomResponse> memberChatRoomResponseList = chatService.getHostExitedChatRooms(page, accessor.getMemberId());
 
         return ResponseEntity.ok(
                 new ResponseDto<>(

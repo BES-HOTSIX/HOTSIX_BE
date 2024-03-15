@@ -26,7 +26,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static com.example.hotsix_be.common.exception.ExceptionCode.*;
 
@@ -110,19 +109,44 @@ public class ChatService {
 		return MessagesResponse.of(messageList);
 	}
 
-	public Page<MemberChatRoomResponse> getMemberChatRooms(final int page, final Long memberId) {
+	public Page<MemberChatRoomResponse> getMemberAvailableChatRooms(final int page, final Long memberId) {
 		Pageable pageable = Pageable.ofSize(4).withPage(page);
 
 		Member member = memberRepository.findById(memberId).orElseThrow(() -> new AuthException(INVALID_AUTHORITY));
 
-		Page<ChatRoom> chatRoomsPage = chatRoomRepository.findChatRoomsByHostOrUserWithLatestMessage(pageable, member);
+		Page<ChatRoom> chatRoomsPage = chatRoomRepository.findAvailableChatRoomsByHostOrUserWithLatestMessage(pageable, member);
 
-		Stream<ChatRoom> chatRoomStream = chatRoomsPage.getContent().stream();
-		if (member.getRole().equals(Role.GUEST)) {
-			chatRoomStream = chatRoomStream.filter(chatRoom -> !chatRoom.isLeft());
-		}
+		List<ChatRoom> filteredChatRooms = chatRoomsPage.getContent().stream()
+				.filter(chatRoom -> !(member.getRole().equals(Role.GUEST) && chatRoom.isLeft()))
+				.collect(Collectors.toList());
 
-		List<MemberChatRoomResponse> filteredAndMappedChatRooms = chatRoomStream
+		List<MemberChatRoomResponse> filteredAndMappedChatRooms = filteredChatRooms.stream()
+				.map(chatRoom -> {
+					Member contact = chatRoom.getHost().equals(member) ? chatRoom.getUser() : chatRoom.getHost();
+					LocalDateTime latestDate = messageRepository.findFirstByChatRoomIdOrderByCreatedAtDesc(chatRoom.getId())
+							.map(Message::getCreatedAt).orElse(null);
+
+					return MemberChatRoomResponse.of(
+							chatRoom,
+							contact,
+							latestDate
+					);
+				})
+				.collect(Collectors.toList());
+
+		long totalElements = member.getRole().equals(Role.GUEST) ? filteredChatRooms.size() : chatRoomsPage.getTotalElements();
+
+		return new PageImpl<>(filteredAndMappedChatRooms, pageable, totalElements);
+	}
+
+	public Page<MemberChatRoomResponse> getHostExitedChatRooms(final int page, final Long memberId) {
+		Pageable pageable = Pageable.ofSize(4).withPage(page);
+
+		Member member = memberRepository.findById(memberId).orElseThrow(() -> new AuthException(INVALID_AUTHORITY));
+
+		Page<ChatRoom> chatRoomsPage = chatRoomRepository.findExitedChatRoomsByHostWithLatestMessage(pageable, member);
+
+		List<MemberChatRoomResponse> filteredAndMappedChatRooms = chatRoomsPage.stream()
 				.map(chatRoom -> {
 					Member contact = chatRoom.getHost().equals(member) ? chatRoom.getUser() : chatRoom.getHost();
 					LocalDateTime latestDate = messageRepository.findFirstByChatRoomIdOrderByCreatedAtDesc(chatRoom.getId())
