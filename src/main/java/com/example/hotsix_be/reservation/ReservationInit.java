@@ -89,7 +89,7 @@ public class ReservationInit implements ApplicationRunner {
                             member
                     );
 
-                    Settle settle = settleService.doSettle(reservation);
+                    Settle settle = settleService.doSettle(reservation, 0L);
 
                     settleService.save(settle);
 

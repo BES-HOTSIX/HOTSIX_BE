@@ -25,7 +25,7 @@ public class SettleService {
 
     // Reservation 을 Settle로 처리 (ItemProcessor)
     @Transactional
-    public Settle doSettle(final Reservation reservation) {
+    public Settle doSettle(final Reservation reservation, final Long discountAmount) {
         // 이미 정산된 데이터일 경우 예외 발생
         if (reservation.isSettled()) throw new PaymentException(ExceptionCode.ALREADY_BEEN_SETTLED);
 
@@ -45,7 +45,8 @@ public class SettleService {
                 deductedPrice,
                 reservation.getOrderId(),
                 EventType.정산__예치금적립,
-                settle
+                settle,
+                discountAmount
         );
 
         reservation.settleDone();
@@ -59,7 +60,7 @@ public class SettleService {
 
         // 어드민 계정 (Id 가 1인 멤버) 에 수수료 전달
         Member admin = memberService.getMemberById(1L);
-        admin.addCash(commission);
+        admin.addCash(commission, 0L);
 
         return deductedPrice;
     }

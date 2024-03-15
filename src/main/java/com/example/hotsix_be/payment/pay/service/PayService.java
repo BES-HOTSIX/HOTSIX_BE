@@ -27,7 +27,7 @@ public class PayService {
 
     // 예치금 사용 결제
     @Transactional
-    public Pay doPay(final Reservation reservation, final EventType eventType) {
+    public Pay doPay(final Reservation reservation, final EventType eventType, final Long discountAmount) {
         Member buyer = reservation.getMember();
         Long payPrice = reservation.getPrice();
         Member owner = reservation.getHotel().getOwner();
@@ -42,7 +42,8 @@ public class PayService {
                 payPrice * -1,
                 reservation.getOrderId(),
                 eventType,
-                pay
+                pay,
+                discountAmount
         );
 
         // Reservation 객체의 isPaid 값 true 설정
@@ -52,10 +53,10 @@ public class PayService {
     }
 
     @Transactional
-    public CashLog payByCashOnly(final Reservation reservation) {
+    public CashLog payByCashOnly(final Reservation reservation, final Long discountAmount) {
         reservation.updateOrderId(randomNanoId());
 
-        Pay pay = doPay(reservation, 결제__예치금);
+        Pay pay = doPay(reservation, 결제__예치금, discountAmount);
 
         reservation.payDone();
 
@@ -67,7 +68,8 @@ public class PayService {
     @Transactional
     public CashLog payByTossPayments(
             final TossPaymentRequest tossPaymentRequest,
-            final Reservation reservation
+            final Reservation reservation,
+            final Long discountAmount
     ) {
         Member buyer = reservation.getMember();
         String orderId = tossPaymentRequest.getOrderId();
@@ -75,9 +77,9 @@ public class PayService {
         // orderId 입력
         reservation.updateOrderId(orderId);
 
-        rechargeService.easyPayRecharge(tossPaymentRequest, buyer);
+        rechargeService.easyPayRecharge(tossPaymentRequest, buyer, discountAmount);
 
-        return doPay(reservation, EventType.결제__토스페이먼츠); // TODO 토스페이먼츠 결제와 포인트 복합 결제 명확히 하기
+        return doPay(reservation, EventType.결제__토스페이먼츠, discountAmount); // TODO 토스페이먼츠 결제와 포인트 복합 결제 명확히 하기
     }
 
     public boolean canPay(final Reservation reservation, final Long pgPayPrice, final Long discountAmount) {

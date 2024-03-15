@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
+import lombok.extern.slf4j.Slf4j;
 
 @Entity
 @Table(name = "members")
@@ -16,6 +17,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@Slf4j
 public class Member extends DateEntity {
 
     @Id
@@ -94,7 +96,14 @@ public class Member extends DateEntity {
         this.restCash = newRestCash;
     }
     
-    public void addCash(Long amount) {
-        updateRestCash(this.restCash + amount);
+    public void addCash(Long amount, Long discountAmount) {
+        long updatedRestCash;
+        if (amount > 0){
+            updatedRestCash = this.restCash + amount;
+        }else {
+            updatedRestCash = this.restCash + amount + discountAmount;
+        }
+        updateRestCash(updatedRestCash);
+        log.info(this.restCash + "원이 추가되었습니다.");
     }
 }

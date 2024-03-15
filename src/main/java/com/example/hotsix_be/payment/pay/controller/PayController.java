@@ -8,6 +8,7 @@ import com.example.hotsix_be.auth.Auth;
 import com.example.hotsix_be.auth.MemberOnly;
 import com.example.hotsix_be.auth.util.Accessor;
 import com.example.hotsix_be.common.dto.ResponseDto;
+import com.example.hotsix_be.coupon.dto.request.DiscountAmountRequest;
 import com.example.hotsix_be.payment.cashlog.dto.response.CashLogIdResponse;
 import com.example.hotsix_be.payment.cashlog.entity.CashLog;
 import com.example.hotsix_be.payment.cashlog.service.CashLogService;
@@ -61,16 +62,17 @@ public class PayController implements PayApi {
     // 결제창에서 결제하기 버튼을 누를 경우 아래 메소드가 작동
     // 이미 생성되어있는 임시 예약
     @PostMapping("/{reserveId}/byCash")
-    public ResponseEntity<ResponseDto<CashLogIdResponse>> payByCash(@PathVariable final Long reserveId) {
+    public ResponseEntity<ResponseDto<CashLogIdResponse>> payByCash(@PathVariable final Long reserveId, @RequestBody
+                                                                    final DiscountAmountRequest discountAmountRequest) {
         Reservation reservation = reservationService.findUnpaidById(reserveId)
                 .orElseThrow(() -> new PaymentException(INVALID_REQUEST));
 
-        if (!payService.canPay(reservation, reservation.getPrice(), 0L)) {
+        if (!payService.canPay(reservation, reservation.getPrice(), discountAmountRequest.getDiscountAmount())) {
             throw new PaymentException(INSUFFICIENT_DEPOSIT);
         }
 
         // 이용자 결제
-        CashLog cashLog = payService.payByCashOnly(reservation);
+        CashLog cashLog = payService.payByCashOnly(reservation, discountAmountRequest.getDiscountAmount());
 
         CashLogIdResponse cashLogIdResponse = cashLogService.getCashLogIdById(cashLog.getId());
 
@@ -98,7 +100,7 @@ public class PayController implements PayApi {
 
         TossPaymentRequest tossPaymentRequest = tossService.confirmTossPayment(tossConfirmRequest).block();
 
-        Long cashLogId = payService.payByTossPayments(tossPaymentRequest, reservation).getId();
+        Long cashLogId = payService.payByTossPayments(tossPaymentRequest, reservation, tossConfirmRequest.getDiscountAmount()).getId();
 
         CashLogIdResponse cashLogIdResponse = cashLogService.getCashLogIdById(cashLogId);
 
