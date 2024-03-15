@@ -22,11 +22,11 @@ public class Settle extends CashLogMarker {
 //    private String accountNumber;
 
     // 수수료율
-    private Integer rateOfCommission;
+    private Integer commissionRate;
 
     // 수수료
     private Long commission;
 
-    // 실 지급액
+    // 총 금액
     private Long totalAmount;
 }
