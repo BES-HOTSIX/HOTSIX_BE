@@ -9,7 +9,6 @@ import com.example.hotsix_be.reservation.repository.ReservationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
-import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,7 +22,7 @@ import java.util.stream.IntStream;
 
 @Component
 @RequiredArgsConstructor
-@Profile("dev")
+//@Profile("dev")
 @Transactional
 @Order(1)
 public class DataInit implements ApplicationRunner {
