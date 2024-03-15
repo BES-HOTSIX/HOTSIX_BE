@@ -5,14 +5,12 @@ import com.example.hotsix_be.auth.MemberOnly;
 import com.example.hotsix_be.auth.util.Accessor;
 import com.example.hotsix_be.common.dto.ResponseDto;
 import com.example.hotsix_be.reservation.dto.request.ReservationInfoRequest;
-import com.example.hotsix_be.reservation.dto.response.HostReservationPageResponse;
 import com.example.hotsix_be.reservation.dto.response.HostReservationSummaryResponse;
 import com.example.hotsix_be.reservation.dto.response.ReservationCreateResponse;
 import com.example.hotsix_be.reservation.dto.response.ReservationInfoResponse;
 import com.example.hotsix_be.reservation.dto.response.ReservedDatesOfHotelResponse;
 import com.example.hotsix_be.reservation.service.ReservationService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,11 +24,13 @@ public class ReservationController {
     @GetMapping("/detail/{reserveId}")
     @MemberOnly
     public ResponseEntity<?> getReservationDetail(
-            @PathVariable(value = "reserveId") final Long reserveId,
+            @PathVariable(value = "reserveId") final String reserveId,
             @Auth final Accessor accessor
     ) {
-        ReservationInfoResponse reservationInfoResponse = reservationService.getInfoById(reserveId,
-                accessor.getMemberId());
+        ReservationInfoResponse reservationInfoResponse = null;
+        // "o" 로 시작하는 문자열일 경우 orderId를 조회, 아닐 경우 reserveId 를 조회
+        if (reserveId.startsWith("o")) reservationInfoResponse = reservationService.getInfoByOrderIdAndHostId(reserveId, accessor.getMemberId());
+        if (!reserveId.startsWith("o")) reservationInfoResponse = reservationService.getInfoById(Long.parseLong(reserveId), accessor.getMemberId());
 
         return ResponseEntity.ok(new ResponseDto<>(
                 HttpStatus.OK.value(),

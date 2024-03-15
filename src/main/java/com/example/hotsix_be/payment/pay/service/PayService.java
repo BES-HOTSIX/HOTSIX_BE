@@ -28,6 +28,7 @@ public class PayService {
     // 예치금 사용 결제
     @Transactional
     public Pay doPay(final Reservation reservation, final EventType eventType, final Long discountAmount) {
+
         Member buyer = reservation.getMember();
         Long payPrice = reservation.getPrice();
         Member owner = reservation.getHotel().getOwner();
@@ -56,6 +57,7 @@ public class PayService {
     public CashLog payByCashOnly(final Reservation reservation, final Long discountAmount) {
         reservation.updateOrderId(randomNanoId());
 
+
         Pay pay = doPay(reservation, 결제__예치금, discountAmount);
 
         reservation.payDone();
@@ -75,7 +77,7 @@ public class PayService {
         String orderId = tossPaymentRequest.getOrderId();
 
         // orderId 입력
-        reservation.updateOrderId(orderId);
+        reservation.updateOrderId("o" + orderId);
 
         rechargeService.easyPayRecharge(tossPaymentRequest, buyer, discountAmount);
 

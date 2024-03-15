@@ -14,7 +14,6 @@ import com.example.hotsix_be.reservation.exception.ReservationException;
 import com.example.hotsix_be.reservation.repository.ReservationRepository;
 import com.example.hotsix_be.review.entity.Review;
 import com.example.hotsix_be.review.repository.ReviewRepository;
-import java.math.BigDecimal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -114,22 +113,33 @@ public class ReservationService {
         );
     }
 
-    public ReservationInfoResponse getInfoById(final Long reserveId, final Long memberId) {
-        Reservation reservation = findPaidById(reserveId).orElseThrow(
-                () -> new ReservationException(NOT_FOUND_RESERVATION_ID));
-
+    private ReservationInfoResponse getInfoByReservation(final Reservation reservation, final Long memberId) {
         // 조회하는 사람이 본인이 아닐 경우 Exception 호출
-        if (!memberId.equals(reservation.getMember().getId())) {
+        // 추가 : 조회하는 사람이 본인이나 해당 호텔의 호스트가 아닐 경우 Exception 호출 (김경환)
+        if (!memberId.equals(reservation.getMember().getId()) && !memberId.equals(reservation.getHost().getId())) {
             throw new AuthException(INVALID_AUTHORITY);
         }
 
-        Review review = reviewRepository.findByReservationId(reserveId).orElse(null);
+        Review review = reviewRepository.findByReservationId(reservation.getId()).orElse(null);
 
         return ReservationInfoResponse.of(
                 reservation.getHotel(),
                 reservation,
                 review
         );
+    }
+
+    public ReservationInfoResponse getInfoById(final Long reserveId, final Long memberId) {
+        Reservation reservation = findPaidById(reserveId).orElseThrow(
+                () -> new ReservationException(NOT_FOUND_RESERVATION_ID));
+
+        return getInfoByReservation(reservation, memberId);
+    }
+
+    public ReservationInfoResponse getInfoByOrderIdAndHostId(final String orderId, final Long hostId) {
+        Reservation reservation = findByOrderIdAndHostId(orderId, hostId).orElseThrow(() -> new ReservationException(NOT_FOUND_RESERVATION_ID));
+
+        return getInfoByReservation(reservation, hostId);
     }
 
     @Transactional
@@ -147,12 +157,24 @@ public class ReservationService {
         return ReservationCreateResponse.of(reservation);
     }
 
-    public Optional<Reservation> findByOrderId(String orderId) {
-        return reservationRepository.findByOrderId(orderId);
+    public Optional<Reservation> findByOrderIdAndMember(final String orderId, final Member member) {
+        return reservationRepository.findByOrderIdContainingAndMember(orderId, member);
+    }
+
+    public Optional<Reservation> findByOrderIdAndHostId(final String orderId, final Long hostId) {
+        return reservationRepository.findByOrderIdContainingAndHostId(orderId, hostId);
+    }
+
+    public Long findExpectedSettleByHost(final Member host) {
+        return reservationRepository.sumPriceByMemberIdAndSettleDateNull(host);
+    }
+
+    public Page<Reservation> findByHostAndCancelDateNull(final Member host, final Pageable pageable) {
+        return reservationRepository.findByHostAndCancelDateNull(host, pageable);
     }
 
     public HostReservationSummaryResponse findReservationsByHotelAndCheckoutMonth(final Long hotelId, final int year, final int month,
-                                                                                     final int page) {
+                                                                                  final int page) {
         Pageable pageable = Pageable.ofSize(10).withPage(page);
 
         Page<HostReservationPageResponse> hotelsByCheckoutMonth = reservationRepository.findReservationsByHotelAndCheckoutMonth(hotelId,
@@ -169,6 +191,5 @@ public class ReservationService {
         Long completedReservationCount = reservationRepository.countCompletedReservations(hotelId, year, month);
 
         return HostReservationSummaryResponse.of(hotelsByCheckoutMonth, totalSales, completedReservationCount);
-
     }
 }
