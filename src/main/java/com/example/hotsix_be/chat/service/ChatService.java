@@ -13,6 +13,7 @@ import com.example.hotsix_be.hotel.entity.Hotel;
 import com.example.hotsix_be.hotel.exception.HotelException;
 import com.example.hotsix_be.hotel.repository.HotelRepository;
 import com.example.hotsix_be.member.entity.Member;
+import com.example.hotsix_be.member.entity.Role;
 import com.example.hotsix_be.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -108,36 +109,17 @@ public class ChatService {
 		return MessagesResponse.of(messageList);
 	}
 
-	public Page<MemberChatRoomResponse> getMemberAvailableChatRooms(final int page, final Long memberId) {
+	public Page<MemberChatRoomResponse> getMemberChatRooms(final int page, final Long memberId) {
 		Pageable pageable = Pageable.ofSize(4).withPage(page);
 
 		Member member = memberRepository.findById(memberId).orElseThrow(() -> new AuthException(INVALID_AUTHORITY));
 
-		Page<ChatRoom> chatRoomsPage = chatRoomRepository.findAvailableChatRoomsByHostOrUserWithLatestMessage(pageable, member);
-
-		List<MemberChatRoomResponse> filteredAndMappedChatRooms = chatRoomsPage.stream()
-				.map(chatRoom -> {
-					Member contact = chatRoom.getHost().equals(member) ? chatRoom.getUser() : chatRoom.getHost();
-					LocalDateTime latestDate = messageRepository.findFirstByChatRoomIdOrderByCreatedAtDesc(chatRoom.getId())
-							.map(Message::getCreatedAt).orElse(null);
-
-					return MemberChatRoomResponse.of(
-							chatRoom,
-							contact,
-							latestDate
-					);
-				})
-				.collect(Collectors.toList());
-
-		return new PageImpl<>(filteredAndMappedChatRooms, pageable, chatRoomsPage.getTotalElements());
-	}
-
-	public Page<MemberChatRoomResponse> getHostExitedChatRooms(final int page, final Long memberId) {
-		Pageable pageable = Pageable.ofSize(4).withPage(page);
-
-		Member member = memberRepository.findById(memberId).orElseThrow(() -> new AuthException(INVALID_AUTHORITY));
-
-		Page<ChatRoom> chatRoomsPage = chatRoomRepository.findExitedChatRoomsByHostWithLatestMessage(pageable, member);
+		Page<ChatRoom> chatRoomsPage;
+		if (member.getRole().equals(Role.GUEST)) {
+			chatRoomsPage = chatRoomRepository.findAvailableChatRoomsByUserWithLatestMessage(pageable, member);
+		} else {
+			chatRoomsPage = chatRoomRepository.findChatRoomsByHostWithLatestMessage(pageable, member);
+		}
 
 		List<MemberChatRoomResponse> filteredAndMappedChatRooms = chatRoomsPage.stream()
 				.map(chatRoom -> {

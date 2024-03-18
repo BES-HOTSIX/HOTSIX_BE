@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface ChatRoomRepositoryCustom {
-	Page<ChatRoom> findAvailableChatRoomsByHostOrUserWithLatestMessage(Pageable pageable, Member member);
-	Page<ChatRoom> findExitedChatRoomsByHostWithLatestMessage(Pageable pageable, Member member);
+	Page<ChatRoom> findChatRoomsByHostWithLatestMessage(Pageable pageable, Member member);
+
+	Page<ChatRoom> findAvailableChatRoomsByUserWithLatestMessage(Pageable pageable, Member member);
 }

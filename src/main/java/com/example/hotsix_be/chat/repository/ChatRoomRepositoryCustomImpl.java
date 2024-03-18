@@ -19,19 +19,15 @@ public class ChatRoomRepositoryCustomImpl implements ChatRoomRepositoryCustom {
 	private EntityManager em;
 
 	@Override
-	public Page<ChatRoom> findAvailableChatRoomsByHostOrUserWithLatestMessage(Pageable pageable, Member member) {
+	public Page<ChatRoom> findChatRoomsByHostWithLatestMessage(Pageable pageable, Member member) {
 		JPAQueryFactory jpaQueryFactory = new JPAQueryFactory(em);
 		QChatRoom qChatRoom = QChatRoom.chatRoom;
 		QMessage qMessage = QMessage.message;
 
-		BooleanExpression isHostOrUser = qChatRoom.host.eq(member).or(qChatRoom.user.eq(member));
-		BooleanExpression isNotLeft = qChatRoom.isLeft.eq(false);
-		BooleanExpression whereCondition = isHostOrUser.and(isNotLeft);
-
 		List<ChatRoom> chatRooms = jpaQueryFactory
 				.selectFrom(qChatRoom)
 				.leftJoin(qChatRoom.messages, qMessage)
-				.where(whereCondition)
+				.where(qChatRoom.host.eq(member))
 				.groupBy(qChatRoom.id)
 				.orderBy(qMessage.createdAt.max().desc())
 				.offset(pageable.getOffset())
@@ -40,21 +36,22 @@ public class ChatRoomRepositoryCustomImpl implements ChatRoomRepositoryCustom {
 
 		long total = jpaQueryFactory
 				.selectFrom(qChatRoom)
-				.where(whereCondition)
+				.where(qChatRoom.host.eq(member)
+						.or(qChatRoom.user.eq(member)))
 				.fetchCount();
 
 		return new PageImpl<>(chatRooms, pageable, total);
 	}
 
 	@Override
-	public Page<ChatRoom> findExitedChatRoomsByHostWithLatestMessage(Pageable pageable, Member member) {
+	public Page<ChatRoom> findAvailableChatRoomsByUserWithLatestMessage(Pageable pageable, Member member) {
 		JPAQueryFactory jpaQueryFactory = new JPAQueryFactory(em);
 		QChatRoom qChatRoom = QChatRoom.chatRoom;
 		QMessage qMessage = QMessage.message;
 
-		BooleanExpression isHost = qChatRoom.host.eq(member);
-		BooleanExpression isLeft = qChatRoom.isLeft.eq(true);
-		BooleanExpression whereCondition = isHost.and(isLeft);
+		BooleanExpression isUser = qChatRoom.user.eq(member);
+		BooleanExpression isNotLeft = qChatRoom.isLeft.eq(false);
+		BooleanExpression whereCondition = isUser.and(isNotLeft);
 
 		List<ChatRoom> chatRooms = jpaQueryFactory
 				.selectFrom(qChatRoom)
