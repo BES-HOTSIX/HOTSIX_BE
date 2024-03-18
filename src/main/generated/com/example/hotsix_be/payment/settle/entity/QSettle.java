@@ -21,7 +21,7 @@ public class QSettle extends EntityPathBase<Settle> {
 
     public final NumberPath<Long> commission = createNumber("commission", Long.class);
 
-    public final NumberPath<Integer> rateOfCommission = createNumber("rateOfCommission", Integer.class);
+    public final NumberPath<Integer> commissionRate = createNumber("commissionRate", Integer.class);
 
     public final NumberPath<Long> totalAmount = createNumber("totalAmount", Long.class);
 
