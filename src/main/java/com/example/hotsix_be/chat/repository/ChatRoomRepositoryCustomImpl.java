@@ -24,10 +24,14 @@ public class ChatRoomRepositoryCustomImpl implements ChatRoomRepositoryCustom {
 		QChatRoom qChatRoom = QChatRoom.chatRoom;
 		QMessage qMessage = QMessage.message;
 
+		BooleanExpression isHost = qChatRoom.host.eq(member);
+		BooleanExpression isNotEmpty = qChatRoom.messages.isNotEmpty();
+		BooleanExpression whereCondition = isHost.and(isNotEmpty);
+
 		List<ChatRoom> chatRooms = jpaQueryFactory
 				.selectFrom(qChatRoom)
 				.leftJoin(qChatRoom.messages, qMessage)
-				.where(qChatRoom.host.eq(member))
+				.where(whereCondition)
 				.groupBy(qChatRoom.id)
 				.orderBy(qMessage.createdAt.max().desc())
 				.offset(pageable.getOffset())
@@ -36,8 +40,7 @@ public class ChatRoomRepositoryCustomImpl implements ChatRoomRepositoryCustom {
 
 		long total = jpaQueryFactory
 				.selectFrom(qChatRoom)
-				.where(qChatRoom.host.eq(member)
-						.or(qChatRoom.user.eq(member)))
+				.where(whereCondition)
 				.fetchCount();
 
 		return new PageImpl<>(chatRooms, pageable, total);
@@ -51,7 +54,8 @@ public class ChatRoomRepositoryCustomImpl implements ChatRoomRepositoryCustom {
 
 		BooleanExpression isUser = qChatRoom.user.eq(member);
 		BooleanExpression isNotLeft = qChatRoom.isLeft.eq(false);
-		BooleanExpression whereCondition = isUser.and(isNotLeft);
+		BooleanExpression isNotEmpty = qChatRoom.messages.isNotEmpty();
+		BooleanExpression whereCondition = isUser.and(isNotLeft).and(isNotEmpty);
 
 		List<ChatRoom> chatRooms = jpaQueryFactory
 				.selectFrom(qChatRoom)
