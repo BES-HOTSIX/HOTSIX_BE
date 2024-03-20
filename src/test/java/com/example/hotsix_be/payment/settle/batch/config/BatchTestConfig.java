@@ -6,6 +6,8 @@ import org.springframework.batch.test.JobLauncherTestUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/*
+
 @Configuration
 @RequiredArgsConstructor
 public class BatchTestConfig {
@@ -16,3 +18,5 @@ public class BatchTestConfig {
         return utils;
     }
 }
+
+*/
