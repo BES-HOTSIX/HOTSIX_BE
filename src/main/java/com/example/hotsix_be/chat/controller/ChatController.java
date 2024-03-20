@@ -4,6 +4,7 @@ import com.example.hotsix_be.auth.Auth;
 import com.example.hotsix_be.auth.MemberOnly;
 import com.example.hotsix_be.auth.util.Accessor;
 import com.example.hotsix_be.chat.dto.request.ChatRoomCreateRequest;
+import com.example.hotsix_be.chat.dto.request.MessageSenderRequest;
 import com.example.hotsix_be.chat.dto.response.ChatRoomCreateResponse;
 import com.example.hotsix_be.chat.dto.response.ChatRoomInfoResponse;
 import com.example.hotsix_be.chat.dto.response.MessagesResponse;
@@ -81,6 +82,22 @@ public class ChatController {
 				new ResponseDto<>(
 						HttpStatus.OK.value(),
 						"채팅방에서 퇴장했습니다.", null,
+						null, null
+				)
+		);
+	}
+
+	@PostMapping("/read/{roomId}")
+	public ResponseEntity<?> readChatMessages(
+			@PathVariable(value = "roomId") final Long roomId,
+			@RequestBody MessageSenderRequest messageSenderRequest
+	) {
+		chatService.readChatMessages(roomId, messageSenderRequest);
+
+		return ResponseEntity.ok(
+				new ResponseDto<>(
+						HttpStatus.OK.value(),
+						"채팅방 메세지를 모두 읽었습니다.", null,
 						null, null
 				)
 		);

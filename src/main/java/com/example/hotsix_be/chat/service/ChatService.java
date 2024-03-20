@@ -2,6 +2,7 @@ package com.example.hotsix_be.chat.service;
 
 import com.example.hotsix_be.chat.dto.request.ChatMessageRequest;
 import com.example.hotsix_be.chat.dto.request.ChatRoomCreateRequest;
+import com.example.hotsix_be.chat.dto.request.MessageSenderRequest;
 import com.example.hotsix_be.chat.dto.response.*;
 import com.example.hotsix_be.chat.entity.ChatRoom;
 import com.example.hotsix_be.chat.entity.Message;
@@ -99,10 +100,13 @@ public class ChatService {
 		return ChatMessageResponse.of(messageResult);
 	}
 
+	@Transactional
 	public MessagesResponse getMessages(final Long roomId, final Long memberId) {
 		chatRoomRepository.findById(roomId).orElseThrow(() -> new ChatException(NOT_FOUND_CHATROOM_ID));
 
 		memberRepository.findById(memberId).orElseThrow(() -> new AuthException(INVALID_AUTHORITY));
+
+		messageRepository.markMessagesAsReadByChatRoomId(roomId, memberId);
 
 		List<Message> messageList = messageRepository.findAllByChatRoomId(roomId);
 
@@ -143,5 +147,11 @@ public class ChatService {
 		ChatRoom chatRoom = chatRoomRepository.findById(roomId).orElseThrow(() -> new ChatException(NOT_FOUND_CHATROOM_ID));
 
 		chatRoom.updateIsLeft(true);
+	}
+
+	@Transactional
+	public void readChatMessages(final Long roomId, final MessageSenderRequest messageSenderRequest) {
+		Member member = memberRepository.findByNickname(messageSenderRequest.getNickname()).orElseThrow(() -> new AuthException(INVALID_AUTHORITY));
+		messageRepository.markMessagesAsReadByChatRoomId(roomId, member.getId());
 	}
 }
