@@ -2,6 +2,7 @@ package com.example.hotsix_be.locations.controller;
 
 import com.example.hotsix_be.locations.dto.Response.LocationResponse;
 import com.example.hotsix_be.locations.entity.FoodLocation;
+import com.example.hotsix_be.locations.openapi.LocationApi;
 import com.example.hotsix_be.locations.service.LocationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,7 +15,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/locations")
 @RequiredArgsConstructor
-public class LocationController {
+public class LocationController implements LocationApi {
     private final LocationService foodLocationService;
 
     @GetMapping("/food")

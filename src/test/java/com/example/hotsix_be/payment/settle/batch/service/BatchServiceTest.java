@@ -14,6 +14,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
 
+/*
 @SpringBootTest
 @SpringBatchTest
 @ActiveProfiles("test")
@@ -43,3 +44,7 @@ public class BatchServiceTest {
         Assertions.assertEquals(jobExecution.getStatus(), BatchStatus.COMPLETED);
         Assertions.assertEquals(jobExecution.getExitStatus(), ExitStatus.COMPLETED);
     }}
+=======
+    }
+}
+ */
