@@ -25,7 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.example.hotsix_be.common.exception.ExceptionCode.*;
@@ -39,12 +38,6 @@ public class ChatService {
 	private final ChatRoomRepository chatRoomRepository;
 	private final MessageRepository messageRepository;
 
-	private ChatRoom findAvailableChatRoom(final List<ChatRoom> chatRoomList) {
-		Optional<ChatRoom> chatRoomOptional = chatRoomList.stream().filter(chatRoom -> !chatRoom.isLeft()).findAny();
-
-		return chatRoomOptional.orElse(null);
-	}
-
 	@Transactional
 	public ChatRoomCreateResponse saveChatRoom(final ChatRoomCreateRequest chatRoomCreateRequest, final Long memberId) {
 		Member user = memberRepository.findById(memberId).orElseThrow(() -> new AuthException(INVALID_AUTHORITY));
@@ -53,7 +46,7 @@ public class ChatService {
 
 		List<ChatRoom> chatRoomList = chatRoomRepository.findAllByHostIdAndUserId(hotel.getOwner().getId(), memberId);
 
-		ChatRoom chatRoom = findAvailableChatRoom(chatRoomList);
+		ChatRoom chatRoom = chatRoomList.stream().filter(room -> !room.isLeft()).findAny().orElse(null);
 
 		if (chatRoomList.isEmpty() || chatRoom == null) {
 			ChatRoom chatRoomResult = chatRoomRepository.save(
@@ -154,6 +147,7 @@ public class ChatService {
 	@Transactional
 	public void readChatMessages(final Long roomId, final MessageSenderRequest messageSenderRequest) {
 		Member member = memberRepository.findByNickname(messageSenderRequest.getNickname()).orElseThrow(() -> new AuthException(INVALID_AUTHORITY));
+
 		messageRepository.markMessagesAsReadByChatRoomId(roomId, member.getId());
 	}
 }
