@@ -24,6 +24,7 @@ public class Message extends DateEntity {
     private Member sender;
 
     private String messageText;
+    private boolean isRead = false;
 
     public Message(
             final ChatRoom chatRoom,
