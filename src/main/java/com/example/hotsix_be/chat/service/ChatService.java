@@ -130,11 +130,13 @@ public class ChatService {
 					Member contact = chatRoom.getHost().equals(member) ? chatRoom.getUser() : chatRoom.getHost();
 					LocalDateTime latestDate = messageRepository.findFirstByChatRoomIdOrderByCreatedAtDesc(chatRoom.getId())
 							.map(Message::getCreatedAt).orElse(null);
+					int unreadMessagesCount = messageRepository.countByChatRoomIdAndIsReadFalse(chatRoom.getId());
 
 					return MemberChatRoomResponse.of(
 							chatRoom,
 							contact,
-							latestDate
+							latestDate,
+							unreadMessagesCount
 					);
 				})
 				.collect(Collectors.toList());
