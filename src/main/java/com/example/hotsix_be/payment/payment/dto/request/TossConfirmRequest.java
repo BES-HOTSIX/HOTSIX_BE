@@ -1,5 +1,6 @@
 package com.example.hotsix_be.payment.payment.dto.request;
 
+import com.example.hotsix_be.coupon.entity.CouponType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,5 +27,7 @@ public class TossConfirmRequest {
     private String paymentKey;
 
     private Long discountAmount;
+
+    private CouponType couponType;
 
 }

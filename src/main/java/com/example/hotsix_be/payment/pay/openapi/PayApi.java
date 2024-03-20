@@ -4,6 +4,7 @@ import com.example.hotsix_be.auth.util.Accessor;
 import com.example.hotsix_be.common.dto.EmptyResponse;
 import com.example.hotsix_be.common.dto.ResponseDto;
 import com.example.hotsix_be.coupon.dto.request.DiscountAmountRequest;
+import com.example.hotsix_be.coupon.dto.request.UseCouponRequest;
 import com.example.hotsix_be.payment.cashlog.dto.response.CashLogIdResponse;
 import com.example.hotsix_be.payment.payment.dto.request.TossConfirmRequest;
 import com.example.hotsix_be.reservation.dto.response.ReservationDetailResponse;
@@ -45,7 +46,8 @@ public interface PayApi {
                     content = @Content(schema = @Schema(implementation = EmptyResponse.class)))})
     ResponseEntity<ResponseDto<CashLogIdResponse>> payByCash(
             final Long reserveId,
-            final DiscountAmountRequest discountAmountRequest
+            final UseCouponRequest useCouponRequest,
+            final Accessor accessor
     );
 
     @Operation(
@@ -60,6 +62,7 @@ public interface PayApi {
                     content = @Content(schema = @Schema(implementation = EmptyResponse.class)))})
     ResponseEntity<ResponseDto<CashLogIdResponse>> payByToss(
             final TossConfirmRequest tossConfirmRequest,
-            final Long reserveId
+            final Long reserveId,
+            final Accessor accessor
     );
 }

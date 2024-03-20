@@ -4,7 +4,7 @@ import com.example.hotsix_be.auth.Auth;
 import com.example.hotsix_be.auth.MemberOnly;
 import com.example.hotsix_be.auth.util.Accessor;
 import com.example.hotsix_be.common.dto.ResponseDto;
-import com.example.hotsix_be.coupon.dto.request.CouponDeleteRequest;
+import com.example.hotsix_be.coupon.dto.request.UseCouponRequest;
 import com.example.hotsix_be.coupon.dto.response.CouponIssueResponse;
 import com.example.hotsix_be.coupon.service.CouponService;
 import java.util.List;
@@ -59,9 +59,9 @@ public class CouponController {
 
     @DeleteMapping("/delete")
     @MemberOnly
-    public ResponseEntity<?> deleteCoupon(@RequestBody CouponDeleteRequest couponDeleteRequest, @Auth Accessor accessor) {
+    public ResponseEntity<?> deleteCoupon(@RequestBody UseCouponRequest useCouponRequest, @Auth Accessor accessor) {
 
-        couponService.deleteCoupon(accessor.getMemberId(), couponDeleteRequest.getCouponType());
+        couponService.deleteCoupon(accessor.getMemberId(), useCouponRequest);
 
         return ResponseEntity.ok().build();
     }

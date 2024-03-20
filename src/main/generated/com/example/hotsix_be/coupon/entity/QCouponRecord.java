@@ -24,13 +24,13 @@ public class QCouponRecord extends EntityPathBase<CouponRecord> {
 
     public final EnumPath<CouponType> couponType = createEnum("couponType", CouponType.class);
 
-    public final NumberPath<Double> discountAmount = createNumber("discountAmount", Double.class);
-
-    public final DatePath<java.util.Date> discountDate = createDate("discountDate", java.util.Date.class);
+    public final NumberPath<Long> discountAmount = createNumber("discountAmount", Long.class);
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
     public final com.example.hotsix_be.member.entity.QMember member;
+
+    public final DatePath<java.time.LocalDate> usedDate = createDate("usedDate", java.time.LocalDate.class);
 
     public QCouponRecord(String variable) {
         this(CouponRecord.class, forVariable(variable), INITS);
