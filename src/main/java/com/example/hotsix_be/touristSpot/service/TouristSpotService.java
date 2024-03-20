@@ -40,14 +40,17 @@ public class TouristSpotService {
 
     public Object searchTouristSpot(String query) {
         try {
-            String city = query.split(" ")[0];
-            String eventKeyword = city + " 축제";
+            String[] parts = query.split(" ");
+            StringBuilder eventKeywordBuilder = new StringBuilder();
+            for (int i = 0; i < Math.min(parts.length, 2); i++) {
+                eventKeywordBuilder.append(parts[i]).append(" ");
+            }
+            String eventKeyword = eventKeywordBuilder.toString().trim() + " 축제";
 
             String url = "https://openapi.naver.com/v1/search/local.json";
             UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(url)
                     .queryParam("query", eventKeyword)
-                    .queryParam("display", 5)
-                    .queryParam("sort", "comment");
+                    .queryParam("display", 5);
             String apiUrl = builder.toUriString();
 
             // HTTP 요청 헤더 설정
