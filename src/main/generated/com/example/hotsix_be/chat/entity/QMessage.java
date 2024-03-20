@@ -31,6 +31,8 @@ public class QMessage extends EntityPathBase<Message> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
+    public final BooleanPath isRead = createBoolean("isRead");
+
     public final StringPath messageText = createString("messageText");
 
     public final com.example.hotsix_be.member.entity.QMember sender;
