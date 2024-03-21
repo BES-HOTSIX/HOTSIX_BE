@@ -31,7 +31,7 @@ import static com.example.hotsix_be.common.exception.ExceptionCode.*;
 
 @RequiredArgsConstructor
 @Service
-@Transactional(readOnly = true)
+@Transactional(readOnly=true)
 public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final HotelRepository hotelRepository;

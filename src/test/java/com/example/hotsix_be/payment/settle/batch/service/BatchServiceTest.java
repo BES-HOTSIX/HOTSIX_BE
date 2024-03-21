@@ -78,6 +78,8 @@ public class BatchServiceTest {
         // then
         Assertions.assertEquals(jobExecution.getStatus(), BatchStatus.COMPLETED);
         Assertions.assertEquals(jobExecution.getExitStatus(), ExitStatus.COMPLETED);
+    }}
+=======
     }
 }
  */
