@@ -18,15 +18,22 @@ public class MemberChatRoomResponse {
 	private final LocalDateTime latestDate;
 	private final boolean isLeft;
 	private final LocalDateTime createdAt;
+	private final int unread;
 
-	public static MemberChatRoomResponse of(final ChatRoom chatRoom, final Member contact, final LocalDateTime latestDate) {
+	public static MemberChatRoomResponse of(
+			final ChatRoom chatRoom,
+			final Member contact,
+			final LocalDateTime latestDate,
+			final int unread
+	) {
 		return new MemberChatRoomResponse(
 				chatRoom.getId(),
 				contact.getNickname(),
 				contact.getImageUrl(),
 				latestDate,
 				chatRoom.isLeft(),
-				chatRoom.getCreatedAt()
+				chatRoom.getCreatedAt(),
+				unread
 		);
 	}
 }
