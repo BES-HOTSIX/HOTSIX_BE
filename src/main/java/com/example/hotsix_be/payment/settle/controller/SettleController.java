@@ -49,7 +49,7 @@ public class SettleController {
             @RequestParam @DateTimeFormat(iso = DATE) LocalDate endDate,
             @RequestParam String settleKw
     ) {
-        Page<ReservationForSettleResponse> resPage = settleService.getReserveForSettleByMemberId(accessor.getMemberId(), startDate, endDate, settleKw, pageable);
+        Page<ReservationForSettleResponse> resPage = settleService.getReserveForSettleByMemberIdAndParams(accessor.getMemberId(), startDate, endDate, settleKw, pageable);
 
         return ResponseEntity.ok(new ResponseDto<>(
                 HttpStatus.OK.value(),

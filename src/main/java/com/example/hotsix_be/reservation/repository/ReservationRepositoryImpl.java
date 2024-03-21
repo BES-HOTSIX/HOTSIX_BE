@@ -22,9 +22,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import java.time.LocalDate;
-import java.util.List;
-
 public class ReservationRepositoryImpl implements ReservationRepositoryCustom {
 
     @PersistenceContext
@@ -104,7 +101,7 @@ public class ReservationRepositoryImpl implements ReservationRepositoryCustom {
     }
 
     @Override
-    public Page<Reservation> findByParamsAndCancelDateNotNull(Member host, LocalDate startDate, LocalDate endDate, String settleKw, Pageable pageable) {
+    public Page<Reservation> findByHostIdAndParamsAndCancelDateNotNull(Member host, LocalDate startDate, LocalDate endDate, String settleKw, Pageable pageable) {
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
         QReservation reservation = QReservation.reservation;
 
@@ -119,22 +116,22 @@ public class ReservationRepositoryImpl implements ReservationRepositoryCustom {
 
         OrderSpecifier<String>[] order = orders.toArray(OrderSpecifier[]::new);
 
-        BooleanExpression condition1 = reservation.host.eq(host);
-        BooleanExpression condition2 = reservation.cancelDate.isNull();
-        BooleanExpression condition3 = reservation.settleDate.between(startDate, endDate);
-        BooleanExpression condition4 = switch (settleKw) {
+        BooleanExpression isHostEq = reservation.host.eq(host);
+        BooleanExpression isCancelDateNull = reservation.cancelDate.isNull();
+        BooleanExpression isSettleDateBetween = reservation.settleDate.between(startDate, endDate);
+        BooleanExpression isSettled = switch (settleKw) {
             case "settled" -> reservation.settleDate.isNotNull();
             case "unsettled" -> reservation.settleDate.isNull();
             default -> null;
         };
-        BooleanExpression condition5 = endDate.isEqual(SettleUt.getExpectedSettleDate()) ? reservation.settleDate.isNull() : null;
+        BooleanExpression hasSettleDate = endDate.isEqual(SettleUt.getExpectedSettleDate()) ? reservation.settleDate.isNull() : null;
 
-        BooleanExpression conditions = condition1
-                .and(condition2)
-                .and(condition3)
-                .and(condition4)
-                .or(condition5)
-                .and(condition4);
+        BooleanExpression conditions = isHostEq
+                .and(isCancelDateNull)
+                .and(isSettleDateBetween)
+                .and(isSettled)
+                .or(hasSettleDate)
+                .and(isSettled);
 
         List<Reservation> reservations = queryFactory.selectFrom(reservation)
                 .where(conditions)

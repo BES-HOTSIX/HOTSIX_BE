@@ -33,5 +33,4 @@ public class Coupon {
         this.couponType = couponType;
         this.member = member;
     }
-
 }

@@ -14,5 +14,5 @@ public interface ReservationRepositoryCustom {
 
     Long sumPriceByMemberIdAndSettleDateNull(Member host);
 
-    Page<Reservation> findByParamsAndCancelDateNotNull(Member host, LocalDate startDate, LocalDate endDate, String settleKw, Pageable pageable);
+    Page<Reservation> findByHostIdAndParamsAndCancelDateNotNull(Member host, LocalDate startDate, LocalDate endDate, String settleKw, Pageable pageable);
 }

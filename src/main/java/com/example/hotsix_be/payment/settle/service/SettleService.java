@@ -87,7 +87,7 @@ public class SettleService {
         return MySettleResponse.of(restCash, settleDate, expectedTotalSettleAmount);
     }
 
-    public Page<ReservationForSettleResponse> getReserveForSettleByMemberId(
+    public Page<ReservationForSettleResponse> getReserveForSettleByMemberIdAndParams(
             final Long id,
             final LocalDate startDate,
             final LocalDate endDate,
@@ -96,10 +96,9 @@ public class SettleService {
             ) {
         Member host = memberService.getMemberById(id);
 
-        // TODO 원한다면 체크아웃 날짜와 체크인 날짜 순으로도 확인할 수 있도록 하기
         Pageable sortedPageable = ((PageRequest) pageable).withSort(Sort.by("createdAt").descending());
 
-        Page<Reservation> reservations = reservationService.findByParamsAndCancelDateNotNull(host, startDate, endDate, settleKw, sortedPageable);
+        Page<Reservation> reservations = reservationService.findByHostIdAndParamsAndCancelDateNotNull(host, startDate, endDate, settleKw, sortedPageable);
 
         Page<ReservationForSettleResponse> resPage = reservations.map(ReservationForSettleResponse::of);
 

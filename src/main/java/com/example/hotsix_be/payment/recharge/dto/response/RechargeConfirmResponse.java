@@ -17,7 +17,7 @@ public class RechargeConfirmResponse {
     @Schema(description = "Recharge 생성 일시", example = "2024-02-06 17:26:48.772390")
     private final LocalDateTime createdAt;
 
-    @Schema(description = "주문 고유 식별 코드", example = "8sJILLP1EP6V1nLksCBL0")
+    @Schema(description = "주문 고유 식별 코드", example = "o8sJILLP1EP6V1nLksCBL")
     private final String orderId;
 
     @Schema(description = "가상계좌번호", example = "12312345612345")
