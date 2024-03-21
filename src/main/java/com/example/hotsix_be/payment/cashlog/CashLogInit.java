@@ -20,7 +20,7 @@ import static com.example.hotsix_be.payment.cashlog.entity.EventType.충전__무
 
 @Component
 @RequiredArgsConstructor
-//@Profile("dev")
+@Profile("dev")
 @Order(3)
 public class CashLogInit implements ApplicationRunner {
     private final CashLogRepository cashLogRepository;
