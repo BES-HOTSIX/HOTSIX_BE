@@ -3,6 +3,7 @@ package com.example.hotsix_be.payment.refund.openapi;
 import com.example.hotsix_be.auth.util.Accessor;
 import com.example.hotsix_be.common.dto.EmptyResponse;
 import com.example.hotsix_be.common.dto.ResponseDto;
+import com.example.hotsix_be.coupon.dto.request.DiscountAmountRequest;
 import com.example.hotsix_be.payment.cashlog.dto.response.CashLogIdResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -27,6 +28,7 @@ public interface RefundApi {
                     content = @Content(schema = @Schema(implementation = EmptyResponse.class)))})
     ResponseEntity<ResponseDto<CashLogIdResponse>> cancelReservation(
             final Long reserveId,
-            @Parameter(hidden = true) final Accessor accessor
+            @Parameter(hidden = true) final Accessor accessor,
+            final DiscountAmountRequest discountAmountRequest
     );
 }

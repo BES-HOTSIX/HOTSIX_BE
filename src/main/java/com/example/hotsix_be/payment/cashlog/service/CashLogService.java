@@ -62,18 +62,20 @@ public class CashLogService {
             final Long price,
             final String orderId,
             final EventType eventType,
-            final T cashLogMarker
+            final T cashLogMarker,
+            final Long discountAmount
     ) {
-        return addCashLogDone(initCashLog(member, price, orderId, eventType, cashLogMarker));
+        return addCashLogDone(initCashLog(member, price, orderId, eventType, cashLogMarker), discountAmount);
     }
 
     // 결제 마무리 ( 보유 캐시 수정 )
     @Transactional
-    public <T extends CashLogMarker> T addCashLogDone(final T cashLogMarker) {
+    public <T extends CashLogMarker> T addCashLogDone(final T cashLogMarker, final Long discountAmount) {
         Member member = cashLogMarker.getMember();
 
+        log.info("결제 마무리 : {}", cashLogMarker.getAmount());
         // 금액 이동
-        member.addCash(cashLogMarker.getAmount());
+        member.addCash(cashLogMarker.getAmount(), discountAmount);
 
         cashLogMarker.payDone();
 

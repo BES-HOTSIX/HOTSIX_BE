@@ -29,7 +29,7 @@ import static com.example.hotsix_be.common.exception.ExceptionCode.NOT_FOUND_MEM
 
 @Component
 @RequiredArgsConstructor
-@Profile("dev")
+//@Profile("dev")
 @Transactional
 @Order(2)
 public class ReservationInit implements ApplicationRunner {
@@ -48,7 +48,8 @@ public class ReservationInit implements ApplicationRunner {
                 Hotel lastHotel = hotels.get(hotels.size() - 1);
 
                 IntStream.rangeClosed(0, 6).forEach(i -> {
-                    LocalDate thisWeek = LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY)).plusDays(i);
+                    LocalDate thisWeek = LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
+                            .plusDays(i);
 
                     Reservation reservation = new Reservation(
                             thisWeek,
@@ -66,7 +67,8 @@ public class ReservationInit implements ApplicationRunner {
                 });
 
                 IntStream.rangeClosed(0, 6).forEach(i -> {
-                    LocalDate lastWeek = LocalDate.now().with(TemporalAdjusters.previous(DayOfWeek.SUNDAY)).minusDays(i);
+                    LocalDate lastWeek = LocalDate.now().with(TemporalAdjusters.previous(DayOfWeek.SUNDAY))
+                            .minusDays(i);
 
                     Reservation reservation = new Reservation(
                             lastWeek,
@@ -84,7 +86,8 @@ public class ReservationInit implements ApplicationRunner {
                 });
 
                 IntStream.rangeClosed(0, 6).forEach(i -> {
-                    LocalDate weekBeforeLast = LocalDate.now().with(TemporalAdjusters.previous(DayOfWeek.SUNDAY)).minusDays(7 + i);
+                    LocalDate weekBeforeLast = LocalDate.now().with(TemporalAdjusters.previous(DayOfWeek.SUNDAY))
+                            .minusDays(7 + i);
 
                     Reservation reservation = new Reservation(
                             weekBeforeLast,
@@ -96,9 +99,9 @@ public class ReservationInit implements ApplicationRunner {
                             member
                     );
 
-                    reservation.updateOrderId("o" + randomNanoId());
+                    Settle settle = settleService.doSettle(reservation, 0L);
 
-                    Settle settle = settleService.doSettle(reservation);
+                    reservation.updateOrderId("o" + randomNanoId());
 
                     settleService.save(settle);
 
@@ -106,7 +109,8 @@ public class ReservationInit implements ApplicationRunner {
                 });
 
                 IntStream.rangeClosed(0, 6).forEach(i -> {
-                    LocalDate weekBeforeTheWeekBeforeLast = LocalDate.now().with(TemporalAdjusters.previous(DayOfWeek.SUNDAY)).minusDays(14 + i);
+                    LocalDate weekBeforeTheWeekBeforeLast = LocalDate.now()
+                            .with(TemporalAdjusters.previous(DayOfWeek.SUNDAY)).minusDays(14 + i);
 
                     Reservation reservation = new Reservation(
                             weekBeforeTheWeekBeforeLast,

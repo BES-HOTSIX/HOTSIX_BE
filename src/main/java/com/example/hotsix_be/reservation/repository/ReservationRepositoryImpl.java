@@ -42,6 +42,7 @@ public class ReservationRepositoryImpl implements ReservationRepositoryCustom {
                         reservation.isPaid.isTrue(),
                         reservation.checkOutDate.year().eq(year),
                         reservation.checkOutDate.month().eq(month))
+                .orderBy(reservation.checkOutDate.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();

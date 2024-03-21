@@ -17,7 +17,7 @@ public class RefundService {
     private final CashLogService cashLogService;
 
     @Transactional
-    public Refund doRefund(final Reservation reservation) {
+    public Refund doRefund(final Reservation reservation, final Long discountAmount) {
         Member member = reservation.getMember();
         Long amount = reservation.getPrice();
         String orderId = reservation.getOrderId();
@@ -35,7 +35,8 @@ public class RefundService {
                 amount,
                 orderId,
                 EventType.취소__예치금,
-                refund
+                refund,
+                discountAmount
         );
 
         reservation.cancelDone();
