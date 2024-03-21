@@ -52,7 +52,7 @@ public class KakaoOauthService {
 
 
     public Mono<KakaoTokenResponse> getToken(final String code) {
-        String uri = tokenUri + "?grant_type=" + GRANT_TYPE + "&client_id=" + clientId + "&client_secret" + clientSecret
+        String uri = tokenUri + "?grant_type=" + GRANT_TYPE + "&client_id=" + clientId + "&client_secret=" + clientSecret
                 + "&redirect_uri=" + redirectUri
                 + "&code=" + code;
 
