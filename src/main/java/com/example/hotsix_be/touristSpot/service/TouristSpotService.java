@@ -25,14 +25,13 @@ import java.util.stream.Collectors;
 @Service
 public class TouristSpotService {
 
-    @Value("${search.naver.client-id}")
+    private static final String PATH = "${search.naver.";
     private final String naverApiClientId;
-    @Value("${search.naver.client-secret}")
     private final String naverApiClientSecret;
 
     public TouristSpotService(
-            @Value("${search.naver.client-id}") String naverApiClientId,
-            @Value("${search.naver.client-secret}") String naverApiClientSecret)
+            @Value(PATH + "client-id}") final String naverApiClientId,
+            @Value(PATH + "client-secret}") final String naverApiClientSecret)
     {
         this.naverApiClientId = naverApiClientId;
         this.naverApiClientSecret = naverApiClientSecret;
@@ -53,13 +52,11 @@ public class TouristSpotService {
                     .queryParam("display", 5);
             String apiUrl = builder.toUriString();
 
-            // HTTP 요청 헤더 설정
             HttpHeaders headers = new HttpHeaders();
             headers.set("X-Naver-Client-Id", naverApiClientId);
             headers.set("X-Naver-Client-Secret", naverApiClientSecret);
             headers.setContentType(MediaType.APPLICATION_JSON);
 
-            // HTTP 요청 보내기
             RequestEntity<?> requestEntity = RequestEntity
                     .get(new URI(apiUrl))
                     .headers(headers)
@@ -86,8 +83,6 @@ public class TouristSpotService {
                     filteredTouristSpots.add(spot);
                 }
             }
-
-            // 결과 반환
             return filteredTouristSpots;
         } catch (HttpClientErrorException e) {
             // 에러 처리
