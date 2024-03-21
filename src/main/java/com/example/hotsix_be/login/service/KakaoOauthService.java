@@ -8,6 +8,7 @@ import com.example.hotsix_be.member.repository.MemberRepository;
 
 import java.util.Optional;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,29 +30,25 @@ public class KakaoOauthService {
     protected final String clientId;
     protected final String clientSecret;
     protected final String redirectUri;
-    protected final String tokenUri;
-    protected final String userUri;
 
     public KakaoOauthService(
             final WebClient webClient,
             final MemberRepository memberRepository,
             @Value(PROPERTIES_PATH + "client-id}") final String clientId,
             @Value(PROPERTIES_PATH + "client-secret}") final String clientSecret,
-            @Value(PROPERTIES_PATH + "redirect-uri}") final String redirectUri,
-            @Value(PROPERTIES_PATH + "token-uri}") final String tokenUri,
-            @Value(PROPERTIES_PATH + "user-info}") final String userUri
+            @Value(PROPERTIES_PATH + "redirect-uri}") final String redirectUri
     ) {
         this.webClient = webClient;
         this.memberRepository = memberRepository;
         this.clientId = clientId;
         this.clientSecret = clientSecret;
         this.redirectUri = redirectUri;
-        this.tokenUri = tokenUri;
-        this.userUri = userUri;
     }
 
 
     public Mono<KakaoTokenResponse> getToken(final String code) {
+
+        String tokenUri = "https://kauth.kakao.com/oauth/token";
         String uri = tokenUri + "?grant_type=" + GRANT_TYPE + "&client_id=" + clientId + "&client_secret=" + clientSecret
                 + "&redirect_uri=" + redirectUri
                 + "&code=" + code;
@@ -65,6 +62,7 @@ public class KakaoOauthService {
 
     public Mono<KakaoUserInfo> getMemberInfo(final String token) {
 
+        String userUri = "https://kapi.kakao.com/v2/user/me";
         return webClient.get()
                 .uri(userUri)
                 .header("Authorization", "Bearer " + token)
