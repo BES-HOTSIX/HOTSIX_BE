@@ -1,4 +1,4 @@
-package com.example.hotsix_be.payment.settle.dto;
+package com.example.hotsix_be.payment.settle.dto.response;
 
 import com.example.hotsix_be.payment.settle.utils.SettleUt;
 import com.example.hotsix_be.reservation.entity.Reservation;
@@ -32,7 +32,7 @@ public class ReservationForSettleResponse {
         Long commission = SettleUt.calculateCommission(price);
         Long expectedAmount = price - commission;
         Long settledAmount = reservation.getSettleDate() != null ? expectedAmount : 0;
-        LocalDate settleDue = reservation.getSettleDate() != null ? reservation.getSettleDate().toLocalDate() : SettleUt.getExpectedSettleDate();
+        LocalDate settleDue = reservation.getSettleDate() != null ? reservation.getSettleDate() : SettleUt.getExpectedSettleDate();
 
         return ReservationForSettleResponse.of(
                 reservation.getOrderId(),

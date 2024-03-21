@@ -20,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -169,8 +170,14 @@ public class ReservationService {
         return reservationRepository.sumPriceByMemberIdAndSettleDateNull(host);
     }
 
-    public Page<Reservation> findByHostAndCancelDateNull(final Member host, final Pageable pageable) {
-        return reservationRepository.findByHostAndCancelDateNull(host, pageable);
+    public Page<Reservation> findByParamsAndCancelDateNotNull(
+            final Member host,
+            final LocalDate startDate,
+            final LocalDate endDate,
+            final String settleKw,
+            final Pageable pageable
+    ) {
+        return reservationRepository.findByParamsAndCancelDateNotNull(host, startDate, endDate, settleKw, pageable);
     }
 
     public HostReservationSummaryResponse findReservationsByHotelAndCheckoutMonth(final Long hotelId, final int year, final int month,

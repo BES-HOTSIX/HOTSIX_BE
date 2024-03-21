@@ -26,7 +26,5 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long>,
 
     Optional<Reservation> findFirstByMemberAndIsPaidTrue(Member member);
 
-    Page<Reservation> findByHostAndCancelDateNull(Member host, Pageable pageable);
-
     Optional<Reservation> findByOrderIdContainingAndHostId(String orderId, Long hostId);
 }

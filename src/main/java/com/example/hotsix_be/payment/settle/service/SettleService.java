@@ -6,8 +6,8 @@ import com.example.hotsix_be.member.service.MemberService;
 import com.example.hotsix_be.payment.cashlog.entity.EventType;
 import com.example.hotsix_be.payment.cashlog.service.CashLogService;
 import com.example.hotsix_be.payment.payment.exception.PaymentException;
-import com.example.hotsix_be.payment.settle.dto.MySettleResponse;
-import com.example.hotsix_be.payment.settle.dto.ReservationForSettleResponse;
+import com.example.hotsix_be.payment.settle.dto.response.MySettleResponse;
+import com.example.hotsix_be.payment.settle.dto.response.ReservationForSettleResponse;
 import com.example.hotsix_be.payment.settle.entity.Settle;
 import com.example.hotsix_be.payment.settle.repository.SettleRepository;
 import com.example.hotsix_be.payment.settle.utils.SettleUt;
@@ -88,6 +88,9 @@ public class SettleService {
 
     public Page<ReservationForSettleResponse> getReserveForSettleByMemberId(
             final Long id,
+            final LocalDate startDate,
+            final LocalDate endDate,
+            final String settleKw,
             final Pageable pageable
             ) {
         Member host = memberService.getMemberById(id);
@@ -95,7 +98,7 @@ public class SettleService {
         // TODO 원한다면 체크아웃 날짜와 체크인 날짜 순으로도 확인할 수 있도록 하기
         Pageable sortedPageable = ((PageRequest) pageable).withSort(Sort.by("createdAt").descending());
 
-        Page<Reservation> reservations = reservationService.findByHostAndCancelDateNull(host, sortedPageable);
+        Page<Reservation> reservations = reservationService.findByParamsAndCancelDateNotNull(host, startDate, endDate, settleKw, sortedPageable);
 
         Page<ReservationForSettleResponse> resPage = reservations.map(ReservationForSettleResponse::of);
 

@@ -1,4 +1,4 @@
-package com.example.hotsix_be.payment.settle.dto;
+package com.example.hotsix_be.payment.settle.dto.response;
 
 
 import lombok.Getter;
