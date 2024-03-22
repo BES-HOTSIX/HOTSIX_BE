@@ -22,7 +22,6 @@ import com.example.hotsix_be.payment.payment.exception.PaymentException;
 import com.example.hotsix_be.payment.payment.service.TossService;
 import com.example.hotsix_be.reservation.dto.response.ReservationDetailResponse;
 import com.example.hotsix_be.reservation.entity.Reservation;
-import com.example.hotsix_be.reservation.exception.ReservationException;
 import com.example.hotsix_be.reservation.service.ReservationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

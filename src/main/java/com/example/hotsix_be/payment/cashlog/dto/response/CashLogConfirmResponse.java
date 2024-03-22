@@ -28,7 +28,7 @@ public class CashLogConfirmResponse {
     @Schema(description = "해당 CashLog 를 가진 유저 아이디", example = "1")
     private final Long memberId;
 
-    @Schema(description = "주문 고유 식별 코드", example = "8sJILLP1EP6V1nLksCBL0")
+    @Schema(description = "주문 고유 식별 코드", example = "o8sJILLP1EP6V1nLksCBL")
     private final String orderId;
 
     @Schema(description = "CashLog 생성 일시", example = "2024-02-06 17:26:48.772390")

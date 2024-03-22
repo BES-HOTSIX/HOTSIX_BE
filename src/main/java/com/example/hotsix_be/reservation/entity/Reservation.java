@@ -41,7 +41,7 @@ public class Reservation extends DateEntity {
     @Column(name = "cancel_date")
     private LocalDateTime cancelDate;
 
-    private LocalDateTime settleDate;
+    private LocalDate settleDate;
 
     private Long guests = 0L;
 
@@ -108,7 +108,7 @@ public class Reservation extends DateEntity {
     }
 
     public void settleDone() {
-        this.settleDate = LocalDateTime.now();
+        this.settleDate = LocalDate.now();
     }
 
     public List<LocalDate> getReservedDateRange() {

@@ -53,7 +53,7 @@ public class QReservation extends EntityPathBase<Reservation> {
 
     public final com.example.hotsix_be.review.entity.QReview review;
 
-    public final DateTimePath<java.time.LocalDateTime> settleDate = createDateTime("settleDate", java.time.LocalDateTime.class);
+    public final DatePath<java.time.LocalDate> settleDate = createDate("settleDate", java.time.LocalDate.class);
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;

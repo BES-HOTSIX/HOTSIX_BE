@@ -13,7 +13,6 @@ import com.example.hotsix_be.payment.cashlog.entity.EventType;
 import com.example.hotsix_be.payment.cashlog.repository.CashLogRepository;
 import com.example.hotsix_be.payment.payment.exception.PaymentException;
 import com.example.hotsix_be.reservation.entity.Reservation;
-import com.example.hotsix_be.reservation.exception.ReservationException;
 import com.example.hotsix_be.reservation.service.ReservationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +22,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
-import static com.example.hotsix_be.common.exception.ExceptionCode.*;
+import static com.example.hotsix_be.common.exception.ExceptionCode.ALREADY_BEEN_INITIALIZED;
+import static com.example.hotsix_be.common.exception.ExceptionCode.NOT_FOUND_CASHLOG_ID;
 
 @Service
 @Transactional(readOnly = true)
@@ -82,8 +82,8 @@ public class CashLogService {
         return cashLogMarker;
     }
 
-    public Optional<CashLog> findById(final Long id) {
-        return cashLogRepository.findById(id);
+    public CashLog findById(final Long id) {
+        return cashLogRepository.findById(id).orElseThrow(() -> new PaymentException(NOT_FOUND_CASHLOG_ID));
     }
 
     // 개인 캐시 사용 내역 페이지의 cashLog 리스트
@@ -99,10 +99,9 @@ public class CashLogService {
     }
 
     public ConfirmResponse getConfirmRespById(final Long id) {
-        CashLog cashLog = findById(id).orElseThrow(() -> new PaymentException(INVALID_REQUEST));
+        CashLog cashLog = findById(id);
 
-        Reservation reservation = reservationService.findByOrderIdAndMember(cashLog.getOrderId(), cashLog.getMember())
-                .orElseThrow(() -> new ReservationException(NOT_FOUND_RESERVATION_ID));
+        Reservation reservation = reservationService.findByOrderIdAndMember(cashLog.getOrderId(), cashLog.getMember());
 
         Hotel hotel = reservation.getHotel();
 
