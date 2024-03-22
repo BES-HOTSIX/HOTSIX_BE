@@ -20,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -60,27 +61,27 @@ public class ReservationService {
     }
 
     public ReservationDetailResponse getPaidDetailById(final Long reserveId, final Long memberId) {
-        Reservation reservation = findPaidById(reserveId).orElseThrow(
-                () -> new ReservationException(NOT_FOUND_RESERVATION_ID));
+        Reservation reservation = findPaidById(reserveId);
 
         return getDetailById(reservation, memberId);
     }
 
     public ReservationDetailResponse getUnpaidDetailById(final Long reserveId, final Long memberId) {
-        Reservation reservation = findUnpaidById(reserveId).orElseThrow(
-                () -> new ReservationException(NOT_FOUND_RESERVATION_ID));
+        Reservation reservation = findUnpaidById(reserveId);
 
         return getDetailById(reservation, memberId);
     }
 
     // isPaid 가 false 인지 확인 (true 일 경우 Optional 로 감싼 null 을 반환)
-    public Optional<Reservation> findUnpaidById(final Long reserveId) {
-        return reservationRepository.findByIdAndIsPaidFalse(reserveId);
+    public Reservation findUnpaidById(final Long reserveId) {
+        return reservationRepository.findByIdAndIsPaidFalse(reserveId).orElseThrow(
+                () -> new ReservationException(NOT_FOUND_RESERVATION_ID));
     }
 
     // isPaid 가 true 인지 확인 (false 일 경우 Optional 로 감싼 null 을 반환)
-    public Optional<Reservation> findPaidById(final Long reserveId) {
-        return reservationRepository.findByIdAndIsPaidTrue(reserveId);
+    public Reservation findPaidById(final Long reserveId) {
+        return reservationRepository.findByIdAndIsPaidTrue(reserveId).orElseThrow(
+                () -> new ReservationException(NOT_FOUND_RESERVATION_ID));
     }
 
     @Transactional
@@ -130,8 +131,7 @@ public class ReservationService {
     }
 
     public ReservationInfoResponse getInfoById(final Long reserveId, final Long memberId) {
-        Reservation reservation = findPaidById(reserveId).orElseThrow(
-                () -> new ReservationException(NOT_FOUND_RESERVATION_ID));
+        Reservation reservation = findPaidById(reserveId);
 
         return getInfoByReservation(reservation, memberId);
     }
@@ -157,8 +157,8 @@ public class ReservationService {
         return ReservationCreateResponse.of(reservation);
     }
 
-    public Optional<Reservation> findByOrderIdAndMember(final String orderId, final Member member) {
-        return reservationRepository.findByOrderIdContainingAndMember(orderId, member);
+    public Reservation findByOrderIdAndMember(final String orderId, final Member member) {
+        return reservationRepository.findByOrderIdContainingAndMember(orderId, member).orElseThrow(() -> new ReservationException(NOT_FOUND_RESERVATION_ID));
     }
 
     public Optional<Reservation> findByOrderIdAndHostId(final String orderId, final Long hostId) {
@@ -169,8 +169,14 @@ public class ReservationService {
         return reservationRepository.sumPriceByMemberIdAndSettleDateNull(host);
     }
 
-    public Page<Reservation> findByHostAndCancelDateNull(final Member host, final Pageable pageable) {
-        return reservationRepository.findByHostAndCancelDateNull(host, pageable);
+    public Page<Reservation> findByHostIdAndParamsAndCancelDateNotNull(
+            final Member host,
+            final LocalDate startDate,
+            final LocalDate endDate,
+            final String settleKw,
+            final Pageable pageable
+    ) {
+        return reservationRepository.findByHostIdAndParamsAndCancelDateNotNull(host, startDate, endDate, settleKw, pageable);
     }
 
     public HostReservationSummaryResponse findReservationsByHotelAndCheckoutMonth(final Long hotelId, final int year, final int month,

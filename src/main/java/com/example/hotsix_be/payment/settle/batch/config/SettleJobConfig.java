@@ -72,10 +72,11 @@ public class SettleJobConfig {
                 .build();
     }
 
-    @StepScope
     @Bean
-    public ItemProcessor<Reservation, Settle> settleItemProcessor() {
-        return settleService::doSettle;
+    @StepScope
+    public ItemProcessor<Reservation, Settle> settleItemProcessor(
+            @Value("#{jobParameters['discountAmount']}") Long discountAmount) {
+        return reservation -> settleService.doSettle(reservation, discountAmount);
     }
 
     @StepScope

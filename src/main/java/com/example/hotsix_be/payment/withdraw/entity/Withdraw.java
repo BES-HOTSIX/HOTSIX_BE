@@ -21,7 +21,7 @@ public class Withdraw extends CashLogMarker {
     // 은행 코드
     private String bankCode;
 
-    // 환전 계좌w
+    // 환전 계좌
     private String accountNumber;
 
     // 취소일자 (취소되지 않았을 경우 null)

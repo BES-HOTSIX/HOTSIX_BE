@@ -6,8 +6,8 @@ import com.example.hotsix_be.member.service.MemberService;
 import com.example.hotsix_be.payment.cashlog.entity.EventType;
 import com.example.hotsix_be.payment.cashlog.service.CashLogService;
 import com.example.hotsix_be.payment.payment.exception.PaymentException;
-import com.example.hotsix_be.payment.settle.dto.MySettleResponse;
-import com.example.hotsix_be.payment.settle.dto.ReservationForSettleResponse;
+import com.example.hotsix_be.payment.settle.dto.response.MySettleResponse;
+import com.example.hotsix_be.payment.settle.dto.response.ReservationForSettleResponse;
 import com.example.hotsix_be.payment.settle.entity.Settle;
 import com.example.hotsix_be.payment.settle.repository.SettleRepository;
 import com.example.hotsix_be.payment.settle.utils.SettleUt;
@@ -32,7 +32,7 @@ public class SettleService {
 
     // Reservation 을 Settle로 처리 (ItemProcessor)
     @Transactional
-    public Settle doSettle(final Reservation reservation) {
+    public Settle doSettle(final Reservation reservation, final Long discountAmount) {
         // 이미 정산된 데이터일 경우 예외 발생
         if (reservation.isSettled()) throw new PaymentException(ExceptionCode.ALREADY_BEEN_SETTLED);
 
@@ -52,7 +52,8 @@ public class SettleService {
                 deductedPrice,
                 reservation.getOrderId(),
                 EventType.정산__예치금적립,
-                settle
+                settle,
+                discountAmount
         );
 
         reservation.settleDone();
@@ -66,7 +67,7 @@ public class SettleService {
 
         // 어드민 계정 (Id 가 1인 멤버) 에 수수료 전달
         Member admin = memberService.getMemberById(1L);
-        admin.addCash(commission);
+        admin.addCash(commission, 0L);
 
         return deductedPrice;
     }
@@ -86,16 +87,18 @@ public class SettleService {
         return MySettleResponse.of(restCash, settleDate, expectedTotalSettleAmount);
     }
 
-    public Page<ReservationForSettleResponse> getReserveForSettleByMemberId(
+    public Page<ReservationForSettleResponse> getReserveForSettleByMemberIdAndParams(
             final Long id,
+            final LocalDate startDate,
+            final LocalDate endDate,
+            final String settleKw,
             final Pageable pageable
             ) {
         Member host = memberService.getMemberById(id);
 
-        // TODO 원한다면 체크아웃 날짜와 체크인 날짜 순으로도 확인할 수 있도록 하기
         Pageable sortedPageable = ((PageRequest) pageable).withSort(Sort.by("createdAt").descending());
 
-        Page<Reservation> reservations = reservationService.findByHostAndCancelDateNull(host, sortedPageable);
+        Page<Reservation> reservations = reservationService.findByHostIdAndParamsAndCancelDateNotNull(host, startDate, endDate, settleKw, sortedPageable);
 
         Page<ReservationForSettleResponse> resPage = reservations.map(ReservationForSettleResponse::of);
 

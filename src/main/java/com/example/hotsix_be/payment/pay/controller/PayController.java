@@ -4,6 +4,8 @@ import com.example.hotsix_be.auth.Auth;
 import com.example.hotsix_be.auth.MemberOnly;
 import com.example.hotsix_be.auth.util.Accessor;
 import com.example.hotsix_be.common.dto.ResponseDto;
+import com.example.hotsix_be.coupon.dto.request.UseCouponRequest;
+import com.example.hotsix_be.coupon.service.CouponService;
 import com.example.hotsix_be.payment.cashlog.dto.response.CashLogIdResponse;
 import com.example.hotsix_be.payment.cashlog.entity.CashLog;
 import com.example.hotsix_be.payment.cashlog.service.CashLogService;
@@ -15,16 +17,16 @@ import com.example.hotsix_be.payment.payment.exception.PaymentException;
 import com.example.hotsix_be.payment.payment.service.TossService;
 import com.example.hotsix_be.reservation.dto.response.ReservationDetailResponse;
 import com.example.hotsix_be.reservation.entity.Reservation;
-import com.example.hotsix_be.reservation.exception.ReservationException;
 import com.example.hotsix_be.reservation.service.ReservationService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import static com.example.hotsix_be.common.exception.ExceptionCode.*;
 import static com.example.hotsix_be.common.exception.ExceptionCode.INSUFFICIENT_DEPOSIT;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/pay")
@@ -33,6 +35,7 @@ public class PayController implements PayApi {
     private final PayService payService;
     private final ReservationService reservationService;
     private final TossService tossService;
+    private final CouponService couponService;
 
     @GetMapping("/{reserveId}")
     @MemberOnly
@@ -41,7 +44,8 @@ public class PayController implements PayApi {
             @Auth final Accessor accessor
     ) {
         // 이 메소드에서 로그인한 사용자가 예약한 본인인지도 확인
-        ReservationDetailResponse reservationDetailResponse = reservationService.getUnpaidDetailById(reserveId, accessor.getMemberId());
+        ReservationDetailResponse reservationDetailResponse = reservationService.getUnpaidDetailById(reserveId,
+                accessor.getMemberId());
 
         return ResponseEntity.ok(new ResponseDto<>(
                 HttpStatus.OK.value(),
@@ -52,14 +56,25 @@ public class PayController implements PayApi {
     // 결제창에서 결제하기 버튼을 누를 경우 아래 메소드가 작동
     // 이미 생성되어있는 임시 예약
     @PostMapping("/{reserveId}/byCash")
-    public ResponseEntity<ResponseDto<CashLogIdResponse>> payByCash(@PathVariable final Long reserveId) {
-        Reservation reservation = reservationService.findUnpaidById(reserveId).orElseThrow(() -> new PaymentException(INVALID_REQUEST));
+    @MemberOnly
+    public ResponseEntity<ResponseDto<CashLogIdResponse>> payByCash(@PathVariable final Long reserveId,
+                                                                    @RequestBody final UseCouponRequest useCouponRequest,
+                                                                    @Auth final Accessor accessor) {
+        Reservation reservation = reservationService.findUnpaidById(reserveId);
 
-        if (!payService.canPay(reservation, reservation.getPrice()))
+        if (!payService.canPay(reservation, reservation.getPrice(), useCouponRequest.getDiscountAmount())) {
             throw new PaymentException(INSUFFICIENT_DEPOSIT);
+        }
+
+        log.info("type : {}", useCouponRequest.getCouponType());
+        log.info("discountAmount : {}", useCouponRequest.getDiscountAmount());
+
+        if (useCouponRequest.getDiscountAmount() > 0) {
+            couponService.deleteCoupon(accessor.getMemberId(), useCouponRequest);
+        } // 쿠폰 사용 시 쿠폰 삭제
 
         // 이용자 결제
-        CashLog cashLog = payService.payByCashOnly(reservation);
+        CashLog cashLog = payService.payByCashOnly(reservation, useCouponRequest.getDiscountAmount());
 
         CashLogIdResponse cashLogIdResponse = cashLogService.getCashLogIdById(cashLog.getId());
 
@@ -73,17 +88,31 @@ public class PayController implements PayApi {
     }
 
     @PostMapping("/{reserveId}/byToss")
+    @MemberOnly
     public ResponseEntity<ResponseDto<CashLogIdResponse>> payByToss(
             @RequestBody final TossConfirmRequest tossConfirmRequest,
-            @PathVariable final Long reserveId
+            @PathVariable final Long reserveId,
+            @Auth Accessor accessor
     ) {
-        Reservation reservation = reservationService.findUnpaidById(reserveId).orElseThrow(() -> new ReservationException(NOT_FOUND_RESERVATION_ID));
-        if (!payService.canPay(reservation, Long.parseLong(tossConfirmRequest.getAmount())))
+        log.info("tossConfirmRequest DiscountAmount: {}", tossConfirmRequest.getDiscountAmount());
+
+        Reservation reservation = reservationService.findUnpaidById(reserveId);
+        if (!payService.canPay(reservation, Long.parseLong(tossConfirmRequest.getAmount()),
+                tossConfirmRequest.getDiscountAmount())) {
             throw new PaymentException(INSUFFICIENT_DEPOSIT);
+        }
+
+        log.info("couponType : {}", tossConfirmRequest.getCouponType());
+
+        if (tossConfirmRequest.getDiscountAmount() > 0) {
+            couponService.deleteCoupon(accessor.getMemberId(), new UseCouponRequest(tossConfirmRequest.getCouponType(),
+                    tossConfirmRequest.getDiscountAmount()));
+        } // 쿠폰 사용 시 쿠폰 삭제
 
         TossPaymentRequest tossPaymentRequest = tossService.confirmTossPayment(tossConfirmRequest).block();
 
-        Long cashLogId = payService.payByTossPayments(tossPaymentRequest, reservation).getId();
+        Long cashLogId = payService.payByTossPayments(tossPaymentRequest, reservation,
+                tossConfirmRequest.getDiscountAmount()).getId();
 
         CashLogIdResponse cashLogIdResponse = cashLogService.getCashLogIdById(cashLogId);
 

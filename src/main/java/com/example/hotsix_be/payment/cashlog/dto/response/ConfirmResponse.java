@@ -22,7 +22,7 @@ public class ConfirmResponse {
     @Schema(description = "해당 예약 아이디", example = "1")
     private final Long reserveId;
 
-    @Schema(description = "주문 고유 식별 코드", example = "8sJILLP1EP6V1nLksCBL0")
+    @Schema(description = "주문 고유 식별 코드", example = "o8sJILLP1EP6V1nLksCBL")
     private final String orderId;
 
     @Schema(description = "숙소의 이름", example = "땡땡호텔")

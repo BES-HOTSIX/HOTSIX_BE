@@ -4,6 +4,7 @@ import com.example.hotsix_be.auth.Auth;
 import com.example.hotsix_be.auth.MemberOnly;
 import com.example.hotsix_be.auth.util.Accessor;
 import com.example.hotsix_be.common.dto.ResponseDto;
+import com.example.hotsix_be.coupon.dto.request.DiscountAmountRequest;
 import com.example.hotsix_be.payment.cashlog.dto.response.CashLogIdResponse;
 import com.example.hotsix_be.payment.cashlog.entity.CashLog;
 import com.example.hotsix_be.payment.cashlog.service.CashLogService;
@@ -17,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -34,17 +36,18 @@ public class RefundController implements RefundApi {
     @MemberOnly
     public ResponseEntity<ResponseDto<CashLogIdResponse>> cancelReservation(
             @PathVariable final Long reserveId,
-            @Auth final Accessor accessor
+            @Auth final Accessor accessor,
+            @RequestBody final DiscountAmountRequest discountAmountRequest
     ) {
         // 조회
-        Reservation reservation = reservationService.findPaidById(reserveId).orElseThrow(() -> new ReservationException(NOT_FOUND_RESERVATION_ID));
+        Reservation reservation = reservationService.findPaidById(reserveId);
 
         if (!reservation.getMember().getId().equals(accessor.getMemberId()))
             throw new ReservationException(INVALID_AUTHORITY);
 
         if (!reservation.isCancelable()) throw new ReservationException(CANCELLATION_PERIOD_EXPIRED);
 
-        CashLog cashLog = refundService.doRefund(reservation);
+        CashLog cashLog = refundService.doRefund(reservation, discountAmountRequest.getDiscountAmount());
 
         CashLogIdResponse cashLogIdResponse = cashLogService.getCashLogIdById(cashLog.getId());
 
