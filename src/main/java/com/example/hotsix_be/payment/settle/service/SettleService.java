@@ -32,7 +32,7 @@ public class SettleService {
 
     // Reservation 을 Settle로 처리 (ItemProcessor)
     @Transactional
-    public Settle doSettle(final Reservation reservation, final Long discountAmount) {
+    public Settle doSettle(final Reservation reservation) {
         // 이미 정산된 데이터일 경우 예외 발생
         if (reservation.isSettled()) {
             throw new PaymentException(ExceptionCode.ALREADY_BEEN_SETTLED);

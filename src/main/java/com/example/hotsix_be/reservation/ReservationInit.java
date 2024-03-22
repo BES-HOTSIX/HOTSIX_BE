@@ -92,7 +92,7 @@ public class ReservationInit {
                             member
                     );
 
-                    Settle settle = settleService.doSettle(reservation, 0L);
+                    Settle settle = settleService.doSettle(reservation);
 
                     reservation.updateOrderId("o" + randomNanoId());
 
