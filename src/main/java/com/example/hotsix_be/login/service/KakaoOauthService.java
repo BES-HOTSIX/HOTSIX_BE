@@ -10,10 +10,8 @@ import java.util.Optional;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -61,23 +59,11 @@ public class KakaoOauthService {
                         + "&redirect_uri=" + redirectUri
                         + "&code=" + code;
 
-        log.info("code = {}", code);
-        log.info("tokenUri = {}", tokenUri);
-        log.info("clientId = {}", clientId);
-        log.info("clientSecret = {}", clientSecret);
-        log.info("redirectUri = {}", redirectUri);
-
-        return webClient.post()  // HTTP POST 메소드 사용
-                .uri(tokenUri)
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED)  // 컨텐츠 타입 설정
-                .body(BodyInserters
-                        .fromFormData("grant_type", GRANT_TYPE)
-                        .with("client_id", clientId)
-                        .with("client_secret", clientSecret)
-                        .with("redirect_uri", redirectUri)
-                        .with("code", code))
+        return webClient.get()
+                .uri(uri)
                 .retrieve()
                 .bodyToMono(KakaoTokenResponse.class);
+
     }
 
     public Mono<KakaoUserInfo> getMemberInfo(final String token) {
