@@ -72,7 +72,7 @@ public class RechargeController implements RechargeApi {
                             null, new EmptyResponse()));
         }
         if (method.equals("간편결제")) {
-            rechargeService.easyPayRecharge(tossPaymentRequest, member);
+            rechargeService.easyPayRecharge(tossPaymentRequest, member, 0L);
             return ResponseEntity.ok(
                     new ResponseDto<>(
                             HttpStatus.OK.value(),
@@ -96,7 +96,7 @@ public class RechargeController implements RechargeApi {
 
         if (!secret.equals(recharge.getSecret())) throw new PaymentException(INVALID_REQUEST);
 
-        rechargeService.processRecharge(recharge);
+        rechargeService.processRecharge(recharge, 0L);
 
         return ResponseEntity.ok(
                 new ResponseDto<>(

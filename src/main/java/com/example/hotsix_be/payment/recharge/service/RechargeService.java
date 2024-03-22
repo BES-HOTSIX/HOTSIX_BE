@@ -35,17 +35,17 @@ public class RechargeService {
     }
 
     @Transactional // 충전 진행
-    public void processRecharge(final Recharge recharge) {
+    public void processRecharge(final Recharge recharge, final Long discountAmount) {
         if (recharge.isCancelled()) throw new PaymentException(PAYMENT_NOT_POSSIBLE);
 
-        cashLogService.addCashLogDone(recharge);
+        cashLogService.addCashLogDone(recharge, discountAmount);
     }
 
     @Transactional // 간편결제 충전 진행
-    public void easyPayRecharge(final TossPaymentRequest res, final Member member) {
+    public void easyPayRecharge(final TossPaymentRequest res, final Member member, final Long discountAmount) {
         Recharge recharge = doRecharge(res, member, 충전__토스페이먼츠);
 
-        processRecharge(recharge);
+        processRecharge(recharge, discountAmount);
     }
 
     private Recharge doRecharge(final TossPaymentRequest res, final Member member, final EventType eventType) {

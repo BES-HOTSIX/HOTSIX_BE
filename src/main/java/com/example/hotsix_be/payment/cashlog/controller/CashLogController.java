@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import static com.example.hotsix_be.common.exception.ExceptionCode.INVALID_AUTHORITY;
-import static com.example.hotsix_be.common.exception.ExceptionCode.NOT_FOUND_CASHLOG_ID;
 
 @RestController
 @RequiredArgsConstructor
@@ -62,7 +61,7 @@ public class CashLogController implements CashLogApi {
             @PathVariable final Long cashLogId,
             @Auth final Accessor accessor
     ) {
-        CashLog cashLog = cashLogService.findById(cashLogId).orElseThrow(() -> new PaymentException(NOT_FOUND_CASHLOG_ID));
+        CashLog cashLog = cashLogService.findById(cashLogId);
         if (!cashLog.getMember().getId().equals(accessor.getMemberId())) throw new PaymentException(INVALID_AUTHORITY);
         ConfirmResponse confirmResponse = cashLogService.getConfirmRespById(cashLogId);
 

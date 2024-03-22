@@ -8,6 +8,7 @@ import com.example.hotsix_be.payment.pay.entity.Pay;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.PathBuilder;
 import com.querydsl.core.types.dsl.Wildcard;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -41,6 +42,11 @@ public class CashLogRepositoryImpl implements CashLogRepositoryCustom {
 
         OrderSpecifier<?>[] order = orders.toArray(OrderSpecifier[]::new);
 
+        BooleanExpression condition1 = cashLog.member.eq(member);
+        BooleanExpression condition2 = cashLog.dtype.eq(Pay.class.getSimpleName());
+
+        BooleanExpression conditions = condition1.and(condition2);
+
         List<Tuple> content = jpaQueryFactory
                 .select(
                         cashLog.id,
@@ -51,8 +57,7 @@ public class CashLogRepositoryImpl implements CashLogRepositoryCustom {
                         cashLog.createdAt
                 )
                 .from(cashLog)
-                .where(cashLog.member.eq(member))
-                .where(cashLog.dtype.eq(Pay.class.getSimpleName()))
+                .where(conditions)
                 .limit(pageable.getPageSize())
                 .offset(pageable.getOffset())
                 .orderBy(order)
@@ -71,8 +76,7 @@ public class CashLogRepositoryImpl implements CashLogRepositoryCustom {
         // count 쿼리 최적화를 위해 JPAQuery<> 값을 받아 PageableExcution
         JPAQuery<Long> totalCount = jpaQueryFactory.select(Wildcard.count)
                 .from(cashLog)
-                .where(cashLog.member.eq(member))
-                .where(cashLog.dtype.eq(Pay.class.getSimpleName()));
+                .where(conditions);
 
         return PageableExecutionUtils.getPage(res, pageable, totalCount::fetchOne);
     }

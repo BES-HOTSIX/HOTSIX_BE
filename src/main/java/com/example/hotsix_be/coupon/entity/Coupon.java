@@ -10,11 +10,13 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Entity
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
+@Entity
 public class Coupon {
 
     @Id
@@ -31,5 +33,4 @@ public class Coupon {
         this.couponType = couponType;
         this.member = member;
     }
-
 }
