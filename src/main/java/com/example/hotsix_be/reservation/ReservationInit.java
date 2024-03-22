@@ -99,7 +99,7 @@ public class ReservationInit implements ApplicationRunner {
                             member
                     );
 
-                    Settle settle = settleService.doSettle(reservation, 0L);
+                    Settle settle = settleService.doSettle(reservation);
 
                     reservation.updateOrderId("o" + randomNanoId());
 

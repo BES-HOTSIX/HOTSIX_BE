@@ -32,14 +32,17 @@ public class SettleService {
 
     // Reservation 을 Settle로 처리 (ItemProcessor)
     @Transactional
-    public Settle doSettle(final Reservation reservation, final Long discountAmount) {
+    public Settle doSettle(final Reservation reservation) {
         // 이미 정산된 데이터일 경우 예외 발생
-        if (reservation.isSettled()) throw new PaymentException(ExceptionCode.ALREADY_BEEN_SETTLED);
+        if (reservation.isSettled()) {
+            throw new PaymentException(ExceptionCode.ALREADY_BEEN_SETTLED);
+        }
 
         Member host = reservation.getHost(); // 호스트
         Long price = reservation.getPrice(); // 원래 가격
+        Long couponDiscountAmount = reservation.getCouponDiscountAmount(); // 쿠폰으로 할인된 금액
         Long commission = SettleUt.calculateCommission(price); // 수수료
-        Long deductedPrice = deductCommission(price, commission); // 수수료를 제한 가격
+        Long deductedPrice = deductCommission(price, commission, couponDiscountAmount); // 수수료를 제한 가격
 
         Settle settle = Settle.builder()
                 .commissionRate(SettleUt.getCommissionRate())
@@ -53,7 +56,7 @@ public class SettleService {
                 reservation.getOrderId(),
                 EventType.정산__예치금적립,
                 settle,
-                discountAmount
+                0L
         );
 
         reservation.settleDone();
@@ -62,12 +65,12 @@ public class SettleService {
     }
 
     // 총액과 수수료를 파라미터로 받아 공제된 금액 반환
-    private Long deductCommission(final Long price, final Long commission) {
+    private Long deductCommission(final Long price, final Long commission, final Long couponDiscountAmount) {
         Long deductedPrice = price - commission;
 
         // 어드민 계정 (Id 가 1인 멤버) 에 수수료 전달
         Member admin = memberService.getMemberById(1L);
-        admin.addCash(commission, 0L);
+        admin.addCash(commission - couponDiscountAmount, 0L);
 
         return deductedPrice;
     }
@@ -90,7 +93,7 @@ public class SettleService {
     public Page<ReservationForSettleResponse> getReserveForSettleByMemberId(
             final Long id,
             final Pageable pageable
-            ) {
+    ) {
         Member host = memberService.getMemberById(id);
 
         // TODO 원한다면 체크아웃 날짜와 체크인 날짜 순으로도 확인할 수 있도록 하기

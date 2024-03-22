@@ -80,7 +80,7 @@ public class PayController implements PayApi {
         log.info("discountAmount : {}", useCouponRequest.getDiscountAmount());
 
         if (useCouponRequest.getDiscountAmount() > 0) {
-            couponService.deleteCoupon(accessor.getMemberId(), useCouponRequest);
+            couponService.deleteCoupon(accessor.getMemberId(), reservation, useCouponRequest);
         } // 쿠폰 사용 시 쿠폰 삭제
 
         // 이용자 결제
@@ -108,6 +108,7 @@ public class PayController implements PayApi {
 
         Reservation reservation = reservationService.findUnpaidById(reserveId)
                 .orElseThrow(() -> new ReservationException(NOT_FOUND_RESERVATION_ID));
+
         if (!payService.canPay(reservation, Long.parseLong(tossConfirmRequest.getAmount()),
                 tossConfirmRequest.getDiscountAmount())) {
             throw new PaymentException(INSUFFICIENT_DEPOSIT);
@@ -116,8 +117,9 @@ public class PayController implements PayApi {
         log.info("couponType : {}", tossConfirmRequest.getCouponType());
 
         if (tossConfirmRequest.getDiscountAmount() > 0) {
-            couponService.deleteCoupon(accessor.getMemberId(), new UseCouponRequest(tossConfirmRequest.getCouponType(),
-                    tossConfirmRequest.getDiscountAmount()));
+            couponService.deleteCoupon(accessor.getMemberId(), reservation,
+                    new UseCouponRequest(tossConfirmRequest.getCouponType(),
+                            tossConfirmRequest.getDiscountAmount()));
         } // 쿠폰 사용 시 쿠폰 삭제
 
         TossPaymentRequest tossPaymentRequest = tossService.confirmTossPayment(tossConfirmRequest).block();

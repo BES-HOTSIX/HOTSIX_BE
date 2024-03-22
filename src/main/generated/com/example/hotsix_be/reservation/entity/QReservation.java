@@ -30,6 +30,8 @@ public class QReservation extends EntityPathBase<Reservation> {
 
     public final DatePath<java.time.LocalDate> checkOutDate = createDate("checkOutDate", java.time.LocalDate.class);
 
+    public final NumberPath<Long> couponDiscountAmount = createNumber("couponDiscountAmount", Long.class);
+
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
