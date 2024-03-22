@@ -1,14 +1,9 @@
 package com.example.hotsix_be.payment.pay.controller;
 
-import static com.example.hotsix_be.common.exception.ExceptionCode.INSUFFICIENT_DEPOSIT;
-import static com.example.hotsix_be.common.exception.ExceptionCode.INVALID_REQUEST;
-import static com.example.hotsix_be.common.exception.ExceptionCode.NOT_FOUND_RESERVATION_ID;
-
 import com.example.hotsix_be.auth.Auth;
 import com.example.hotsix_be.auth.MemberOnly;
 import com.example.hotsix_be.auth.util.Accessor;
 import com.example.hotsix_be.common.dto.ResponseDto;
-import com.example.hotsix_be.coupon.dto.request.DiscountAmountRequest;
 import com.example.hotsix_be.coupon.dto.request.UseCouponRequest;
 import com.example.hotsix_be.coupon.service.CouponService;
 import com.example.hotsix_be.payment.cashlog.dto.response.CashLogIdResponse;
@@ -22,18 +17,14 @@ import com.example.hotsix_be.payment.payment.exception.PaymentException;
 import com.example.hotsix_be.payment.payment.service.TossService;
 import com.example.hotsix_be.reservation.dto.response.ReservationDetailResponse;
 import com.example.hotsix_be.reservation.entity.Reservation;
-import com.example.hotsix_be.reservation.exception.ReservationException;
 import com.example.hotsix_be.reservation.service.ReservationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import static com.example.hotsix_be.common.exception.ExceptionCode.INSUFFICIENT_DEPOSIT;
 
 @Slf4j
 @RestController
@@ -69,8 +60,7 @@ public class PayController implements PayApi {
     public ResponseEntity<ResponseDto<CashLogIdResponse>> payByCash(@PathVariable final Long reserveId,
                                                                     @RequestBody final UseCouponRequest useCouponRequest,
                                                                     @Auth final Accessor accessor) {
-        Reservation reservation = reservationService.findUnpaidById(reserveId)
-                .orElseThrow(() -> new PaymentException(INVALID_REQUEST));
+        Reservation reservation = reservationService.findUnpaidById(reserveId);
 
         if (!payService.canPay(reservation, reservation.getPrice(), useCouponRequest.getDiscountAmount())) {
             throw new PaymentException(INSUFFICIENT_DEPOSIT);
@@ -106,8 +96,7 @@ public class PayController implements PayApi {
     ) {
         log.info("tossConfirmRequest DiscountAmount: {}", tossConfirmRequest.getDiscountAmount());
 
-        Reservation reservation = reservationService.findUnpaidById(reserveId)
-                .orElseThrow(() -> new ReservationException(NOT_FOUND_RESERVATION_ID));
+        Reservation reservation = reservationService.findUnpaidById(reserveId);
         if (!payService.canPay(reservation, Long.parseLong(tossConfirmRequest.getAmount()),
                 tossConfirmRequest.getDiscountAmount())) {
             throw new PaymentException(INSUFFICIENT_DEPOSIT);

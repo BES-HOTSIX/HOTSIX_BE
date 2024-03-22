@@ -40,7 +40,7 @@ public class RefundController implements RefundApi {
             @RequestBody final DiscountAmountRequest discountAmountRequest
     ) {
         // 조회
-        Reservation reservation = reservationService.findPaidById(reserveId).orElseThrow(() -> new ReservationException(NOT_FOUND_RESERVATION_ID));
+        Reservation reservation = reservationService.findPaidById(reserveId);
 
         if (!reservation.getMember().getId().equals(accessor.getMemberId()))
             throw new ReservationException(INVALID_AUTHORITY);
