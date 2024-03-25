@@ -8,6 +8,7 @@ import com.example.hotsix_be.member.repository.MemberRepository;
 
 import java.util.Optional;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +18,7 @@ import reactor.core.publisher.Mono;
 import static com.example.hotsix_be.member.entity.SocialProvider.KAKAO;
 
 @Component
+@Slf4j
 public class KakaoOauthService {
 
 
@@ -52,9 +54,10 @@ public class KakaoOauthService {
 
 
     public Mono<KakaoTokenResponse> getToken(final String code) {
-        String uri = tokenUri + "?grant_type=" + GRANT_TYPE + "&client_id=" + clientId + "&client_secret=" + clientSecret
-                + "&redirect_uri=" + redirectUri
-                + "&code=" + code;
+        String uri =
+                tokenUri + "?grant_type=" + GRANT_TYPE + "&client_id=" + clientId + "&client_secret=" + clientSecret
+                        + "&redirect_uri=" + redirectUri
+                        + "&code=" + code;
 
         return webClient.get()
                 .uri(uri)
