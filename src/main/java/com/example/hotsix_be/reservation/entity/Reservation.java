@@ -47,6 +47,8 @@ public class Reservation extends DateEntity {
 
     private Long price = 0L;
 
+    private Long couponDiscountAmount = 0L;
+
     private boolean isPaid;
 
     private String orderId;
@@ -140,6 +142,12 @@ public class Reservation extends DateEntity {
 
     public boolean isSettled() {
         return this.settleDate != null;
+    }
+
+    public void applyCouponDiscount(Long discountAmount) {
+        if (discountAmount != null && discountAmount > 0) {
+            this.couponDiscountAmount = discountAmount;
+        }
     }
 
     public void update(final ReservationInfoRequest reservationInfoRequest, final Hotel hotel) {
