@@ -23,7 +23,7 @@ import java.util.List;
 @Table(name = "reservations")
 @SuperBuilder(toBuilder = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @Getter
 @Entity
 public class Reservation extends DateEntity {
