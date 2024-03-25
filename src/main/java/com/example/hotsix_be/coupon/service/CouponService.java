@@ -19,6 +19,7 @@ import com.example.hotsix_be.reservation.repository.ReservationRepository;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -80,4 +81,14 @@ public class CouponService {
 
         couponRepository.delete(coupon);
     }
+
+
+    // 매일 자정에 실행되는 스케줄러 메서드
+    @Scheduled(cron = "0 0 0 * * ?")
+    @Transactional
+    public void deleteExpiredCoupons() {
+        LocalDate thirtyDaysAgo = LocalDate.now().minusDays(30);
+        couponRepository.deleteByIssueDateBefore(thirtyDaysAgo);
+    }
+
 }

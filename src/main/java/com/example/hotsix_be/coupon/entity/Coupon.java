@@ -8,6 +8,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import java.time.LocalDate;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -29,8 +30,11 @@ public class Coupon {
     @ManyToOne
     private Member member;
 
+    private LocalDate issueDate;
+
     public Coupon(CouponType couponType, Member member) {
         this.couponType = couponType;
         this.member = member;
+        this.issueDate = LocalDate.now();
     }
 }
