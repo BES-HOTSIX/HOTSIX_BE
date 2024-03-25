@@ -14,10 +14,12 @@ import com.example.hotsix_be.coupon.repository.CouponRecordRepository;
 import com.example.hotsix_be.coupon.repository.CouponRepository;
 import com.example.hotsix_be.member.entity.Member;
 import com.example.hotsix_be.member.repository.MemberRepository;
+import com.example.hotsix_be.reservation.entity.Reservation;
 import com.example.hotsix_be.reservation.repository.ReservationRepository;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,6 +42,11 @@ public class CouponService {
             throw new CouponException(ExceptionCode.ALREADY_ISSUED_FIRST_RESERVATION_COUPON);
         }
 
+        // CouponRecord를 통해 쿠폰 사용 내역도 확인
+        if (couponRecordRepository.existsByMemberAndCouponType(member, CouponType.신규회원)) {
+            throw new CouponException(ExceptionCode.ALREADY_USED_FIRST_RESERVATION_COUPON);
+        }
+
         Coupon coupon = new Coupon(CouponType.신규회원, member);
         couponRepository.save(coupon);
     }
@@ -59,7 +66,7 @@ public class CouponService {
     }
 
     @Transactional
-    public void deleteCoupon(Long memberId, UseCouponRequest useCouponRequest) {
+    public void deleteCoupon(Long memberId, Reservation reservation, UseCouponRequest useCouponRequest) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new AuthException(NOT_FOUND_MEMBER_BY_ID));
 
@@ -67,12 +74,35 @@ public class CouponService {
         Coupon coupon = couponRepository.findByMemberAndCouponType(member, useCouponRequest.getCouponType())
                 .orElseThrow(() -> new CouponException(ExceptionCode.NOT_FOUND_COUPON_TYPE));
 
+        // 예약에 쿠폰 할인 금액 반영
+        reservation.applyCouponDiscount(useCouponRequest.getDiscountAmount());
+        reservationRepository.save(reservation);
+
         // CouponRecord에 사용 기록 저장 후 쿠폰 삭제
-        CouponRecord couponRecord = new CouponRecord(useCouponRequest.getDiscountAmount(), LocalDate.now(), useCouponRequest.getCouponType(), member);
+        CouponRecord couponRecord = new CouponRecord(useCouponRequest.getDiscountAmount(), LocalDate.now(),
+                useCouponRequest.getCouponType(), member);
 
         couponRecordRepository.save(couponRecord);
 
         couponRepository.delete(coupon);
-
     }
+
+
+    // 매일 자정에 30일이 초과된 쿠폰 삭제
+    @Scheduled(cron = "0 0 0 * * ?")
+    @Transactional
+    public void deleteExpiredCoupons() {
+        LocalDate thirtyDaysAgo = LocalDate.now().minusDays(30);
+        List<Coupon> expiredCoupons = couponRepository.findByIssueDateBefore(thirtyDaysAgo);
+
+        for (Coupon expiredCoupon : expiredCoupons) {
+            CouponRecord couponRecord = new CouponRecord(0L, LocalDate.now(),
+                    expiredCoupon.getCouponType(), expiredCoupon.getMember());
+
+            couponRecordRepository.save(couponRecord); // 만료된 쿠폰 정보를 CouponRecord에 저장 ( 재발급을 방지하기 위함 )
+
+            couponRepository.delete(expiredCoupon); // 그 다음에 쿠폰 삭제
+        }
+    }
+
 }

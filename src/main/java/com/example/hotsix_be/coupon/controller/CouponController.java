@@ -57,12 +57,4 @@ public class CouponController {
         );
     }
 
-    @DeleteMapping("/delete")
-    @MemberOnly
-    public ResponseEntity<?> deleteCoupon(@RequestBody UseCouponRequest useCouponRequest, @Auth Accessor accessor) {
-
-        couponService.deleteCoupon(accessor.getMemberId(), useCouponRequest);
-
-        return ResponseEntity.ok().build();
-    }
 }
