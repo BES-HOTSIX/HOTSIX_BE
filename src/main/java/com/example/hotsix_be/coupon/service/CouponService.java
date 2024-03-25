@@ -83,12 +83,21 @@ public class CouponService {
     }
 
 
-    // 매일 자정에 실행되는 스케줄러 메서드
+    // 매일 자정에 30일이 초과된 쿠폰 삭제
     @Scheduled(cron = "0 0 0 * * ?")
     @Transactional
     public void deleteExpiredCoupons() {
         LocalDate thirtyDaysAgo = LocalDate.now().minusDays(30);
-        couponRepository.deleteByIssueDateBefore(thirtyDaysAgo);
+        List<Coupon> expiredCoupons = couponRepository.findByIssueDateBefore(thirtyDaysAgo);
+
+        for (Coupon expiredCoupon : expiredCoupons) {
+            CouponRecord couponRecord = new CouponRecord(0L, LocalDate.now(),
+                    expiredCoupon.getCouponType(), expiredCoupon.getMember());
+
+            couponRecordRepository.save(couponRecord); // 만료된 쿠폰 정보를 CouponRecord에 저장 ( 재발급을 방지하기 위함 )
+
+            couponRepository.delete(expiredCoupon); // 그 다음에 쿠폰 삭제
+        }
     }
 
 }
