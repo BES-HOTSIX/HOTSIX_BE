@@ -1,5 +1,5 @@
 <div align="center">
-!
+
 ## [HOTSHARE 바로가기](https://www.hotshare.me)
 
 <br>
