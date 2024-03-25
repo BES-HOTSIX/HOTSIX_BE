@@ -13,29 +13,35 @@ import com.example.hotsix_be.reservation.service.ReservationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.RestDocumentationContextProvider;
+import org.springframework.restdocs.RestDocumentationExtension;
+import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
 import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
-import org.springframework.restdocs.payload.JsonFieldType;
-import org.springframework.restdocs.snippet.Attributes;
+import org.springframework.restdocs.operation.preprocess.Preprocessors;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.time.LocalDate;
 import java.util.List;
 
 import static org.mockito.BDDMockito.given;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ReservationController.class)
 @MockBean(JpaMetamodelMappingContext.class)
+@ExtendWith(RestDocumentationExtension.class)
 public class ReservationControllerTest {
 	@Autowired
 	protected MockMvc mockMvc;
@@ -52,6 +58,19 @@ public class ReservationControllerTest {
 	private Member host;
 	private Hotel hotel;
 	private Reservation reservation;
+
+	@BeforeEach
+	public void setUp(WebApplicationContext webApplicationContext,
+					  RestDocumentationContextProvider restDocumentation) {
+		this.restDocs = MockMvcRestDocumentation.document("{method-name}",
+				Preprocessors.preprocessRequest(Preprocessors.prettyPrint()),
+				Preprocessors.preprocessResponse(Preprocessors.prettyPrint()));
+
+		this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
+				.apply(MockMvcRestDocumentation.documentationConfiguration(restDocumentation))
+				.alwaysDo(restDocs)
+				.build();
+	}
 
 	@BeforeEach
 	void initData() {
@@ -79,6 +98,7 @@ public class ReservationControllerTest {
 				null,
 				2L,
 				100000L,
+				0L,
 				false,
 				"",
 				hotel,
@@ -134,8 +154,10 @@ public class ReservationControllerTest {
 		ResultActions resultActions = mockMvc.perform(get("/api/v1/reserve/detail/{param}", param).contentType(MediaType.APPLICATION_JSON));
 
 		// then
-//		MvcResult mvcResult = resultActions.andExpect(status().isOk()).andDo(print()).andReturn();
-//		System.out.println("mvcResult :: " + mvcResult.getResponse().getContentAsString());
+		MvcResult mvcResult = resultActions.andExpect(status().isOk()).andDo(print()).andReturn();
+		System.out.println("mvcResult :: " + mvcResult.getResponse().getContentAsString());	// objData가 null로 나옴.
+
+		/* Error
 		resultActions.andExpect(status().isOk())
 				.andDo(
 						restDocs.document(
@@ -143,9 +165,54 @@ public class ReservationControllerTest {
 										fieldWithPath("hotelNickname")
 												.type(JsonFieldType.STRING)
 												.description("숙소명")
-												.attributes(new Attributes.Attribute("contraint", "문자열")),
+												.attributes(new Attributes.Attribute("constraint", "문자열")),
+										fieldWithPath("hotelDescription")
+												.type(JsonFieldType.STRING)
+												.description("숙소 설명")
+												.attributes(new Attributes.Attribute("constraint", "문자열")),
+										fieldWithPath("hotelPhotoUrl")
+												.type(JsonFieldType.STRING)
+												.description("숙소 대표 이미지 주소")
+												.attributes(new Attributes.Attribute("constraint", "문자열")),
+										fieldWithPath("hotelHost")
+												.type(JsonFieldType.STRING)
+												.description("숙소 호스트 닉네임")
+												.attributes(new Attributes.Attribute("constraint", "문자열")),
+										fieldWithPath("checkInDate")
+												.type(JsonFieldType.STRING)
+												.description("체크인 날짜")
+												.attributes(new Attributes.Attribute("constraint", "yyyy-MM-dd")),
+										fieldWithPath("checkOutDate")
+												.type(JsonFieldType.STRING)
+												.description("체크아웃 날짜")
+												.attributes(new Attributes.Attribute("constraint", "yyyy-MM-dd")),
+										fieldWithPath("createdAt")
+												.type(JsonFieldType.STRING)
+												.description("생성된 시간"),
+//												.attributes(new Attributes.Attribute("constraint", "문자열")),
+										fieldWithPath("cancelDate")
+												.type(JsonFieldType.STRING)
+												.description("예약 취소 날짜"),
+//												.attributes(new Attributes.Attribute("constraint", "문자열")),
+										fieldWithPath("numOfGuests")
+												.type(JsonFieldType.NUMBER)
+												.description("숙소 이용 인원")
+												.attributes(new Attributes.Attribute("constraint", "양의 정수")),
+										fieldWithPath("paidPrice")
+												.type(JsonFieldType.NUMBER)
+												.description("결제 금액")
+												.attributes(new Attributes.Attribute("constraint", "양의 정수")),
+										fieldWithPath("hotelId")
+												.type(JsonFieldType.NUMBER)
+												.description("숙소 ID")
+												.attributes(new Attributes.Attribute("constraint", "양의 정수")),
+										fieldWithPath("reviewID")
+												.type(JsonFieldType.NUMBER)
+												.description("작성한 리뷰 ID")
+												.attributes(new Attributes.Attribute("constraint", "양의 정수"))
 								)
 						)
 				);
+		 */
 	}
 }
