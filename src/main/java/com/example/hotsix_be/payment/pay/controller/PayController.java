@@ -1,5 +1,7 @@
 package com.example.hotsix_be.payment.pay.controller;
 
+import static com.example.hotsix_be.common.exception.ExceptionCode.INSUFFICIENT_DEPOSIT;
+
 import com.example.hotsix_be.auth.Auth;
 import com.example.hotsix_be.auth.MemberOnly;
 import com.example.hotsix_be.auth.util.Accessor;
@@ -22,9 +24,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import static com.example.hotsix_be.common.exception.ExceptionCode.INSUFFICIENT_DEPOSIT;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
@@ -60,6 +65,7 @@ public class PayController implements PayApi {
     public ResponseEntity<ResponseDto<CashLogIdResponse>> payByCash(@PathVariable final Long reserveId,
                                                                     @RequestBody final UseCouponRequest useCouponRequest,
                                                                     @Auth final Accessor accessor) {
+
         Reservation reservation = reservationService.findUnpaidById(reserveId);
 
         if (!payService.canPay(reservation, reservation.getPrice(), useCouponRequest.getDiscountAmount())) {
@@ -70,7 +76,7 @@ public class PayController implements PayApi {
         log.info("discountAmount : {}", useCouponRequest.getDiscountAmount());
 
         if (useCouponRequest.getDiscountAmount() > 0) {
-            couponService.deleteCoupon(accessor.getMemberId(), useCouponRequest);
+            couponService.deleteCoupon(accessor.getMemberId(), reservation, useCouponRequest);
         } // 쿠폰 사용 시 쿠폰 삭제
 
         // 이용자 결제
@@ -97,6 +103,7 @@ public class PayController implements PayApi {
         log.info("tossConfirmRequest DiscountAmount: {}", tossConfirmRequest.getDiscountAmount());
 
         Reservation reservation = reservationService.findUnpaidById(reserveId);
+
         if (!payService.canPay(reservation, Long.parseLong(tossConfirmRequest.getAmount()),
                 tossConfirmRequest.getDiscountAmount())) {
             throw new PaymentException(INSUFFICIENT_DEPOSIT);
@@ -105,8 +112,9 @@ public class PayController implements PayApi {
         log.info("couponType : {}", tossConfirmRequest.getCouponType());
 
         if (tossConfirmRequest.getDiscountAmount() > 0) {
-            couponService.deleteCoupon(accessor.getMemberId(), new UseCouponRequest(tossConfirmRequest.getCouponType(),
-                    tossConfirmRequest.getDiscountAmount()));
+            couponService.deleteCoupon(accessor.getMemberId(), reservation,
+                    new UseCouponRequest(tossConfirmRequest.getCouponType(),
+                            tossConfirmRequest.getDiscountAmount()));
         } // 쿠폰 사용 시 쿠폰 삭제
 
         TossPaymentRequest tossPaymentRequest = tossService.confirmTossPayment(tossConfirmRequest).block();
