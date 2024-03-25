@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.IntStream;
+import java.util.stream.LongStream;
 
 @Component
 @RequiredArgsConstructor
@@ -22,9 +22,10 @@ public class HotelInit {
     public void init() {
 
         if (memberRepository.count() <= 50 && hotelRepository.count() <= 0) {
-            Member member = memberRepository.findById(50L).orElseThrow();
 
-            IntStream.rangeClosed(1, 50).forEach(i -> {
+            LongStream.rangeClosed(1, 50).forEach(i -> {
+                Member member = memberRepository.findById(i).orElseThrow();
+
                 Hotel hotel = new Hotel("호텔", "서울" + i, "구로구" + i, 3L, 2L, 3L, 5L, List.of("주방"), "test" + i,
                         "test" + i, 10000L, member);
 
