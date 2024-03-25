@@ -1,5 +1,6 @@
-//package com.example.hotsix_be.payment.cashlog.controller;
+package com.example.hotsix_be.payment.cashlog.controller;
 //
+//import com.example.hotsix_be.auth.util.Accessor;
 //import com.example.hotsix_be.member.service.MemberService;
 //import com.example.hotsix_be.payment.cashlog.service.CashLogService;
 //import org.junit.jupiter.api.DisplayName;
@@ -29,7 +30,8 @@
 //    @DisplayName("내 캐시 내역 페이지를 조회한다.")
 //    void showMyCashLogs() throws Exception {
 //        // given
-//
+//        Long MemberId = 1L;
+//        Accessor.member(MemberId);
 //
 //        // when
 //

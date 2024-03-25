@@ -131,7 +131,8 @@ public class ReservationRepositoryImpl implements ReservationRepositoryCustom {
                 .and(isSettleDateBetween)
                 .and(isSettled)
                 .or(hasSettleDate)
-                .and(isSettled);
+                .and(isSettled)
+                .and(isHostEq);
 
         List<Reservation> reservations = queryFactory.selectFrom(reservation)
                 .where(conditions)
