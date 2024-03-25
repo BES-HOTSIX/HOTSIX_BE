@@ -30,7 +30,7 @@ public class HostReservationPageResponse {
                 reservation.getPrice(),
                 reservation.isPaid(),
                 hotel.getId(),
-                reservation.getMember().getUsername()
+                reservation.getMember().getNickname()
         );
     }
 }
