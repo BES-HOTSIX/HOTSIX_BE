@@ -23,8 +23,6 @@ public class RefundService {
         String orderId = reservation.getOrderId();
         Member refunder = reservation.getHotel().getOwner();
 
-//        addCash(reservation.getHotel().getOwner(), reservation.getPrice() * -1, reservation, 정산__예약취소);
-
         Refund refund = Refund.builder()
                 .reservation(reservation)
                 .refunder(refunder)

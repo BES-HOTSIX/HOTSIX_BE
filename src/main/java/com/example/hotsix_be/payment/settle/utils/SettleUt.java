@@ -22,9 +22,20 @@ public class SettleUt {
         return currentDateTime.with(TemporalAdjusters.previous(DayOfWeek.SUNDAY));
     }
 
-    public static LocalDate getExpectedSettleDate() {
+    public static LocalDate getExpectedSettleDate(LocalDate checkOutDate) { // 체크아웃 요일 다음주의 수요일 반환
         LocalDate currentDateTime = LocalDate.now();
-        return currentDateTime.with(TemporalAdjusters.next(DayOfWeek.WEDNESDAY));
+
+        LocalDate lastSunday = currentDateTime.with(TemporalAdjusters.previous(DayOfWeek.SUNDAY));
+
+        if ( checkOutDate.isBefore(lastSunday)) return getExpectedSettleDate();
+
+        return currentDateTime.plusWeeks(1)
+                .with(TemporalAdjusters.nextOrSame(DayOfWeek.WEDNESDAY));
+    }
+
+    public static LocalDate getExpectedSettleDate() { // 오는 수요일 반환
+        LocalDate currentDateTime = LocalDate.now();
+        return currentDateTime.with(TemporalAdjusters.nextOrSame(DayOfWeek.WEDNESDAY));
     }
 
     public static Long calculateCommission(Long price) {
