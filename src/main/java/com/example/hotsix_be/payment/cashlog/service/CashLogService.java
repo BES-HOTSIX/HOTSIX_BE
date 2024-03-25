@@ -3,6 +3,7 @@ package com.example.hotsix_be.payment.cashlog.service;
 
 import com.example.hotsix_be.hotel.entity.Hotel;
 import com.example.hotsix_be.member.entity.Member;
+import com.example.hotsix_be.member.service.MemberService;
 import com.example.hotsix_be.payment.cashlog.dto.response.CashLogConfirmResponse;
 import com.example.hotsix_be.payment.cashlog.dto.response.CashLogIdResponse;
 import com.example.hotsix_be.payment.cashlog.dto.response.ConfirmResponse;
@@ -32,6 +33,7 @@ import static com.example.hotsix_be.common.exception.ExceptionCode.NOT_FOUND_CAS
 public class CashLogService {
     private final CashLogRepository cashLogRepository;
     private final ReservationService reservationService;
+    private final MemberService memberService;
 
     // 결제 초기 생성
     @Transactional
@@ -87,15 +89,18 @@ public class CashLogService {
     }
 
     // 개인 캐시 사용 내역 페이지의 cashLog 리스트
-    public Page<CashLogConfirmResponse> findMyPageList(final Member member, final Pageable pageable) {
+    public MyCashLogResponse findMyPageList(final Long memberId, final Pageable pageable) {
+        Member member = memberService.getMemberById(memberId);
 
         Pageable sortedPageable = ((PageRequest) pageable).withSort(Sort.by("createdAt").descending());
 
         Page<CashLogConfirmResponse> cashLogResPage = cashLogRepository.getCashLogConfirmResForPayByMember(member, sortedPageable);
 
-        return Optional.of(cashLogResPage)
+        cashLogResPage = Optional.of(cashLogResPage)
                 .filter(Slice::hasContent)
                 .orElse(Page.empty());
+
+        return getMyCashLogById(member, cashLogResPage);
     }
 
     public ConfirmResponse getConfirmRespById(final Long id) {
@@ -112,7 +117,7 @@ public class CashLogService {
         return CashLogIdResponse.of(id);
     }
 
-    public MyCashLogResponse getMyCashLogById(final Member member, final Page<CashLogConfirmResponse> cashLogConfirmPage) {
+    private MyCashLogResponse getMyCashLogById(final Member member, final Page<CashLogConfirmResponse> cashLogConfirmPage) {
         return MyCashLogResponse.of(member, cashLogConfirmPage);
     }
 }
