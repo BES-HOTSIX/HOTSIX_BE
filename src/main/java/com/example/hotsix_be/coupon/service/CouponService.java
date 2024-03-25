@@ -42,6 +42,11 @@ public class CouponService {
             throw new CouponException(ExceptionCode.ALREADY_ISSUED_FIRST_RESERVATION_COUPON);
         }
 
+        // CouponRecord를 통해 쿠폰 사용 내역도 확인
+        if (couponRecordRepository.existsByMemberAndCouponType(member, CouponType.신규회원)) {
+            throw new CouponException(ExceptionCode.ALREADY_USED_FIRST_RESERVATION_COUPON);
+        }
+
         Coupon coupon = new Coupon(CouponType.신규회원, member);
         couponRepository.save(coupon);
     }
