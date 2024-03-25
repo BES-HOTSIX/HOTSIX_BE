@@ -1,4 +1,4 @@
-//package com.example.hotsix_be.payment.cashlog.controller;
+package com.example.hotsix_be.payment.cashlog.controller;
 //
 //import com.example.hotsix_be.auth.util.Accessor;
 //import com.example.hotsix_be.member.service.MemberService;
