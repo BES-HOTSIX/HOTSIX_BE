@@ -6,6 +6,7 @@ import com.example.hotsix_be.login.repository.RefreshTokenRepository;
 import com.example.hotsix_be.login.util.BearerAuthorizationExtractor;
 import com.example.hotsix_be.login.util.JwtProvider;
 import com.example.hotsix_be.member.service.MemberService;
+import com.example.hotsix_be.payment.cashlog.dto.response.MyCashLogResponse;
 import com.example.hotsix_be.payment.cashlog.service.CashLogService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.Cookie;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
@@ -27,10 +29,12 @@ import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(CashLogController.class)
 @MockBean(JpaMetamodelMappingContext.class)
+@WithMockUser
 public class CashLogControllerTest {
     @Autowired
     private MockMvc mockMvc;
@@ -65,7 +69,7 @@ public class CashLogControllerTest {
     void setUp() {
         given(refreshTokenRepository.existsById(any())).willReturn(true);
         doNothing().when(jwtProvider).validateTokens(any());
-        given(jwtProvider.getSubject(any())).willReturn("2");
+        given(jwtProvider.getSubject(any())).willReturn("1");
     }
 
     private ResultActions performShowMyCashLogs() throws Exception {
@@ -81,13 +85,14 @@ public class CashLogControllerTest {
     @DisplayName("내 캐시 내역 페이지를 조회한다.")
     void showMyCashLogs() throws Exception {
         // given
-        when(cashLogService.findMyPageList(any(), any())).thenReturn(any());
+        when(cashLogService.findMyPageList(any(), any())).thenReturn(MyCashLogResponse.of("test", 1000000L, "test@gmail.com", null));
 
         // when
         final ResultActions resultActions = performShowMyCashLogs();
 
         // then
         final MvcResult mvcResult = resultActions.andExpect(status().isOk())
+                .andDo(print())
                 .andReturn();
     }
 }
