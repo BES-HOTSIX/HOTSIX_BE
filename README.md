@@ -38,7 +38,8 @@
 | <img src='https://github.com/BES-HOTSIX/HOTSIX_BE/assets/96820952/10df2906-9dde-4ef1-b8cc-20d8d6df0517'> | <img src='https://github.com/BES-HOTSIX/HOTSIX_BE/assets/96820952/b2d28a96-45b6-4923-aab6-b33dbf93973d'> |
 |                                                     <b>로그인, 회원가입</b>                                                      |                                                <b>마이페이지</b>                                                |
 | <img src='https://github.com/BES-HOTSIX/HOTSIX_BE/assets/96820952/e83f7dc3-fb10-42a9-815b-ccea533df783'> | <img src='https://github.com/BES-HOTSIX/HOTSIX_BE/assets/96820952/7d2d8389-26e3-4c0e-911a-54c00e3f4aea'> |
-
+|                                                     <b>호스트, 게스트 분리</b>                                                      |                                                <b>숙소 예약 현황 관리(호스트)</b>                                                |
+| <img src='https://github.com/BES-HOTSIX/HOTSIX_BE/assets/96820952/73ec9d4a-bb7c-48b2-870f-9c77af3995f6'> | <img src='https://github.com/BES-HOTSIX/HOTSIX_BE/assets/96820952/2b9b22ff-994c-4afe-8788-2aaf18c23330'> |
 
 
 
