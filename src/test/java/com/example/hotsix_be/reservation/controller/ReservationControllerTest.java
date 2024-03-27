@@ -7,6 +7,7 @@ import com.example.hotsix_be.login.util.JwtProvider;
 import com.example.hotsix_be.member.entity.Member;
 import com.example.hotsix_be.member.entity.Role;
 import com.example.hotsix_be.reservation.dto.request.ReservationInfoRequest;
+import com.example.hotsix_be.reservation.dto.response.ReservationCreateResponse;
 import com.example.hotsix_be.reservation.dto.response.ReservationInfoResponse;
 import com.example.hotsix_be.reservation.entity.Reservation;
 import com.example.hotsix_be.reservation.service.ReservationService;
@@ -33,9 +34,10 @@ import java.util.List;
 
 import static junit.framework.TestCase.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -136,17 +138,19 @@ public class ReservationControllerTest {
 	@DisplayName("GET 예약 상세 정보")
 	public void getReservationDetail() throws Exception {
 		// given
-		Long param = 1L;
 		ReservationInfoResponse response = ReservationInfoResponse.of(
 				hotel,
 				reservation,
 				null
 		);
 
-		given(reservationService.getInfoById(eq(param), any())).willReturn(response);
+		given(reservationService.getInfoById(anyLong(), anyLong())).willReturn(response);
 
 		// when
-		ResultActions resultActions = mockMvc.perform(get("/api/v1/reserve/detail/{param}", param).contentType(MediaType.APPLICATION_JSON));
+		ResultActions resultActions = mockMvc.perform(
+				get("/api/v1/reserve/detail/{param}", 1L)
+						.contentType(MediaType.APPLICATION_JSON)
+		);
 
 		// then
 		MvcResult mvcResult = resultActions.andExpect(status().isOk()).andDo(print()).andReturn();
@@ -161,5 +165,34 @@ public class ReservationControllerTest {
 
 		assertEquals(response.getHotelNickname(), actualResponse.getHotelNickname());
 		assertEquals(response.getHotelId(), actualResponse.getHotelId());
+	}
+
+	@Test
+	@DisplayName("POST 숙소 예약")
+	public void reserveHotel() throws Exception {
+		// given
+		ReservationInfoRequest request = new ReservationInfoRequest(
+				4L,
+				LocalDate.of(2024, 5, 3),
+				LocalDate.of(2024, 5, 8),
+				300000L,
+				false
+		);
+
+		ReservationCreateResponse response = ReservationCreateResponse.of(
+				reservation
+		);
+
+		given(reservationService.save(anyLong(), any(ReservationInfoRequest.class), anyLong())).willReturn(response);
+
+		// when
+		ResultActions resultActions = mockMvc.perform(
+				post("/api/v1/reserve/{hotelId}", 1L)
+						.content(objectMapper.writeValueAsString(request))
+						.contentType(MediaType.APPLICATION_JSON)
+		);
+
+		// then
+		resultActions.andExpect(status().isOk()).andDo(print()).andReturn();
 	}
 }
