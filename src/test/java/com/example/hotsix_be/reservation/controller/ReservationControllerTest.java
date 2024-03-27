@@ -193,6 +193,17 @@ public class ReservationControllerTest {
 		);
 
 		// then
-		resultActions.andExpect(status().isOk()).andDo(print()).andReturn();
+		MvcResult mvcResult = resultActions.andExpect(status().isOk()).andDo(print()).andReturn();
+
+		String responseContent = mvcResult.getResponse().getContentAsString();
+
+		// 전체 응답 내용을 JsonNode로 파싱 - objData 추출 - String으로 변환
+		JsonNode rootNode = objectMapper.readTree(responseContent);
+		JsonNode objDataNode = rootNode.path("objData");
+		String objDataStr = objDataNode.toString();
+
+		String responseJson = objectMapper.writeValueAsString(response);
+
+		assertEquals(responseJson, objDataStr);
 	}
 }
