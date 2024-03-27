@@ -97,6 +97,8 @@
 | 데이터의 저장 및 관리 | MYSQL  |- 프로젝트가 대용량 및 분산 환경, 효율적인 분석 및 집계작업이 큰 비중을 차지하지 않아서 RDB, NoSQL, Graph Database, Columnar Database 등 다양한 데이터베이스 중 관계형DB를 선택했습니다. <br> - 관계형 데이터베이스에도 MySQL, PostgreSQL, MariaDB 등 다양한 종류가 있는데 이중 안정성과 신뢰성, 확장성이 높고 스프링부트와의 통합 원활한 MySQL을 선택했습니다. <br>  - PostgreSQL은 MySQL과 비교하여 고급 기능과 높은 데이터 무결성과 안정성을 제공하지만 설정이 복잡한 단점이 있습니다. <br> - 마리아디비는 MySQL의 포크로 시작되었지만, MySQL에 비해 커뮤니티 규모가 작다는 단점이 있습니다. |
 | 서버 데이터와의 동기화 및 업데이트 |  Tanstack Query | - 데이터 fetching 요청이 있을 때, 이에 대한 loading, error, success 상태를 바로 얻을 수 있다. <br> - 동일한 네트워크 요청이 발생시, 저장된 값을 재사용하여 불필요한 네트워크 요청을 막을 수 있다.  |
 |1:1 실시간 채팅 기능 구현|- 순수 WebSocket API<br>- Socket.io<br>- STOMP 및 SockJS|- 순수 WebSocket API는 저수준 API로 높은 성능을 제공하지만, 브라우저 호환성 및 개발의 복잡성이 문제될 수 있다.<br>- Socket.io는 자체 프로토콜과 고수준 API를 제공하여 개발을 단순화하지만, 특정 플랫폼에 종속될 수 있다.<br>- STOMP 및 SockJS는 학습 곡선이 있지만, WebSocket을 지원하지 않는 브라우저에서도 사용할 수 있는 환경을 제공하며 복잡한 실시간 애플리케이션의 개발을 단순화한다. 또 다양한 언어 및 프레임워크에서 지원되어 다양한 환경에서의 개발 및 통합이 용이하다.|
+| 대용량 데이터(정산) 처리 |- Spring Batch | - 하드웨어적인 문제를 제외하고는 사용자의 개입 없이 실행될 수 있다. <br> - 문제가 발생할 경우 Batch 내부적으로 기록해주기 때문에 추후 문제가 발생하여도 적절한 조치를 할 수 있다. <br> - 작업에 실패할 경우 성공한 작업물들을 제외하고 완수하지 못한 작업물들에 대해서만 작업을 재개할 수 있다. |
+| 일정 주기마다 작업 반복 |- Spring Quartz<br>- Spring Scheduler | - Spring Quartz 의 경우 Clustering 과 실패에 대한 후처리 기능 등 여러가지 기능들을 제공하기 때문에 보다 섬세한 스케줄링이 가능하지만 현재 HotShare에서 필요한 정산 기능은 섬세함을 요하지 않는다. <br> - Spring Quartz 와는 다르게 Spring Scheduler 의 경우 별도의 의존성 추가 없이 사용할 수 있다. <br> - 섬세한 스케줄링이 어려운 대신 진입 장벽이 낮은 Spring Scheduler를 선택하였다.|
 
 </details>
 
