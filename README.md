@@ -42,9 +42,8 @@
 | <img src='https://github.com/BES-HOTSIX/HOTSIX_BE/assets/96820952/73ec9d4a-bb7c-48b2-870f-9c77af3995f6'> | <img src='https://github.com/BES-HOTSIX/HOTSIX_BE/assets/96820952/2b9b22ff-994c-4afe-8788-2aaf18c23330'> |
 |                                                     <b>쿠폰 사용</b>                                                      |                                                <b>1대1 채팅</b>                                                |
 | <img src='https://github.com/BES-HOTSIX/HOTSIX_BE/assets/96820952/188984c6-8154-4ab2-9ebe-b69b13e714e4'> | <img src='https://github.com/BES-HOTSIX/HOTSIX_BE/assets/96820952/e42a3a10-fbef-4dc1-bd5e-6002146fa0fa'> |
-|                                                     <b>정산 기능</b>                                                      |                                                <b>1대1 채팅</b>                                                |
-| <img src='https://github.com/BES-HOTSIX/HOTSIX_BE/assets/96820952/fba8c0d9-ba6f-4341-9552-a3d9ff9f5b6f'> | <img src='https://github.com/BES-HOTSIX/HOTSIX_BE/assets/96820952/e42a3a10-fbef-4dc1-bd5e-6002146fa0fa'> |
-
+|                                                     <b>정산 기능</b>                                                      |                                                <b>숙소 주변 인프라</b>                                                |
+| <img src='https://github.com/BES-HOTSIX/HOTSIX_BE/assets/96820952/fba8c0d9-ba6f-4341-9552-a3d9ff9f5b6f'> | <img src='https://github.com/BES-HOTSIX/HOTSIX_BE/assets/96820952/aa14d9b6-d23c-4b27-8596-f4ea656fd5cb'> |
 
 
 
