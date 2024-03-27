@@ -1,6 +1,8 @@
 package com.example.hotsix_be.reservation.controller;
 
+import com.example.hotsix_be.auth.MemberOnlyChecker;
 import com.example.hotsix_be.hotel.entity.Hotel;
+import com.example.hotsix_be.login.domain.MemberTokens;
 import com.example.hotsix_be.login.repository.RefreshTokenRepository;
 import com.example.hotsix_be.login.util.BearerAuthorizationExtractor;
 import com.example.hotsix_be.login.util.JwtProvider;
@@ -13,12 +15,15 @@ import com.example.hotsix_be.reservation.entity.Reservation;
 import com.example.hotsix_be.reservation.service.ReservationService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -36,6 +41,8 @@ import static junit.framework.TestCase.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -43,10 +50,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(ReservationController.class)
 @MockBean(JpaMetamodelMappingContext.class)
+@EnableAspectJAutoProxy(proxyTargetClass = true)
+@Import(MemberOnlyChecker.class)
 @WithMockUser
 public class ReservationControllerTest {
 	@Autowired
 	protected MockMvc mockMvc;
+	@Autowired
+	private ObjectMapper objectMapper;
 	@MockBean
 	private ReservationService reservationService;
 	@MockBean
@@ -55,8 +66,8 @@ public class ReservationControllerTest {
 	private BearerAuthorizationExtractor bearerAuthorizationExtractor;
 	@MockBean
 	private RefreshTokenRepository refreshTokenRepository;
-	@Autowired
-	private ObjectMapper objectMapper;
+	private static final MemberTokens MEMBER_TOKENS = new MemberTokens("refreshToken", "Bearer accessToken");
+	private static final Cookie COOKIE = new Cookie("refresh-token", MEMBER_TOKENS.getRefreshToken());
 	private Member guest;
 	private Member host;
 	private Hotel hotel;
@@ -68,6 +79,10 @@ public class ReservationControllerTest {
 				.webAppContextSetup(webApplicationContext)
 				.addFilter(new CharacterEncodingFilter("UTF-8", true))
 				.build();
+
+		given(refreshTokenRepository.existsById(any())).willReturn(true);
+		doNothing().when(jwtProvider).validateTokens(any());
+		given(jwtProvider.getSubject(any())).willReturn("1");
 	}
 
 	@BeforeEach
@@ -149,6 +164,8 @@ public class ReservationControllerTest {
 		// when
 		ResultActions resultActions = mockMvc.perform(
 				get("/api/v1/reserve/detail/{param}", 1L)
+						.header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+						.cookie(COOKIE)
 						.contentType(MediaType.APPLICATION_JSON)
 		);
 
@@ -188,6 +205,8 @@ public class ReservationControllerTest {
 		// when
 		ResultActions resultActions = mockMvc.perform(
 				post("/api/v1/reserve/{hotelId}", 1L)
+						.header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+						.cookie(COOKIE)
 						.content(objectMapper.writeValueAsString(request))
 						.contentType(MediaType.APPLICATION_JSON)
 		);
