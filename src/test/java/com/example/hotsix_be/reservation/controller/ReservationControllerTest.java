@@ -15,13 +15,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
-import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -43,7 +41,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(ReservationController.class)
 @MockBean(JpaMetamodelMappingContext.class)
-@ExtendWith(RestDocumentationExtension.class)
+@WithMockUser
 public class ReservationControllerTest {
 	@Autowired
 	protected MockMvc mockMvc;
@@ -136,7 +134,6 @@ public class ReservationControllerTest {
 
 	@Test
 	@DisplayName("GET 예약 상세 정보")
-	@WithMockUser
 	public void getReservationDetail() throws Exception {
 		// given
 		Long param = 1L;
@@ -153,6 +150,7 @@ public class ReservationControllerTest {
 
 		// then
 		MvcResult mvcResult = resultActions.andExpect(status().isOk()).andDo(print()).andReturn();
+
 		String responseContent = mvcResult.getResponse().getContentAsString();
 
 		// 전체 응답 내용을 JsonNode로 파싱 - objData 추출 - ReservationInfoResponse 객체로 변환
