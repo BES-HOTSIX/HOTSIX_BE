@@ -229,6 +229,15 @@
 |😭 시도| 스웨거에서도 http요청을 mutipart/form-data로 보내고 숙소 정보, 사진 파일을 각각 application/json, mutipart/form-data로 요청해 역직렬화가 가능하게 만드는 설정들을 계속 찾아보았다.   |
 |😄 해결|@Schema(type = "string", format = "binary"))를 숙소 정보 DTO 앞에 붙여주면 숙소 정보 또한 json 형식의 파일을 첨부할 수 있게 되고 사진, 숙소 정보가 각각 역직렬화 되어 테스트를 실행할 수 있었다. |
 
+### Test 환경에서 AOP를 활용한 인증 기능 오작동
+
+|진행 순서| 내용|
+|:---|:---|
+| 😱 문제 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| Controller 에 대한 테스트 코드를 작성 중 로그인 인증을 위한 기능을 활성화하지 않았음에도 에러를 반환하지 않는 문제 발생|
+|🤔 원인| HotShare 는 MemberOnlyChecker 라는 AOP 클래스를 통해 현재 요청이 권한을 가지는지 확인하고 있지만 테스트 환경에선 해당 클래스가 작동하지 않음|
+|😭 시도| @Import 어노테이션을 통해 MemberOnlyChecker 를 직접 주입시켜보고 관련한 클래스들을 모두 찾아서 직접 주입시켜보았지만 해결되지 않았다.|
+|😄 해결| @EnableAspectJAutoProxy 어노테이션을 테스트 클래스에 달아줌으로써 해결할 수 있었다. @EnableAspectJAutoProxy 설정은 개발 환경에서는 기본값으로 설정되어있지만 테스트 환경에선 기본값으로 설정되어있지 않기 때문에 따로 설정을 해줘야 했다. 추가로 MemberOnlyChecker 를 @Import 어노테이션을 통해 주입해줌으로써 로그인 인증 기능을 활성화할 수 있었다.|
+
 </details>
 
 <br/>
