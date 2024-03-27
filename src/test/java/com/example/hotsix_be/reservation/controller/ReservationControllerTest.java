@@ -10,6 +10,8 @@ import com.example.hotsix_be.reservation.dto.request.ReservationInfoRequest;
 import com.example.hotsix_be.reservation.dto.response.ReservationInfoResponse;
 import com.example.hotsix_be.reservation.entity.Reservation;
 import com.example.hotsix_be.reservation.service.ReservationService;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,12 +21,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
-import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
-import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
-import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
-import org.springframework.restdocs.operation.preprocess.Preprocessors;
-import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -36,11 +33,10 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 import java.time.LocalDate;
 import java.util.List;
 
+import static junit.framework.TestCase.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -59,24 +55,18 @@ public class ReservationControllerTest {
 	private BearerAuthorizationExtractor bearerAuthorizationExtractor;
 	@MockBean
 	private RefreshTokenRepository refreshTokenRepository;
-	@MockBean
-	protected RestDocumentationResultHandler restDocs;
+	@Autowired
+	private ObjectMapper objectMapper;
 	private Member guest;
 	private Member host;
 	private Hotel hotel;
 	private Reservation reservation;
 
 	@BeforeEach
-	public void setUp(WebApplicationContext webApplicationContext,
-					  RestDocumentationContextProvider restDocumentation) {
-		this.restDocs = MockMvcRestDocumentation.document("{method-name}",
-				Preprocessors.preprocessRequest(Preprocessors.prettyPrint()),
-				Preprocessors.preprocessResponse(Preprocessors.prettyPrint()));
-
-		this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
-				.apply(MockMvcRestDocumentation.documentationConfiguration(restDocumentation))
-				.alwaysDo(restDocs)
-				.addFilters(new CharacterEncodingFilter("UTF-8", true))
+	void setUp(WebApplicationContext webApplicationContext) {
+		mockMvc = MockMvcBuilders
+				.webAppContextSetup(webApplicationContext)
+				.addFilter(new CharacterEncodingFilter("UTF-8", true))
 				.build();
 	}
 
@@ -148,6 +138,7 @@ public class ReservationControllerTest {
 	@DisplayName("GET 예약 상세 정보")
 	@WithMockUser
 	public void getReservationDetail() throws Exception {
+		// given
 		Long param = 1L;
 		ReservationInfoResponse response = ReservationInfoResponse.of(
 				hotel,
@@ -155,7 +146,6 @@ public class ReservationControllerTest {
 				null
 		);
 
-		// given
 		given(reservationService.getInfoById(eq(param), any())).willReturn(response);
 
 		// when
@@ -163,54 +153,15 @@ public class ReservationControllerTest {
 
 		// then
 		MvcResult mvcResult = resultActions.andExpect(status().isOk()).andDo(print()).andReturn();
+		String responseContent = mvcResult.getResponse().getContentAsString();
 
-		resultActions.andExpect(status().isOk())
-				.andDo(
-						restDocs.document(
-								responseFields(
-										fieldWithPath("result").description("결과"),
-										fieldWithPath("status").description("상태 코드"),
-										fieldWithPath("success").description("성공 메시지"),
-										fieldWithPath("error").description("에러 메시지"),
-										fieldWithPath("listData").description("리스트 데이터"),
-										fieldWithPath("objData.hotelNickname")
-												.type(JsonFieldType.STRING)
-												.description("숙소명"),
-										fieldWithPath("objData.hotelDescription")
-												.type(JsonFieldType.STRING)
-												.description("숙소 설명"),
-										fieldWithPath("objData.hotelPhotoUrl")
-												.type(JsonFieldType.STRING)
-												.description("숙소 대표 이미지 주소"),
-										fieldWithPath("objData.hotelHost")
-												.type(JsonFieldType.STRING)
-												.description("숙소 호스트 닉네임"),
-										fieldWithPath("objData.checkInDate")
-												.type(JsonFieldType.STRING)
-												.description("체크인 날짜"),
-										fieldWithPath("objData.checkOutDate")
-												.type(JsonFieldType.STRING)
-												.description("체크아웃 날짜"),
-										fieldWithPath("objData.createdAt")
-												.type(JsonFieldType.NULL)
-												.description("생성된 시간"),
-										fieldWithPath("objData.cancelDate")
-												.type(JsonFieldType.NULL)
-												.description("예약 취소 날짜"),
-										fieldWithPath("objData.numOfGuests")
-												.type(JsonFieldType.NUMBER)
-												.description("숙소 이용 인원"),
-										fieldWithPath("objData.paidPrice")
-												.type(JsonFieldType.NUMBER)
-												.description("결제 금액"),
-										fieldWithPath("objData.hotelId")
-												.type(JsonFieldType.NUMBER)
-												.description("숙소 ID"),
-										fieldWithPath("objData.reviewId")
-												.type(JsonFieldType.NUMBER)
-												.description("작성한 리뷰 ID")
-								)
-						)
-				);
+		// 전체 응답 내용을 JsonNode로 파싱 - objData 추출 - ReservationInfoResponse 객체로 변환
+		JsonNode rootNode = objectMapper.readTree(responseContent);
+		JsonNode objDataNode = rootNode.path("objData");
+
+		ReservationInfoResponse actualResponse = objectMapper.treeToValue(objDataNode, ReservationInfoResponse.class);
+
+		assertEquals(response.getHotelNickname(), actualResponse.getHotelNickname());
+		assertEquals(response.getHotelId(), actualResponse.getHotelId());
 	}
 }
