@@ -86,7 +86,7 @@ public class PayControllerTest extends DefaultControllerTest {
         when(cashLogService.getCashLogIdById(any())).thenReturn(null);
 
         // when
-        final ResultActions resultActions = performPayByCash(1L, new UseCouponRequest(null, 0L));
+        final ResultActions resultActions = performPayByCash(1L, new UseCouponRequest(null, 30_000L));
 
         // then
         final MvcResult mvcResult = resultActions.andExpect(status().isOk())
