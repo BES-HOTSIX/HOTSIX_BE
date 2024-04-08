@@ -8,11 +8,9 @@ import com.example.hotsix_be.common.dto.ResponseDto;
 import com.example.hotsix_be.member.entity.Member;
 import com.example.hotsix_be.member.service.MemberService;
 import com.example.hotsix_be.payment.payment.dto.request.TossConfirmRequest;
-import com.example.hotsix_be.payment.payment.dto.request.TossPaymentRequest;
 import com.example.hotsix_be.payment.payment.dto.request.TossWebhookRequest;
 import com.example.hotsix_be.payment.payment.exception.PaymentException;
-import com.example.hotsix_be.payment.payment.service.TossService;
-import com.example.hotsix_be.payment.recharge.dto.response.RechargeConfirmResponse;
+import com.example.hotsix_be.payment.recharge.dto.response.RechargePageResponse;
 import com.example.hotsix_be.payment.recharge.entity.Recharge;
 import com.example.hotsix_be.payment.recharge.openapi.RechargeApi;
 import com.example.hotsix_be.payment.recharge.service.RechargeService;
@@ -33,22 +31,21 @@ import static com.example.hotsix_be.common.exception.ExceptionCode.INVALID_REQUE
 public class RechargeController implements RechargeApi {
     private final RechargeService rechargeService;
     private final MemberService memberService;
-    private final TossService tossService;
 
     @GetMapping("/me")
     @MemberOnly
-    public ResponseEntity<ResponseDto<Page<RechargeConfirmResponse>>> showMyRecharge(
+    public ResponseEntity<ResponseDto<Page<RechargePageResponse>>> showMyRecharge(
             final Pageable pageable,
             @Auth final Accessor accessor
     ) {
         Long memberId = accessor.getMemberId();
 
-        Page<RechargeConfirmResponse> rechargeConfirmResponses = rechargeService.findMyPageList(memberId, pageable).map(RechargeConfirmResponse::of);
+        Page<RechargePageResponse> rechargePageResponse = rechargeService.getRechargePageResponse(memberId, pageable);
 
         return ResponseEntity.ok(new ResponseDto<>(
                 HttpStatus.OK.value(),
                 "캐시 충전 신청 내역 조회 성공", null,
-                null, rechargeConfirmResponses
+                null, rechargePageResponse
         ));
     }
 
@@ -59,31 +56,14 @@ public class RechargeController implements RechargeApi {
             @Auth final Accessor accessor
     ) {
         Member member = memberService.getMemberById(accessor.getMemberId());
-        TossPaymentRequest tossPaymentRequest = tossService.confirmTossPayment(tossConfirmRequest).block();
 
-        String method = tossPaymentRequest.getMethod();
+        rechargeService.doRecharge(tossConfirmRequest, member, null);
 
-        if (method.equals("가상계좌")) {
-            rechargeService.requestVirtualRecharge(tossPaymentRequest, member);
-            return ResponseEntity.ok(
-                    new ResponseDto<>(
-                            HttpStatus.OK.value(),
-                            "가상계좌 충전 신청 성공", null,
-                            null, new EmptyResponse()));
-        }
-        if (method.equals("간편결제")) {
-            rechargeService.easyPayRecharge(tossPaymentRequest, member, 0L);
-            return ResponseEntity.ok(
-                    new ResponseDto<>(
-                            HttpStatus.OK.value(),
-                            "간편결제 충전 성공", null,
-                            null, new EmptyResponse()));
-        }
-        return ResponseEntity.badRequest().body(
+        return ResponseEntity.ok(
                 new ResponseDto<>(
-                        HttpStatus.BAD_REQUEST.value(),
-                        "캐시 충전 실패", null,
-                        null, null));
+                        HttpStatus.OK.value(),
+                        "충전 신청 성공", null,
+                        null, new EmptyResponse()));
     }
 
     @PostMapping("/tossWebhook")

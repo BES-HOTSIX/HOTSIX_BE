@@ -6,10 +6,8 @@ import com.example.hotsix_be.auth.util.Accessor;
 import com.example.hotsix_be.common.dto.ResponseDto;
 import com.example.hotsix_be.payment.cashlog.dto.response.ConfirmResponse;
 import com.example.hotsix_be.payment.cashlog.dto.response.MyCashLogResponse;
-import com.example.hotsix_be.payment.cashlog.entity.CashLog;
 import com.example.hotsix_be.payment.cashlog.openapi.CashLogApi;
 import com.example.hotsix_be.payment.cashlog.service.CashLogService;
-import com.example.hotsix_be.payment.payment.exception.PaymentException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -19,8 +17,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import static com.example.hotsix_be.common.exception.ExceptionCode.INVALID_AUTHORITY;
 
 @RestController
 @RequiredArgsConstructor
@@ -35,9 +31,10 @@ public class CashLogController implements CashLogApi {
             final Pageable pageable,
             @Auth final Accessor accessor
     ) {
-        MyCashLogResponse myCashLogResponse = cashLogService.findMyPageList(accessor.getMemberId(), pageable);
+        MyCashLogResponse myCashLogResponse = cashLogService.findMyPageList(accessor, pageable);
 
-        return ResponseEntity.ok(new ResponseDto<>(
+        return ResponseEntity.ok(
+                new ResponseDto<>(
                 HttpStatus.OK.value(),
                 "캐시 사용 내역 조회 성공", null,
                 null, myCashLogResponse
@@ -50,9 +47,7 @@ public class CashLogController implements CashLogApi {
             @PathVariable final Long cashLogId,
             @Auth final Accessor accessor
     ) {
-        CashLog cashLog = cashLogService.findById(cashLogId);
-        if (!cashLog.getMember().getId().equals(accessor.getMemberId())) throw new PaymentException(INVALID_AUTHORITY);
-        ConfirmResponse confirmResponse = cashLogService.getConfirmRespById(cashLogId);
+        ConfirmResponse confirmResponse = cashLogService.getConfirmRespById(cashLogId, accessor);
 
         return ResponseEntity.ok(
                 new ResponseDto<>(

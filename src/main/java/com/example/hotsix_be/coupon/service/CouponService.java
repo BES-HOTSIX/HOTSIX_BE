@@ -1,7 +1,5 @@
 package com.example.hotsix_be.coupon.service;
 
-import static com.example.hotsix_be.common.exception.ExceptionCode.NOT_FOUND_MEMBER_BY_ID;
-
 import com.example.hotsix_be.common.exception.AuthException;
 import com.example.hotsix_be.common.exception.ExceptionCode;
 import com.example.hotsix_be.coupon.dto.request.UseCouponRequest;
@@ -16,12 +14,15 @@ import com.example.hotsix_be.member.entity.Member;
 import com.example.hotsix_be.member.repository.MemberRepository;
 import com.example.hotsix_be.reservation.entity.Reservation;
 import com.example.hotsix_be.reservation.repository.ReservationRepository;
-import java.time.LocalDate;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.util.List;
+
+import static com.example.hotsix_be.common.exception.ExceptionCode.NOT_FOUND_MEMBER_BY_ID;
 
 @Service
 @Transactional(readOnly = true)
@@ -66,9 +67,8 @@ public class CouponService {
     }
 
     @Transactional
-    public void deleteCoupon(Long memberId, Reservation reservation, UseCouponRequest useCouponRequest) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new AuthException(NOT_FOUND_MEMBER_BY_ID));
+    public void deleteCoupon(Reservation reservation, UseCouponRequest useCouponRequest) {
+        Member member = reservation.getMember();
 
         // 멤버와 쿠폰 레코드를 기반으로 쿠폰 찾기
         Coupon coupon = couponRepository.findByMemberAndCouponType(member, useCouponRequest.getCouponType())

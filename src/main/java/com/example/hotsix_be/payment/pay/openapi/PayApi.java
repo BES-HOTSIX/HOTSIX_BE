@@ -3,7 +3,6 @@ package com.example.hotsix_be.payment.pay.openapi;
 import com.example.hotsix_be.auth.util.Accessor;
 import com.example.hotsix_be.common.dto.EmptyResponse;
 import com.example.hotsix_be.common.dto.ResponseDto;
-import com.example.hotsix_be.coupon.dto.request.DiscountAmountRequest;
 import com.example.hotsix_be.coupon.dto.request.UseCouponRequest;
 import com.example.hotsix_be.payment.cashlog.dto.response.CashLogIdResponse;
 import com.example.hotsix_be.payment.payment.dto.request.TossConfirmRequest;
@@ -52,7 +51,7 @@ public interface PayApi {
 
     @Operation(
             summary = "토스페이먼츠 결제",
-            description = "토스페이먼츠만을 통해 잔액을 모두 결제하거나 사용하고자하는 캐시를 차감하고 남은 금액을 결제합니다."
+            description = "토스페이먼츠만을 통해 잔액을 모두 결제하거나 사용하고자 하는 캐시를 차감하고 남은 금액을 결제합니다."
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "토스페이먼츠 결제 성공"),

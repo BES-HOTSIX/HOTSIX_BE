@@ -48,7 +48,7 @@ public class ConfirmResponse {
         Long price = cashLog.getAmount();
         if (price < 0) price *= -1;
 
-        return new ConfirmResponse(
+        return ConfirmResponse.of(
                 reservation.getMember().getId(),
                 reservation.getId(),
                 reservation.getOrderId(),
@@ -57,6 +57,28 @@ public class ConfirmResponse {
                 reservation.getCheckInDate(),
                 reservation.getCheckOutDate(),
                 cashLog.getEventType().getStatus()
+        );
+    }
+
+    public static ConfirmResponse of (
+            final Long memberId,
+            final Long reserveId,
+            final String orderId,
+            final String hotelNickname,
+            final Long price,
+            final LocalDate checkInDate,
+            final LocalDate checkOutDate,
+            final String eventType
+    ) {
+        return new ConfirmResponse(
+                memberId,
+                reserveId,
+                orderId,
+                hotelNickname,
+                price,
+                checkInDate,
+                checkOutDate,
+                eventType
         );
     }
 }
