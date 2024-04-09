@@ -30,13 +30,13 @@ public class SettleController {
 
     @GetMapping("/me")
     @MemberOnly
-    public ResponseEntity<ResponseDto<MySettleResponse>> showSettlePage(@Auth Accessor accessor) {
-        MySettleResponse res = settleService.getMySettleByMemberId(accessor.getMemberId());
+    public ResponseEntity<ResponseDto<MySettleResponse>> showSettleInfo(@Auth Accessor accessor) {
+        MySettleResponse mySettleResponse = settleService.getMySettleByMemberId(accessor.getMemberId());
 
         return ResponseEntity.ok(new ResponseDto<>(
                 HttpStatus.OK.value(),
                 "내 정산 정보 조회 성공", null,
-                null, res
+                null, mySettleResponse
         ));
     }
 
@@ -49,12 +49,12 @@ public class SettleController {
             @RequestParam @DateTimeFormat(iso = DATE) LocalDate endDate,
             @RequestParam String settleKw
     ) {
-        Page<ReservationForSettleResponse> resPage = settleService.getReserveForSettleByMemberIdAndParams(accessor.getMemberId(), startDate, endDate, settleKw, pageable);
+        Page<ReservationForSettleResponse> settleResponsePage = settleService.getReserveForSettleByMemberIdAndParams(accessor.getMemberId(), startDate, endDate, settleKw, pageable);
 
         return ResponseEntity.ok(new ResponseDto<>(
                 HttpStatus.OK.value(),
                 "내 정산 리스트 조회 성공", null,
-                null, resPage
+                null, settleResponsePage
         ));
     }
 }
