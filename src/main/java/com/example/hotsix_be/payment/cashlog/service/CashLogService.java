@@ -35,6 +35,21 @@ public class CashLogService {
     private final ReservationService reservationService;
     private final MemberService memberService;
 
+    // 결제 초기 생성 + 마무리
+    @Transactional
+    public <T extends CashLogMarker> T addCashLog(
+            final Member member,
+            final Long price,
+            final String orderId,
+            final EventType eventType,
+            final T cashLogMarker,
+            final Long discountAmount
+    ) {
+        T cashLogMarker_ = initCashLog(member, price, orderId, eventType, cashLogMarker);
+
+        return addCashLogDone(cashLogMarker_, discountAmount);
+    }
+
     // 결제 초기 생성
     @Transactional
     public <T extends CashLogMarker> T initCashLog(
@@ -55,19 +70,6 @@ public class CashLogService {
         cashLogMarker.updateCashLog(cashLog);
 
         return cashLogMarker;
-    }
-
-    // 결제 초기 생성 + 마무리
-    @Transactional
-    public <T extends CashLogMarker> T addCashLog(
-            final Member member,
-            final Long price,
-            final String orderId,
-            final EventType eventType,
-            final T cashLogMarker,
-            final Long discountAmount
-    ) {
-        return addCashLogDone(initCashLog(member, price, orderId, eventType, cashLogMarker), discountAmount);
     }
 
     // 결제 마무리 ( 보유 캐시 수정 )
@@ -99,7 +101,7 @@ public class CashLogService {
                 .filter(Slice::hasContent)
                 .orElse(Page.empty());
 
-        return getMyCashLogById(member, cashLogResPage);
+        return getMyCashLogResById(member, cashLogResPage);
     }
 
     public ConfirmResponse getConfirmRespById(final Long cashLogId, final Accessor accessor) {
@@ -119,7 +121,7 @@ public class CashLogService {
         return CashLogIdResponse.of(id);
     }
 
-    private MyCashLogResponse getMyCashLogById(final Member member, final Page<CashLogConfirmResponse> cashLogConfirmPage) {
+    private MyCashLogResponse getMyCashLogResById(final Member member, final Page<CashLogConfirmResponse> cashLogConfirmPage) {
         return MyCashLogResponse.of(member, cashLogConfirmPage);
     }
 }
