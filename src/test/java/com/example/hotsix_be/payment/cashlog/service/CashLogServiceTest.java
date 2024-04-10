@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static com.example.hotsix_be.common.exception.ExceptionCode.ALREADY_BEEN_INITIALIZED;
 import static com.example.hotsix_be.common.exception.ExceptionCode.INVALID_AUTHORITY;
 import static com.example.hotsix_be.payment.cashlog.entity.EventType.결제__예치금;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -51,11 +52,9 @@ public class CashLogServiceTest {
     @Mock
     private MemberService memberService;
 
-
-
     @Test
     @DisplayName("새로운 CashLog 를 생성하여 CashLogMarker 에 입력 후 포인트를 이동시킨다.")
-    void  addCashLog() {
+    void addCashLog() {
         // given
         Member member = Member.builder().restCash(30_000L).build();
         Long price = -10_000L;
@@ -70,6 +69,24 @@ public class CashLogServiceTest {
         assertThat(member.getRestCash()).isEqualTo(expectedRestCash);
         assertThat(cashLogMarker.isPaid()).isTrue();
         assertThat(cashLogMarker.isInitialized()).isTrue();
+    }
+
+    @Test
+    @DisplayName("CashLogMarker 에 initCashLog 를 통한 초기화를 두번 진행할 경우 오류를 발생시킨다.")
+    void initCashLog() {
+        // given
+        Member member = Member.builder().restCash(30_000L).build();
+        Long price = -10_000L;
+        CashLogMarker cashLogMarker = Pay.builder().build();
+
+        // when
+        cashLogService.initCashLog(member, price, "o8sJILLP1EP6V1nLksCBL", 결제__예치금, cashLogMarker);
+
+        Throwable thrown = catchThrowable(() -> cashLogService.initCashLog(member, price, "o8sJILLP1EP6V1nLksCBL", 결제__예치금, cashLogMarker));
+
+        // then
+        assertThat(thrown).isInstanceOf(PaymentException.class)
+                .hasMessage(ALREADY_BEEN_INITIALIZED.getMessage());
     }
 
     @Test

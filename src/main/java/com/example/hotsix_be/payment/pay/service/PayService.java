@@ -12,7 +12,6 @@ import com.example.hotsix_be.payment.payment.dto.request.TossConfirmRequest;
 import com.example.hotsix_be.payment.payment.dto.request.TossPaymentRequest;
 import com.example.hotsix_be.payment.payment.exception.PaymentException;
 import com.example.hotsix_be.payment.payment.service.TossService;
-import com.example.hotsix_be.payment.recharge.entity.Recharge;
 import com.example.hotsix_be.payment.recharge.service.RechargeService;
 import com.example.hotsix_be.reservation.entity.Reservation;
 import lombok.RequiredArgsConstructor;
@@ -105,7 +104,7 @@ public class PayService {
         // orderId 입력
         reservation.updateOrderId(orderId);
 
-        Recharge recharge = rechargeService.doRecharge(tossConfirmRequest, buyer, discountAmount);
+        rechargeService.doRecharge(tossConfirmRequest, buyer, discountAmount);
 
         return doPay(reservation, EventType.결제__토스페이먼츠, discountAmount); // TODO 토스페이먼츠 결제와 포인트 복합 결제 명확히 하기
     }

@@ -33,17 +33,17 @@ public class RechargeService {
     private final TossService tossService;
 
     @Transactional
-    public Recharge doRecharge(final TossConfirmRequest tossConfirmRequest, final Member member, final Long discountAmount) {
+    public void doRecharge(final TossConfirmRequest tossConfirmRequest, final Member member, final Long discountAmount) {
         TossPaymentRequest tossPaymentRequest = tossService.confirmTossPayment(tossConfirmRequest).block();
 
         if (isVirtual(tossPaymentRequest)) {
             Recharge recharge = requestVirtualRecharge(tossPaymentRequest, member);
-            return rechargeRepository.save(recharge);
+            rechargeRepository.save(recharge);
         }
 
         if (isEasyPay(tossPaymentRequest)) {
             Recharge recharge = easyPayRecharge(tossPaymentRequest, member, discountAmount);
-            return rechargeRepository.save(recharge);
+            rechargeRepository.save(recharge);
         }
 
         throw new PaymentException(INVALID_REQUEST);
