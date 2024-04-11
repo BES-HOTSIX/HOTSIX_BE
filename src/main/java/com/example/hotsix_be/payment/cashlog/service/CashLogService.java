@@ -1,8 +1,10 @@
 package com.example.hotsix_be.payment.cashlog.service;
 
 
+import com.example.hotsix_be.auth.util.Accessor;
 import com.example.hotsix_be.hotel.entity.Hotel;
 import com.example.hotsix_be.member.entity.Member;
+import com.example.hotsix_be.member.service.MemberService;
 import com.example.hotsix_be.payment.cashlog.dto.response.CashLogConfirmResponse;
 import com.example.hotsix_be.payment.cashlog.dto.response.CashLogIdResponse;
 import com.example.hotsix_be.payment.cashlog.dto.response.ConfirmResponse;
@@ -22,8 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
-import static com.example.hotsix_be.common.exception.ExceptionCode.ALREADY_BEEN_INITIALIZED;
-import static com.example.hotsix_be.common.exception.ExceptionCode.NOT_FOUND_CASHLOG_ID;
+import static com.example.hotsix_be.common.exception.ExceptionCode.*;
 
 @Service
 @Transactional(readOnly = true)
@@ -32,6 +33,22 @@ import static com.example.hotsix_be.common.exception.ExceptionCode.NOT_FOUND_CAS
 public class CashLogService {
     private final CashLogRepository cashLogRepository;
     private final ReservationService reservationService;
+    private final MemberService memberService;
+
+    // 결제 초기 생성 + 마무리
+    @Transactional
+    public <T extends CashLogMarker> T addCashLog(
+            final Member member,
+            final Long price,
+            final String orderId,
+            final EventType eventType,
+            final T cashLogMarker,
+            final Long discountAmount
+    ) {
+        T cashLogMarker_ = initCashLog(member, price, orderId, eventType, cashLogMarker);
+
+        return addCashLogDone(cashLogMarker_, discountAmount);
+    }
 
     // 결제 초기 생성
     @Transactional
@@ -55,25 +72,11 @@ public class CashLogService {
         return cashLogMarker;
     }
 
-    // 결제 초기 생성 + 마무리
-    @Transactional
-    public <T extends CashLogMarker> T addCashLog(
-            final Member member,
-            final Long price,
-            final String orderId,
-            final EventType eventType,
-            final T cashLogMarker,
-            final Long discountAmount
-    ) {
-        return addCashLogDone(initCashLog(member, price, orderId, eventType, cashLogMarker), discountAmount);
-    }
-
     // 결제 마무리 ( 보유 캐시 수정 )
     @Transactional
     public <T extends CashLogMarker> T addCashLogDone(final T cashLogMarker, final Long discountAmount) {
         Member member = cashLogMarker.getMember();
 
-        log.info("결제 마무리 : {}", cashLogMarker.getAmount());
         // 금액 이동
         member.addCash(cashLogMarker.getAmount(), discountAmount);
 
@@ -87,19 +90,25 @@ public class CashLogService {
     }
 
     // 개인 캐시 사용 내역 페이지의 cashLog 리스트
-    public Page<CashLogConfirmResponse> findMyPageList(final Member member, final Pageable pageable) {
+    public MyCashLogResponse findMyPageList(final Accessor accessor, final Pageable pageable) {
+        Member member = memberService.getMemberById(accessor.getMemberId());
 
         Pageable sortedPageable = ((PageRequest) pageable).withSort(Sort.by("createdAt").descending());
 
         Page<CashLogConfirmResponse> cashLogResPage = cashLogRepository.getCashLogConfirmResForPayByMember(member, sortedPageable);
 
-        return Optional.of(cashLogResPage)
+        cashLogResPage = Optional.of(cashLogResPage)
                 .filter(Slice::hasContent)
                 .orElse(Page.empty());
+
+        return getMyCashLogResById(member, cashLogResPage);
     }
 
-    public ConfirmResponse getConfirmRespById(final Long id) {
-        CashLog cashLog = findById(id);
+    public ConfirmResponse getConfirmRespById(final Long cashLogId, final Accessor accessor) {
+
+        CashLog cashLog = findById(cashLogId);
+
+        if (!cashLog.getMember().getId().equals(accessor.getMemberId())) throw new PaymentException(INVALID_AUTHORITY);
 
         Reservation reservation = reservationService.findByOrderIdAndMember(cashLog.getOrderId(), cashLog.getMember());
 
@@ -112,7 +121,7 @@ public class CashLogService {
         return CashLogIdResponse.of(id);
     }
 
-    public MyCashLogResponse getMyCashLogById(final Member member, final Page<CashLogConfirmResponse> cashLogConfirmPage) {
+    private MyCashLogResponse getMyCashLogResById(final Member member, final Page<CashLogConfirmResponse> cashLogConfirmPage) {
         return MyCashLogResponse.of(member, cashLogConfirmPage);
     }
 }

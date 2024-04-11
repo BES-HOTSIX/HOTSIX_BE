@@ -1,10 +1,10 @@
 package com.example.hotsix_be.login.util;
 
 
-import static com.example.hotsix_be.common.exception.ExceptionCode.INVALID_ACCESS_TOKEN;
-
 import com.example.hotsix_be.login.exception.InvalidJwtException;
 import org.springframework.stereotype.Component;
+
+import static com.example.hotsix_be.common.exception.ExceptionCode.INVALID_ACCESS_TOKEN;
 
 @Component
 public class BearerAuthorizationExtractor {

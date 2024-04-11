@@ -2,10 +2,12 @@ package com.example.hotsix_be.payment.recharge.service;
 
 import com.example.hotsix_be.member.entity.Member;
 import com.example.hotsix_be.member.service.MemberService;
-import com.example.hotsix_be.payment.cashlog.entity.EventType;
 import com.example.hotsix_be.payment.cashlog.service.CashLogService;
+import com.example.hotsix_be.payment.payment.dto.request.TossConfirmRequest;
 import com.example.hotsix_be.payment.payment.dto.request.TossPaymentRequest;
 import com.example.hotsix_be.payment.payment.exception.PaymentException;
+import com.example.hotsix_be.payment.payment.service.TossService;
+import com.example.hotsix_be.payment.recharge.dto.response.RechargePageResponse;
 import com.example.hotsix_be.payment.recharge.entity.Recharge;
 import com.example.hotsix_be.payment.recharge.repository.RechargeRepository;
 import lombok.RequiredArgsConstructor;
@@ -28,10 +30,65 @@ public class RechargeService {
     private final RechargeRepository rechargeRepository;
     private final CashLogService cashLogService;
     private final MemberService memberService;
+    private final TossService tossService;
+
+    @Transactional
+    public Recharge doRecharge(final TossConfirmRequest tossConfirmRequest, final Member member, final Long discountAmount) {
+        TossPaymentRequest tossPaymentRequest = tossService.confirmTossPayment(tossConfirmRequest).block();
+
+        if (isVirtual(tossPaymentRequest)) {
+            Recharge recharge = requestVirtualRecharge(tossPaymentRequest, member);
+            return rechargeRepository.save(recharge);
+        }
+
+        if (isEasyPay(tossPaymentRequest)) {
+            Recharge recharge = easyPayRecharge(tossPaymentRequest, member, discountAmount);
+            return rechargeRepository.save(recharge);
+        }
+
+        throw new PaymentException(INVALID_REQUEST);
+    }
 
     @Transactional // 가상계좌 충전 신청
-    public void requestVirtualRecharge(final TossPaymentRequest res, final Member member) {
-        doRecharge(res, member, 충전__무통장입금);
+    public Recharge requestVirtualRecharge(final TossPaymentRequest req, final Member member) {
+        Recharge recharge = Recharge.builder()
+                .depositor(req.getVirtualAccount().getCustomerName())
+                .bankCode(req.getBankCode())
+                .accountNumber(req.getVirtualAccount().getAccountNumber())
+                .secret(req.getSecret())
+                .build();
+
+        cashLogService.initCashLog(
+                member,
+                req.getTotalAmount(),
+                req.getOrderId(),
+                충전__무통장입금,
+                recharge
+        );
+
+        return recharge;
+    }
+
+    @Transactional // 간편결제 충전 진행
+    public Recharge easyPayRecharge(final TossPaymentRequest req, final Member member, final Long discountAmount) {
+        Recharge recharge = Recharge.builder()
+                .depositor(null)
+                .bankCode(null)
+                .accountNumber(null)
+                .secret(null)
+                .build();
+
+        cashLogService.initCashLog(
+                member,
+                req.getTotalAmount(),
+                req.getOrderId(),
+                충전__토스페이먼츠,
+                recharge
+        );
+
+        processRecharge(recharge, discountAmount);
+
+        return recharge;
     }
 
     @Transactional // 충전 진행
@@ -41,50 +98,25 @@ public class RechargeService {
         cashLogService.addCashLogDone(recharge, discountAmount);
     }
 
-    @Transactional // 간편결제 충전 진행
-    public void easyPayRecharge(final TossPaymentRequest res, final Member member, final Long discountAmount) {
-        Recharge recharge = doRecharge(res, member, 충전__토스페이먼츠);
-
-        processRecharge(recharge, discountAmount);
+    @Transactional
+    public void cancelRecharge(final Recharge recharge) {
+        if (recharge.isPaid()) throw new PaymentException(CANCELLATION_NOT_POSSIBLE);
+        recharge.cancelDone();
     }
 
-    private Recharge doRecharge(final TossPaymentRequest res, final Member member, final EventType eventType) {
-        String depositor = null, accountNumber = null, secret = null, bankCode = null;
-
-        if (isVirtual(res)) {
-            depositor = res.getVirtualAccount().getCustomerName();
-            accountNumber = res.getVirtualAccount().getAccountNumber();
-            secret = res.getSecret();
-            bankCode = res.getBankCode();
-        }
-
-        Recharge recharge = Recharge.builder()
-                .depositor(depositor)
-                .bankCode(bankCode)
-                .accountNumber(accountNumber)
-                .secret(secret)
-                .build();
-
-        recharge = cashLogService.initCashLog(
-                member,
-                res.getTotalAmount(),
-                res.getOrderId(),
-                eventType,
-                recharge
-        );
-
-        return rechargeRepository.save(recharge);
+    private boolean isVirtual(final TossPaymentRequest req) {
+        return req.getMethod().equals("가상계좌");
     }
 
-    public boolean isVirtual(final TossPaymentRequest res) {
-        return res.getMethod().equals("가상계좌");
+    private boolean isEasyPay(final TossPaymentRequest req) {
+        return req.getMethod().equals("간편결제");
     }
 
     public Recharge findByOrderId(final String orderId) {
         return rechargeRepository.findByOrderId(orderId).orElseThrow(() -> new PaymentException(NOT_FOUND_RECHARGE_ID));
     }
 
-    public Page<Recharge> findMyPageList(final Long memberId, final Pageable pageable) {
+    private Page<Recharge> findMyPageList(final Long memberId, final Pageable pageable) {
         Member member = memberService.getMemberById(memberId);
 
         Pageable sortedPageable = ((PageRequest) pageable).withSort(Sort.by("createdAt").descending());
@@ -102,9 +134,7 @@ public class RechargeService {
         return rechargeRepository.findByOrderIdContainingAndMember(orderId, member).orElseThrow(() -> new PaymentException(INVALID_REQUEST));
     }
 
-    @Transactional
-    public void cancelRecharge(final Recharge recharge) {
-        if (recharge.isPaid()) throw new PaymentException(CANCELLATION_NOT_POSSIBLE);
-        recharge.cancelDone();
+    public Page<RechargePageResponse> getRechargePageResponse(final Long memberId, final Pageable pageable) {
+        return findMyPageList(memberId, pageable).map(RechargePageResponse::of);
     }
 }

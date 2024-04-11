@@ -6,7 +6,7 @@ import com.example.hotsix_be.common.dto.EmptyResponse;
 import com.example.hotsix_be.common.dto.ResponseDto;
 import com.example.hotsix_be.payment.payment.dto.request.TossConfirmRequest;
 import com.example.hotsix_be.payment.payment.dto.request.TossWebhookRequest;
-import com.example.hotsix_be.payment.recharge.dto.response.RechargeConfirmResponse;
+import com.example.hotsix_be.payment.recharge.dto.response.RechargePageResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -34,7 +34,7 @@ public interface RechargeApi {
             @ApiResponse(responseCode = "500", description = "서버 에러",
                     content = @Content(schema = @Schema(implementation = EmptyResponse.class)))})
     @PageableAsQueryParam
-    ResponseEntity<ResponseDto<Page<RechargeConfirmResponse>>> showMyRecharge(
+    ResponseEntity<ResponseDto<Page<RechargePageResponse>>> showMyRecharge(
             final Pageable pageable,
             @Auth final Accessor accessor
     );

@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-//@Profile("dev")
+@Profile("dev")
 public class DataInit implements ApplicationRunner {
     private final JdbcTemplate jdbcTemplate;
 

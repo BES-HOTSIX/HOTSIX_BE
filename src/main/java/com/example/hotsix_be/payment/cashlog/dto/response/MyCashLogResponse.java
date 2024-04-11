@@ -29,10 +29,24 @@ public class MyCashLogResponse {
             final Member member,
             final Page<CashLogConfirmResponse> cashLogConfirmPage
     ) {
-        return new MyCashLogResponse(
+        return MyCashLogResponse.of(
                 member.getUsername(),
                 member.getRestCash(),
                 member.getEmail(),
+                cashLogConfirmPage
+        );
+    }
+
+    public static MyCashLogResponse of(
+            final String username,
+            final Long restCash,
+            final String email,
+            final Page<CashLogConfirmResponse> cashLogConfirmPage
+    ) {
+        return new MyCashLogResponse(
+                username,
+                restCash,
+                email,
                 cashLogConfirmPage
         );
     }

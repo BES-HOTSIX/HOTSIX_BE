@@ -42,8 +42,7 @@ public class RefundController implements RefundApi {
         // 조회
         Reservation reservation = reservationService.findPaidById(reserveId);
 
-        if (!reservation.getMember().getId().equals(accessor.getMemberId()))
-            throw new ReservationException(INVALID_AUTHORITY);
+        if (!reservation.getMember().getId().equals(accessor.getMemberId())) throw new ReservationException(INVALID_AUTHORITY);
 
         if (!reservation.isCancelable()) throw new ReservationException(CANCELLATION_PERIOD_EXPIRED);
 

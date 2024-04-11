@@ -1,50 +1,25 @@
 package com.example.hotsix_be.hotel.entity;
 
-import static jakarta.persistence.CascadeType.*;
-import static jakarta.persistence.CascadeType.PERSIST;
-import static jakarta.persistence.CascadeType.REMOVE;
-
 import com.example.hotsix_be.common.entity.DateEntity;
 import com.example.hotsix_be.hotel.dto.request.HotelUpdateRequest;
 import com.example.hotsix_be.image.entity.Image;
 import com.example.hotsix_be.member.entity.Member;
 import com.example.hotsix_be.reservation.entity.Reservation;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.CollectionTable;
-import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.ForeignKey;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.MapKeyColumn;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.PreRemove;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
-import org.springframework.web.bind.annotation.DeleteMapping;
+import static jakarta.persistence.CascadeType.PERSIST;
+import static jakarta.persistence.CascadeType.REMOVE;
 
 @Getter
 @SuperBuilder(toBuilder = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @Table(name = "hotels")
 @Entity
 public class Hotel extends DateEntity {

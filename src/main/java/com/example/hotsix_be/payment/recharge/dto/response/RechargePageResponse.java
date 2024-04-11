@@ -9,10 +9,10 @@ import java.time.LocalDateTime;
 
 import static lombok.AccessLevel.PRIVATE;
 
-@Schema(description = "Recharge 엔티티 내용 응답")
+@Schema(description = "나의 충전 내역 응답")
 @Getter
 @RequiredArgsConstructor(access = PRIVATE)
-public class RechargeConfirmResponse {
+public class RechargePageResponse {
 
     @Schema(description = "Recharge 생성 일시", example = "2024-02-06 17:26:48.772390")
     private final LocalDateTime createdAt;
@@ -29,12 +29,12 @@ public class RechargeConfirmResponse {
     @Schema(description = "결제 상태", example = "입금 대기")
     private final String status;
 
-    public static RechargeConfirmResponse of(final Recharge recharge) {
+    public static RechargePageResponse of(final Recharge recharge) {
         String status = "입금 대기";
         if (recharge.isPaid()) status = "입금 완료";
         if (recharge.isCancelled()) status = "입금 취소";
 
-        return new RechargeConfirmResponse(
+        return new RechargePageResponse(
                 recharge.getCreatedAt(),
                 recharge.getOrderId(),
                 recharge.getAccountNumber(),
