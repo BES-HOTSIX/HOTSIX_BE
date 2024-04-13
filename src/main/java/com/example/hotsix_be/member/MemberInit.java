@@ -23,7 +23,7 @@ public class MemberInit {
                     "admin@naver.com");
             memberRepository.save(admin);
 
-            IntStream.rangeClosed(2, 50).forEach(i -> {
+            IntStream.rangeClosed(2, 20).forEach(i -> {
                 Member member = new Member("test" + i, passwordEncoder.encode("test" + i), "test" + i, "https://t4.ftcdn.net/jpg/02/15/84/43/360_F_215844325_ttX9YiIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg", "test" + i + "naver.com");
 
                 memberRepository.save(member);

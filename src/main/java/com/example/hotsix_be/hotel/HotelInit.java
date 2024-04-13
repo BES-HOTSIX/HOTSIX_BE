@@ -23,7 +23,7 @@ public class HotelInit {
 
         if (memberRepository.count() <= 50 && hotelRepository.count() <= 0) {
 
-            LongStream.rangeClosed(1, 50).forEach(i -> {
+            LongStream.rangeClosed(1, 20).forEach(i -> {
                 Member member = memberRepository.findById(i).orElseThrow();
 
                 Hotel hotel = new Hotel("호텔", "서울" + i, "구로구" + i, 3L, 2L, 3L, 5L, List.of("주방"), "test" + i,
