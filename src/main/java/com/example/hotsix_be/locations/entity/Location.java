@@ -1,5 +1,5 @@
 package com.example.hotsix_be.locations.entity;
-
+/*
 import com.example.hotsix_be.locations.LocationInfo;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -30,3 +30,4 @@ public class Location implements LocationInfo {
     @Column(columnDefinition = "POINT SRID 4326")
     private Point location;
 }
+*/
