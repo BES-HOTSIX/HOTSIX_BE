@@ -62,8 +62,6 @@ dependencies {
 
     // MySQL Database
     runtimeOnly 'com.mysql:mysql-connector-j'
-    implementation 'mysql:mysql-connector-java'
-
 
     // JWT
     implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
