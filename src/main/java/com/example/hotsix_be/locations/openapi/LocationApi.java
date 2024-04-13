@@ -1,5 +1,5 @@
 package com.example.hotsix_be.locations.openapi;
-
+/*
 import com.example.hotsix_be.common.dto.EmptyResponse;
 import com.example.hotsix_be.locations.dto.Response.LocationResponse;
 import com.example.hotsix_be.locations.entity.FoodLocation;
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
-/*
+
 @Tag(name = "Location", description = "숙소 근처 편의시설 정보 API")
 public interface LocationApi {
     @Operation(summary = "숙소 근처 음식점 정보 조회", description = "숙소 근처 음식점 정보를 조회합니다.")
