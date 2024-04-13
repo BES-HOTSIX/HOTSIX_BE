@@ -1,5 +1,5 @@
 package com.example.hotsix_be.locations;
-
+/*
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
-/*
+
 @Component
 @RequiredArgsConstructor
 @Transactional
