@@ -13,7 +13,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-// fly.io 배포 위해 @Profile 어노테이션 삭제
+// fly.io 배포 위해 @Profile 어노테이션 삭제??
 @Component
 @RequiredArgsConstructor
 public class DataInit implements ApplicationRunner {
