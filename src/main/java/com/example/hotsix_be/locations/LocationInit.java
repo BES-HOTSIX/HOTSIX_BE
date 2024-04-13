@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Map;
 
-/*
 @Component
 @RequiredArgsConstructor
 @Transactional
@@ -30,4 +29,3 @@ public class LocationInit implements ApplicationRunner {
         }
     }
 }
-*/
