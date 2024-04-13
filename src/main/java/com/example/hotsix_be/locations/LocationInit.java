@@ -1,5 +1,5 @@
 package com.example.hotsix_be.locations;
-/*
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -29,4 +29,3 @@ public class LocationInit implements ApplicationRunner {
         }
     }
 }
-*/

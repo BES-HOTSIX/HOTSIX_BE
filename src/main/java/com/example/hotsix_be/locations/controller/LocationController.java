@@ -1,5 +1,5 @@
 package com.example.hotsix_be.locations.controller;
-/*
+
 import com.example.hotsix_be.locations.dto.Response.LocationResponse;
 import com.example.hotsix_be.locations.entity.FoodLocation;
 import com.example.hotsix_be.locations.openapi.LocationApi;
@@ -31,4 +31,3 @@ public class LocationController implements LocationApi {
                 .toList();
     }
 }
-*/

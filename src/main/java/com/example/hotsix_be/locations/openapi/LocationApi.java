@@ -1,5 +1,5 @@
 package com.example.hotsix_be.locations.openapi;
-/*
+
 import com.example.hotsix_be.common.dto.EmptyResponse;
 import com.example.hotsix_be.locations.dto.Response.LocationResponse;
 import com.example.hotsix_be.locations.entity.FoodLocation;
@@ -33,4 +33,3 @@ public interface LocationApi {
             @RequestParam(value = "distance") final Double distance
     );
 }
-*/

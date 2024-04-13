@@ -1,5 +1,5 @@
 package com.example.hotsix_be.locations.dto.Response;
-/*
+
 import com.example.hotsix_be.locations.LocationInfo;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -23,4 +23,3 @@ public class LocationResponse<T extends LocationInfo> {
         );
     }
 }
-*/
