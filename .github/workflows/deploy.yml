@@ -21,12 +21,18 @@ jobs:
         env:
           APPLICATION_YML: ${{ secrets.APPLICATION_YML }}
           APPLICATION_DB: ${{ secrets.APPLICATION_DB_YML }}
-          APPLICATION_MAIL: ${{ secrets.APPLICATION_MAIL_YML }}
+          APPLICATION_BATCH: ${{ secrets.APPLICATION_BATCH_YML }}
+          APPLICATION_COOKIE: ${{ secrets.APPLICATION_COOKIE_YML }}
+          APPLICATION_OPENAPI: ${{ secrets.APPLICATION_OPENAPI_YML }}
+          APPLICATION_FILE: ${{ secrets.APPLICATION_FILE_YML }}
           APPLICATION_SECURITY: ${{ secrets.APPLICATION_SECURITY_YML }}
         run: |
           echo "$APPLICATION_YML" > src/main/resources/application.yml
           echo "$APPLICATION_DB" > src/main/resources/application-db.yml
-          echo "$APPLICATION_MAIL" > src/main/resources/application-mail.yml
+          echo "$APPLICATION_BATCH" > src/main/resources/application-batch.yml
+          echo "$APPLICATION_COOKIE" > src/main/resources/application-cookie.yml
+          echo "$APPLICATION_OPENAPI" > src/main/resources/application-openapi.yml
+          echo "$APPLICATION_FILE" > src/main/resources/application-file.yml
           echo "$APPLICATION_SECURITY" > src/main/resources/application-security.yml
 
       - uses: superfly/flyctl-actions/setup-flyctl@master
