@@ -1,5 +1,6 @@
 package com.example.hotsix_be.location.service;
 
+
 import com.example.hotsix_be.locations.entity.FoodLocation;
 import com.example.hotsix_be.locations.repository.FoodLocationRepository;
 import com.example.hotsix_be.locations.service.LocationService;

@@ -26,7 +26,7 @@ public class CashLogInit {
         if (cashLogRepository.countByMemberId(1L) < 20) {
             Member member = memberRepository.findById(1l).orElseThrow(() -> new BadRequestException(ExceptionCode.NOT_FOUND_MEMBER_BY_ID));
 
-            IntStream.rangeClosed(1, 50).forEach(i -> {
+            IntStream.rangeClosed(1, 20).forEach(i -> {
                 CashLog cashLog = CashLog.builder()
                         .eventType(충전__무통장입금)
                         .amount(50_000L)

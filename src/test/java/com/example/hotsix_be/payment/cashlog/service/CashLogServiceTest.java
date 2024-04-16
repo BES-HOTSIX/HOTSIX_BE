@@ -52,6 +52,8 @@ public class CashLogServiceTest {
     @Mock
     private MemberService memberService;
 
+
+
     @Test
     @DisplayName("새로운 CashLog 를 생성하여 CashLogMarker 에 입력 후 포인트를 이동시킨다.")
     void addCashLog() {
