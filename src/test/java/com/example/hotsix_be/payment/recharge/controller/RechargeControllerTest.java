@@ -4,7 +4,7 @@ import com.example.hotsix_be.common.controller.DefaultControllerTest;
 import com.example.hotsix_be.member.service.MemberService;
 import com.example.hotsix_be.payment.payment.dto.request.TossConfirmRequest;
 import com.example.hotsix_be.payment.payment.dto.request.TossWebhookRequest;
-import com.example.hotsix_be.payment.payment.service.TossService;
+import com.example.hotsix_be.payment.payment.service.TossServiceImpl;
 import com.example.hotsix_be.payment.recharge.entity.Recharge;
 import com.example.hotsix_be.payment.recharge.service.RechargeService;
 import org.junit.jupiter.api.DisplayName;
@@ -33,7 +33,7 @@ public class RechargeControllerTest extends DefaultControllerTest {
     private MemberService memberService;
 
     @MockBean
-    private TossService tossService;
+    private TossServiceImpl tossServiceImpl;
 
     private ResultActions performShowMyRecharge() throws Exception {
         return mockMvc.perform(get(baseUrl + "/me")

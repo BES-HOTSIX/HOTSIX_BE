@@ -39,11 +39,13 @@ public class RechargeService {
         if (isVirtual(tossPaymentRequest)) {
             Recharge recharge = requestVirtualRecharge(tossPaymentRequest, member);
             rechargeRepository.save(recharge);
+            return;
         }
 
         if (isEasyPay(tossPaymentRequest)) {
             Recharge recharge = easyPayRecharge(tossPaymentRequest, member, discountAmount);
             rechargeRepository.save(recharge);
+            return;
         }
 
         throw new PaymentException(INVALID_REQUEST);

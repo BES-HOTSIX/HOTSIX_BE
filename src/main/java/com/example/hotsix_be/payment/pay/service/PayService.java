@@ -34,8 +34,7 @@ public class PayService {
     private final CouponService couponService;
 
     // 예치금 사용 결제
-    @Transactional
-    public Pay doPay(final Reservation reservation, final EventType eventType, final Long discountAmount) {
+    private Pay doPay(final Reservation reservation, final EventType eventType, final Long discountAmount) {
 
         Member buyer = reservation.getMember();
         Long payPrice = reservation.getPrice();
@@ -65,16 +64,12 @@ public class PayService {
     public CashLog payByCashOnly(final Reservation reservation, final UseCouponRequest useCouponRequest) {
         Long discountAmount = useCouponRequest.getDiscountAmount();
 
-        if (!canPay(reservation, reservation.getPrice(), discountAmount))
+        if (!canPay(reservation, 0L, discountAmount))
             throw new PaymentException(INSUFFICIENT_DEPOSIT);
 
-        reservation.updateOrderId(randomNanoId());
+        reservation.updateOrderId("o" + randomNanoId());
 
-        Pay pay = doPay(reservation, 결제__예치금, discountAmount);
-
-        reservation.payDone();
-
-        return pay;
+        return doPay(reservation, 결제__예치금, discountAmount);
     }
 
 
@@ -86,7 +81,7 @@ public class PayService {
             final Long discountAmount
     ) {
         if (!canPay(reservation, Long.parseLong(tossConfirmRequest.getAmount()), tossConfirmRequest.getDiscountAmount())) {
-            throw new PaymentException(INSUFFICIENT_DEPOSIT);
+            throw new PaymentException(INVALID_REQUEST);
         }
 
         if (tossConfirmRequest.getDiscountAmount() > 0) {
@@ -106,7 +101,7 @@ public class PayService {
 
         rechargeService.doRecharge(tossConfirmRequest, buyer, discountAmount);
 
-        return doPay(reservation, EventType.결제__토스페이먼츠, discountAmount); // TODO 토스페이먼츠 결제와 포인트 복합 결제 명확히 하기
+        return doPay(reservation, EventType.결제__토스페이먼츠, discountAmount);
     }
 
     public boolean canPay(final Reservation reservation, final Long pgPayPrice, final Long discountAmount) {
