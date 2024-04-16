@@ -17,7 +17,7 @@ public class TossConfirmRequest {
     @Schema(description = "결제 타입", example = "NORMAL")
     private String paymentType;
 
-    @Schema(description = "주문 고유 식별 코드", example = "a4CWyWY5m89PNh7xJwhk1")
+    @Schema(description = "주문 고유 식별 코드", example = "oa4CWyWY5m89PNh7xJwhk1")
     private String orderId;
 
     @Schema(description = "주문 금액", example = "100000")
