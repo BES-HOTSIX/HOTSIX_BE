@@ -12,8 +12,6 @@ import com.example.hotsix_be.payment.payment.dto.request.TossConfirmRequest;
 import com.example.hotsix_be.payment.payment.dto.request.TossPaymentRequest;
 import com.example.hotsix_be.payment.payment.exception.PaymentException;
 import com.example.hotsix_be.payment.payment.service.TossService;
-import com.example.hotsix_be.payment.payment.service.TossService;
-import com.example.hotsix_be.payment.recharge.entity.Recharge;
 import com.example.hotsix_be.payment.recharge.service.RechargeService;
 import com.example.hotsix_be.reservation.entity.Reservation;
 import lombok.RequiredArgsConstructor;
@@ -47,7 +45,7 @@ public class PayService {
                 .recipient(owner)
                 .build();
 
-        pay = cashLogService.addCashLog(
+        cashLogService.addCashLog(
                 buyer,
                 payPrice * -1,
                 reservation.getOrderId(),

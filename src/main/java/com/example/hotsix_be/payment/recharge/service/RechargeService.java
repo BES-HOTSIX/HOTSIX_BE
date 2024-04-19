@@ -1,5 +1,6 @@
 package com.example.hotsix_be.payment.recharge.service;
 
+import com.example.hotsix_be.auth.util.Accessor;
 import com.example.hotsix_be.member.entity.Member;
 import com.example.hotsix_be.member.service.MemberService;
 import com.example.hotsix_be.payment.cashlog.service.CashLogService;
@@ -51,8 +52,15 @@ public class RechargeService {
         throw new PaymentException(INVALID_REQUEST);
     }
 
-    @Transactional // 가상계좌 충전 신청
-    public Recharge requestVirtualRecharge(final TossPaymentRequest req, final Member member) {
+    @Transactional
+    public void doRecharge(final TossConfirmRequest tossConfirmRequest, final Accessor accessor, final Long discountAmount) {
+        Member member = memberService.getMemberById(accessor.getMemberId());
+
+        doRecharge(tossConfirmRequest, member, discountAmount);
+    }
+
+    // 가상계좌 충전 신청
+    private Recharge requestVirtualRecharge(final TossPaymentRequest req, final Member member) {
         Recharge recharge = Recharge.builder()
                 .depositor(req.getVirtualAccount().getCustomerName())
                 .bankCode(req.getBankCode())
@@ -71,8 +79,8 @@ public class RechargeService {
         return recharge;
     }
 
-    @Transactional // 간편결제 충전 진행
-    public Recharge easyPayRecharge(final TossPaymentRequest req, final Member member, final Long discountAmount) {
+    // 간편결제 충전 진행
+    private Recharge easyPayRecharge(final TossPaymentRequest req, final Member member, final Long discountAmount) {
         Recharge recharge = Recharge.builder()
                 .depositor(null)
                 .bankCode(null)
@@ -133,10 +141,10 @@ public class RechargeService {
     public Recharge findByOrderIdAndMemberId(final String orderId, final Long memberId) {
         Member member = memberService.getMemberById(memberId);
 
-        return rechargeRepository.findByOrderIdContainingAndMember(orderId, member).orElseThrow(() -> new PaymentException(INVALID_REQUEST));
+        return rechargeRepository.findByOrderIdContainingAndMember(orderId, member).orElseThrow(() -> new PaymentException(NOT_FOUND_RECHARGE_ID));
     }
 
-    public Page<RechargePageResponse> getRechargePageResponse(final Long memberId, final Pageable pageable) {
-        return findMyPageList(memberId, pageable).map(RechargePageResponse::of);
+    public Page<RechargePageResponse> getRechargePageResponse(final Accessor accessor, final Pageable pageable) {
+        return findMyPageList(accessor.getMemberId(), pageable).map(RechargePageResponse::of);
     }
 }
