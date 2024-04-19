@@ -29,6 +29,6 @@ public class TossPaymentRequest {
     @Schema(description = "은행코드", example = "20")
     private String bankCode;
 
-    @Schema(description = "가상계좌번호", example = "X6516292118962")
+    @Schema(description = "가상계좌번호")
     private VirtualAccountRequest virtualAccount;
 }

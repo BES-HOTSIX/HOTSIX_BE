@@ -5,8 +5,6 @@ import com.example.hotsix_be.auth.MemberOnly;
 import com.example.hotsix_be.auth.util.Accessor;
 import com.example.hotsix_be.common.dto.EmptyResponse;
 import com.example.hotsix_be.common.dto.ResponseDto;
-import com.example.hotsix_be.member.entity.Member;
-import com.example.hotsix_be.member.service.MemberService;
 import com.example.hotsix_be.payment.payment.dto.request.TossConfirmRequest;
 import com.example.hotsix_be.payment.payment.dto.request.TossWebhookRequest;
 import com.example.hotsix_be.payment.payment.exception.PaymentException;
@@ -30,7 +28,6 @@ import static com.example.hotsix_be.common.exception.ExceptionCode.INVALID_REQUE
 @Slf4j
 public class RechargeController implements RechargeApi {
     private final RechargeService rechargeService;
-    private final MemberService memberService;
 
     @GetMapping("/me")
     @MemberOnly
@@ -38,9 +35,7 @@ public class RechargeController implements RechargeApi {
             final Pageable pageable,
             @Auth final Accessor accessor
     ) {
-        Long memberId = accessor.getMemberId();
-
-        Page<RechargePageResponse> rechargePageResponse = rechargeService.getRechargePageResponse(memberId, pageable);
+        Page<RechargePageResponse> rechargePageResponse = rechargeService.getRechargePageResponse(accessor, pageable);
 
         return ResponseEntity.ok(new ResponseDto<>(
                 HttpStatus.OK.value(),
@@ -55,9 +50,7 @@ public class RechargeController implements RechargeApi {
             @RequestBody final TossConfirmRequest tossConfirmRequest,
             @Auth final Accessor accessor
     ) {
-        Member member = memberService.getMemberById(accessor.getMemberId());
-
-        rechargeService.doRecharge(tossConfirmRequest, member, null);
+        rechargeService.doRecharge(tossConfirmRequest, accessor, null);
 
         return ResponseEntity.ok(
                 new ResponseDto<>(

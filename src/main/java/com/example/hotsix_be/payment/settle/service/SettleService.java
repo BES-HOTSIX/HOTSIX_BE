@@ -50,7 +50,7 @@ public class SettleService {
                 .totalAmount(price)
                 .build();
 
-        settle = cashLogService.addCashLog(
+        cashLogService.addCashLog(
                 host,
                 deductedPrice,
                 reservation.getOrderId(),

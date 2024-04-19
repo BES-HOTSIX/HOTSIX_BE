@@ -37,7 +37,7 @@ public class CashLogService {
 
     // 결제 초기 생성 + 마무리
     @Transactional
-    public <T extends CashLogMarker> T addCashLog(
+    public <T extends CashLogMarker> void addCashLog(
             final Member member,
             final Long price,
             final String orderId,
@@ -47,7 +47,7 @@ public class CashLogService {
     ) {
         T cashLogMarker_ = initCashLog(member, price, orderId, eventType, cashLogMarker);
 
-        return addCashLogDone(cashLogMarker_, discountAmount);
+        addCashLogDone(cashLogMarker_, discountAmount);
     }
 
     // 결제 초기 생성

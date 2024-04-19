@@ -28,7 +28,7 @@ public class RefundService {
                 .refunder(refunder)
                 .build();
 
-        refund = cashLogService.addCashLog(
+        cashLogService.addCashLog(
                 member,
                 amount,
                 orderId,
