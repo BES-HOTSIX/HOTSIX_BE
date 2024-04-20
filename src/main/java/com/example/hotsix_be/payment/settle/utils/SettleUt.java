@@ -13,7 +13,8 @@ public class SettleUt {
     @Getter
     private static Integer commissionRate;
 
-    public SettleUt(@Value("${settle.commissionRate}") final Integer commissionRate) {
+    @Value("${settle.commissionRate}")
+    private void setCommissionRate(final Integer commissionRate) {
         this.commissionRate = commissionRate;
     }
 
