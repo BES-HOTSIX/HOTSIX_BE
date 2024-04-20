@@ -36,15 +36,13 @@ public class RechargeService {
     @Transactional
     public void doRecharge(final TossConfirmRequest tossConfirmRequest, final Member member, final Long discountAmount) {
         TossPaymentRequest tossPaymentRequest = tossService.confirmTossPayment(tossConfirmRequest).block();
+        Recharge recharge = null;
 
-        if (isVirtual(tossPaymentRequest)) {
-            Recharge recharge = requestVirtualRecharge(tossPaymentRequest, member);
-            rechargeRepository.save(recharge);
-            return;
-        }
+        if (isVirtual(tossPaymentRequest)) recharge = requestVirtualRecharge(tossPaymentRequest, member);
 
-        if (isEasyPay(tossPaymentRequest)) {
-            Recharge recharge = easyPayRecharge(tossPaymentRequest, member, discountAmount);
+        if (isEasyPay(tossPaymentRequest)) recharge = easyPayRecharge(tossPaymentRequest, member, discountAmount);
+
+        if (recharge != null) {
             rechargeRepository.save(recharge);
             return;
         }

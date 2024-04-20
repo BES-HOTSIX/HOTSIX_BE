@@ -1,6 +1,5 @@
 package com.example.hotsix_be.payment.settle.service;
 
-import com.example.hotsix_be.common.exception.ExceptionCode;
 import com.example.hotsix_be.member.entity.Member;
 import com.example.hotsix_be.member.service.MemberService;
 import com.example.hotsix_be.payment.cashlog.entity.EventType;
@@ -21,6 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.Optional;
 
+import static com.example.hotsix_be.common.exception.ExceptionCode.ALREADY_BEEN_SETTLED;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -34,9 +35,7 @@ public class SettleService {
     @Transactional
     public Settle doSettle(final Reservation reservation) {
         // 이미 정산된 데이터일 경우 예외 발생
-        if (reservation.isSettled()) {
-            throw new PaymentException(ExceptionCode.ALREADY_BEEN_SETTLED);
-        }
+        if (reservation.isSettled()) throw new PaymentException(ALREADY_BEEN_SETTLED);
 
         Member host = reservation.getHost(); // 호스트
         Long price = reservation.getPrice(); // 원래 가격

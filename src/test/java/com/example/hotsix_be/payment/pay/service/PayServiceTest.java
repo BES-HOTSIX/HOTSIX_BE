@@ -54,50 +54,51 @@ public class PayServiceTest {
     private CouponService couponService;
 
     private Member guest;
-    private Member host;
-    private Hotel hotel;
     private Reservation reservation;
 
     @BeforeEach
     void initData() {
-        guest = new Member(
-                1L,
-                "KIM",
-                "KIM",
-                null
-        );
+        Member host = Member.builder()
+                .id(2L)
+                .socialLoginId("techit")
+                .nickname("techit")
+                .imageUrl(null)
+                .build();
+        host.assignRole(Role.HOST);
+
+        guest = Member.builder()
+                .id(3L)
+                .socialLoginId("Park")
+                .nickname("Park")
+                .imageUrl(null)
+                .restCash(0L)
+                .build();
         guest.assignRole(Role.GUEST);
 
-        host = new Member(
-                2L,
-                "techit",
-                "techit",
-                null
-        );
-        host.assignRole(Role.HOST);
-        hotel = new Hotel(
-                "호텔",
-                "서울시 강남구",
-                "강남역 1번출구",
-                10L,
-                10L,
-                10L,
-                10L,
-                List.of("헬스장"),
-                "강남호텔",
-                "강남호텔입니다.",
-                10000L,
-                host
-        );
-        reservation = new Reservation(
-                LocalDate.now().plusDays(3),
-                LocalDate.now().plusDays(6),
-                2L,
-                100000L,
-                false,
-                hotel,
-                guest
-        );
+        Hotel hotel = Hotel.builder()
+                .hotelType("호텔")
+                .address("서울시 강남구")
+                .addressDetail("강남역 1번출구")
+                .roomCnt(10L)
+                .bedCnt(10L)
+                .bathroomCnt(10L)
+                .maxPeople(10L)
+                .facility(List.of("헬스장"))
+                .nickname("강남호텔")
+                .description("강남호텔입니다.")
+                .price(10000L)
+                .owner(host)
+                .build();
+
+        reservation = Reservation.builder()
+                .checkInDate(LocalDate.now().plusDays(3))
+                .checkOutDate(LocalDate.now().plusDays(6))
+                .guests(2L)
+                .price(100000L)
+                .isPaid(false)
+                .hotel(hotel)
+                .member(guest)
+                .build();
     }
 
     @Test
