@@ -71,6 +71,7 @@ public class SettleServiceTest {
                 .socialLoginId("KIM")
                 .nickname("KIM")
                 .imageUrl(null)
+                .restCash(0L)
                 .build();
 
         Member host = Member.builder()
@@ -78,6 +79,7 @@ public class SettleServiceTest {
                 .socialLoginId("techit")
                 .nickname("techit")
                 .imageUrl(null)
+                .restCash(0L)
                 .build();
         host.assignRole(Role.HOST);
 
@@ -86,6 +88,7 @@ public class SettleServiceTest {
                 .socialLoginId("Park")
                 .nickname("Park")
                 .imageUrl(null)
+                .restCash(0L)
                 .build();
         guest.assignRole(Role.GUEST);
 
