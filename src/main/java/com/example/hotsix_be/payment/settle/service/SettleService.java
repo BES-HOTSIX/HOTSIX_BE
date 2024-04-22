@@ -2,6 +2,7 @@ package com.example.hotsix_be.payment.settle.service;
 
 import com.example.hotsix_be.member.entity.Member;
 import com.example.hotsix_be.member.service.MemberService;
+import com.example.hotsix_be.payment.cashlog.dto.InitCashLogDto;
 import com.example.hotsix_be.payment.cashlog.entity.EventType;
 import com.example.hotsix_be.payment.cashlog.service.CashLogService;
 import com.example.hotsix_be.payment.payment.exception.PaymentException;
@@ -50,11 +51,12 @@ public class SettleService {
                 .build();
 
         cashLogService.addCashLog(
-                host,
-                deductedPrice,
-                reservation.getOrderId(),
-                EventType.정산__예치금적립,
-                settle,
+                InitCashLogDto.of(
+                        host,
+                        deductedPrice,
+                        reservation.getOrderId(),
+                        EventType.정산__예치금적립,
+                        settle),
                 0L
         );
 

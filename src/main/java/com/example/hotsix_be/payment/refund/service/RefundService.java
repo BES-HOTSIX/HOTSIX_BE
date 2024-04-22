@@ -1,6 +1,7 @@
 package com.example.hotsix_be.payment.refund.service;
 
 import com.example.hotsix_be.member.entity.Member;
+import com.example.hotsix_be.payment.cashlog.dto.InitCashLogDto;
 import com.example.hotsix_be.payment.cashlog.entity.EventType;
 import com.example.hotsix_be.payment.cashlog.service.CashLogService;
 import com.example.hotsix_be.payment.refund.entity.Refund;
@@ -29,11 +30,12 @@ public class RefundService {
                 .build();
 
         cashLogService.addCashLog(
-                member,
-                amount,
-                orderId,
-                EventType.취소__예치금,
-                refund,
+                InitCashLogDto.of(
+                        member,
+                        amount,
+                        orderId,
+                        EventType.취소__예치금,
+                        refund),
                 discountAmount
         );
 
