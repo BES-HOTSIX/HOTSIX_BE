@@ -182,7 +182,7 @@ public class SettleServiceTest {
 
     @Test
     @DisplayName("나의 정산 목록을 가져온다.")
-    void cw() {
+    void getReserveForSettleByMemberIdAndParams() {
         // given
         Pageable pageable = PageRequest.of(0, 1);
 

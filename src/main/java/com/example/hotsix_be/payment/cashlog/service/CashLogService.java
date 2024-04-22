@@ -5,13 +5,13 @@ import com.example.hotsix_be.auth.util.Accessor;
 import com.example.hotsix_be.hotel.entity.Hotel;
 import com.example.hotsix_be.member.entity.Member;
 import com.example.hotsix_be.member.service.MemberService;
+import com.example.hotsix_be.payment.cashlog.dto.InitCashLogDto;
 import com.example.hotsix_be.payment.cashlog.dto.response.CashLogConfirmResponse;
 import com.example.hotsix_be.payment.cashlog.dto.response.CashLogIdResponse;
 import com.example.hotsix_be.payment.cashlog.dto.response.ConfirmResponse;
 import com.example.hotsix_be.payment.cashlog.dto.response.MyCashLogResponse;
 import com.example.hotsix_be.payment.cashlog.entity.CashLog;
 import com.example.hotsix_be.payment.cashlog.entity.CashLogMarker;
-import com.example.hotsix_be.payment.cashlog.entity.EventType;
 import com.example.hotsix_be.payment.cashlog.repository.CashLogRepository;
 import com.example.hotsix_be.payment.payment.exception.PaymentException;
 import com.example.hotsix_be.reservation.entity.Reservation;
@@ -38,33 +38,25 @@ public class CashLogService {
     // 결제 초기 생성 + 마무리
     @Transactional
     public <T extends CashLogMarker> void addCashLog(
-            final Member member,
-            final Long price,
-            final String orderId,
-            final EventType eventType,
-            final T cashLogMarker,
+            final InitCashLogDto<T> initCashLogDto,
             final Long discountAmount
     ) {
-        T cashLogMarker_ = initCashLog(member, price, orderId, eventType, cashLogMarker);
+        T cashLogMarker_ = initCashLog(initCashLogDto);
 
         addCashLogDone(cashLogMarker_, discountAmount);
     }
 
     // 결제 초기 생성
     @Transactional
-    public <T extends CashLogMarker> T initCashLog(
-            final Member member,
-            final Long price,
-            final String orderId,
-            final EventType eventType,
-            final T cashLogMarker
-    ) {
+    public <T extends CashLogMarker> T initCashLog(final InitCashLogDto<T> initCashLogDto) {
         CashLog cashLog = CashLog.builder()
-                .eventType(eventType)
-                .amount(price)
-                .orderId(orderId)
-                .member(member)
+                .eventType(initCashLogDto.getEventType())
+                .amount(initCashLogDto.getPrice())
+                .orderId(initCashLogDto.getOrderId())
+                .member(initCashLogDto.getMember())
                 .build();
+
+        T cashLogMarker = initCashLogDto.getCashLogMarker();
 
         if (cashLogMarker.isInitialized()) throw new PaymentException(ALREADY_BEEN_INITIALIZED);
         cashLogMarker.updateCashLog(cashLog);
@@ -74,15 +66,13 @@ public class CashLogService {
 
     // 결제 마무리 ( 보유 캐시 수정 )
     @Transactional
-    public <T extends CashLogMarker> T addCashLogDone(final T cashLogMarker, final Long discountAmount) {
+    public <T extends CashLogMarker> void addCashLogDone(final T cashLogMarker, final Long discountAmount) {
         Member member = cashLogMarker.getMember();
 
         // 금액 이동
         member.addCash(cashLogMarker.getAmount(), discountAmount);
 
         cashLogMarker.payDone();
-
-        return cashLogMarker;
     }
 
     public CashLog findById(final Long id) {

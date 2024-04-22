@@ -3,6 +3,7 @@ package com.example.hotsix_be.payment.recharge.service;
 import com.example.hotsix_be.auth.util.Accessor;
 import com.example.hotsix_be.member.entity.Member;
 import com.example.hotsix_be.member.service.MemberService;
+import com.example.hotsix_be.payment.cashlog.dto.InitCashLogDto;
 import com.example.hotsix_be.payment.cashlog.service.CashLogService;
 import com.example.hotsix_be.payment.payment.dto.request.TossConfirmRequest;
 import com.example.hotsix_be.payment.payment.dto.request.TossPaymentRequest;
@@ -67,11 +68,12 @@ public class RechargeService {
                 .build();
 
         cashLogService.initCashLog(
-                member,
-                req.getTotalAmount(),
-                req.getOrderId(),
-                충전__무통장입금,
-                recharge
+                InitCashLogDto.of(
+                        member,
+                        req.getTotalAmount(),
+                        req.getOrderId(),
+                        충전__무통장입금,
+                        recharge)
         );
 
         return recharge;
@@ -87,11 +89,13 @@ public class RechargeService {
                 .build();
 
         cashLogService.initCashLog(
-                member,
-                req.getTotalAmount(),
-                req.getOrderId(),
-                충전__토스페이먼츠,
-                recharge
+                InitCashLogDto.of(
+                        member,
+                        req.getTotalAmount(),
+                        req.getOrderId(),
+                        충전__토스페이먼츠,
+                        recharge
+                )
         );
 
         processRecharge(recharge, discountAmount);

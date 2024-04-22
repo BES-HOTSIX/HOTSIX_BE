@@ -3,6 +3,7 @@ package com.example.hotsix_be.payment.pay.service;
 import com.example.hotsix_be.coupon.dto.request.UseCouponRequest;
 import com.example.hotsix_be.coupon.service.CouponService;
 import com.example.hotsix_be.member.entity.Member;
+import com.example.hotsix_be.payment.cashlog.dto.InitCashLogDto;
 import com.example.hotsix_be.payment.cashlog.entity.CashLog;
 import com.example.hotsix_be.payment.cashlog.entity.EventType;
 import com.example.hotsix_be.payment.cashlog.service.CashLogService;
@@ -46,11 +47,13 @@ public class PayService {
                 .build();
 
         cashLogService.addCashLog(
-                buyer,
-                payPrice * -1,
-                reservation.getOrderId(),
-                eventType,
-                pay,
+                InitCashLogDto.of(
+                        buyer,
+                        payPrice * -1,
+                        reservation.getOrderId(),
+                        eventType,
+                        pay
+                ),
                 discountAmount
         );
 
