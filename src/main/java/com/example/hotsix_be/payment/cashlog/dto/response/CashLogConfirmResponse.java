@@ -1,19 +1,13 @@
 package com.example.hotsix_be.payment.cashlog.dto.response;
 
-import com.example.hotsix_be.member.entity.Member;
-import com.example.hotsix_be.payment.cashlog.entity.CashLog;
 import com.example.hotsix_be.payment.cashlog.entity.EventType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
 
-import static lombok.AccessLevel.PRIVATE;
-
 @Schema(description = "CashLog 엔티티 내용 응답")
 @Getter
-@RequiredArgsConstructor(access = PRIVATE)
 public class CashLogConfirmResponse {
 
     @Schema(description = "CashLog 아이디", example = "1")
@@ -34,22 +28,7 @@ public class CashLogConfirmResponse {
     @Schema(description = "CashLog 생성 일시", example = "2024-02-06 17:26:48.772390")
     private final LocalDateTime createdAt;
 
-    public static CashLogConfirmResponse of(final CashLog cashLog) {
-        Member member = cashLog.getMember();
-
-        Long memberId = (member != null) ? member.getId() : null;
-
-        return CashLogConfirmResponse.of(
-                cashLog.getId(),
-                cashLog.getEventType(),
-                cashLog.getAmount(),
-                memberId,
-                cashLog.getOrderId(),
-                cashLog.getCreatedAt()
-        );
-    }
-
-    public static CashLogConfirmResponse of(
+    public CashLogConfirmResponse(
             final Long cashLogId,
             final EventType eventType,
             final Long price,
@@ -57,13 +36,11 @@ public class CashLogConfirmResponse {
             final String orderId,
             final LocalDateTime createdAt
     ) {
-        return new CashLogConfirmResponse(
-                cashLogId,
-                eventType.toString(),
-                price,
-                memberId,
-                orderId,
-                createdAt
-        );
+        this.cashLogId = cashLogId;
+        this.eventType = eventType.toString();
+        this.price = price;
+        this.memberId = memberId;
+        this.orderId = orderId;
+        this.createdAt = createdAt;
     }
 }

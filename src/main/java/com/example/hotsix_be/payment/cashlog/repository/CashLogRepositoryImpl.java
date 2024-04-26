@@ -3,11 +3,10 @@ package com.example.hotsix_be.payment.cashlog.repository;
 import com.example.hotsix_be.member.entity.Member;
 import com.example.hotsix_be.payment.cashlog.dto.response.CashLogConfirmResponse;
 import com.example.hotsix_be.payment.cashlog.entity.CashLog;
-import com.example.hotsix_be.payment.cashlog.entity.QCashLog;
 import com.example.hotsix_be.payment.pay.entity.Pay;
-import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.PathBuilder;
 import com.querydsl.core.types.dsl.Wildcard;
@@ -22,6 +21,8 @@ import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.hotsix_be.payment.cashlog.entity.QCashLog.cashLog;
+
 @Repository
 @RequiredArgsConstructor
 public class CashLogRepositoryImpl implements CashLogRepositoryCustom {
@@ -29,8 +30,6 @@ public class CashLogRepositoryImpl implements CashLogRepositoryCustom {
 
     @Override
     public Page<CashLogConfirmResponse> getCashLogConfirmResForPayByMember(Member member, Pageable pageable) {
-        QCashLog cashLog = QCashLog.cashLog;
-
         List<OrderSpecifier<?>> orders = new ArrayList<>();
 
         pageable.getSort().stream().forEach(order -> {
@@ -47,14 +46,15 @@ public class CashLogRepositoryImpl implements CashLogRepositoryCustom {
 
         BooleanExpression conditions = condition1.and(condition2);
 
-        List<Tuple> content = jpaQueryFactory
-                .select(
+        List<CashLogConfirmResponse> res = jpaQueryFactory
+                .select(Projections.constructor(CashLogConfirmResponse.class,
                         cashLog.id,
                         cashLog.eventType,
                         cashLog.amount,
                         cashLog.member.id,
                         cashLog.orderId,
                         cashLog.createdAt
+                        )
                 )
                 .from(cashLog)
                 .where(conditions)
@@ -63,17 +63,7 @@ public class CashLogRepositoryImpl implements CashLogRepositoryCustom {
                 .orderBy(order)
                 .fetch();
 
-        List<CashLogConfirmResponse> res = content.stream()
-                .map(tuple -> CashLogConfirmResponse.of(
-                        tuple.get(cashLog.id),
-                        tuple.get(cashLog.eventType),
-                        tuple.get(cashLog.amount),
-                        tuple.get(cashLog.member.id),
-                        tuple.get(cashLog.orderId),
-                        tuple.get(cashLog.createdAt)
-                )).toList();
-
-        // count 쿼리 최적화를 위해 JPAQuery<> 값을 받아 PageableExcution
+        // count 쿼리 최적화를 위해 JPAQuery<> 값을 받아 PageableExecution
         JPAQuery<Long> totalCount = jpaQueryFactory.select(Wildcard.count)
                 .from(cashLog)
                 .where(conditions);

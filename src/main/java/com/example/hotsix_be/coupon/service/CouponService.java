@@ -39,7 +39,7 @@ public class CouponService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new AuthException(NOT_FOUND_MEMBER_BY_ID));
 
-        if (alreadHasNewCustomerCoupon(member, CouponType.신규회원)) {
+        if (alreadyHasNewCustomerCoupon(member, CouponType.신규회원)) {
             throw new CouponException(ExceptionCode.ALREADY_ISSUED_FIRST_RESERVATION_COUPON);
         }
 
@@ -62,7 +62,7 @@ public class CouponService {
     }
 
 
-    private boolean alreadHasNewCustomerCoupon(Member member, CouponType couponType) {
+    private boolean alreadyHasNewCustomerCoupon(Member member, CouponType couponType) {
         return couponRepository.findByMemberAndCouponType(member, couponType).isPresent();
     }
 

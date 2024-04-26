@@ -52,8 +52,7 @@ public class PayService {
                         payPrice * -1,
                         reservation.getOrderId(),
                         eventType,
-                        pay
-                ),
+                        pay),
                 discountAmount
         );
 

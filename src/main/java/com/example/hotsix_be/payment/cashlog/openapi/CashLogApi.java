@@ -21,7 +21,7 @@ public interface CashLogApi {
 
     @Operation(
             summary = "내 캐시 내역 페이지 조회",
-            description = "현재 로그인한 회원의 캐시 입출금 내역을 CashLog 엔티티를 기반으로 조회합니다."
+            description = "현재 로그인한 회원의 캐시 결제 내역을 CashLog 엔티티를 기반으로 조회합니다."
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "내 캐시 사용 내역 조회 성공"),

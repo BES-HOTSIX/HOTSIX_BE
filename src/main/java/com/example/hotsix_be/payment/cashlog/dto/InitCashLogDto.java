@@ -22,7 +22,8 @@ public class InitCashLogDto<T extends CashLogMarker> {
             final Long price,
             final String orderId,
             final EventType eventType,
-            final T cashLogMarker) {
+            final T cashLogMarker
+    ) {
         return new InitCashLogDto<>(member, price, orderId, eventType, cashLogMarker);
     }
 }
