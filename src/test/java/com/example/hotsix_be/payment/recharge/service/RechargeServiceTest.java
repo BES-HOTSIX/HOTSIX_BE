@@ -114,7 +114,8 @@ public class RechargeServiceTest {
         Throwable thrown = catchThrowable(() -> rechargeService.doRecharge(null, Accessor.member(1L), null));
 
         // then
-        assertThat(thrown).isInstanceOf(PaymentException.class)
+        assertThat(thrown)
+                .isInstanceOf(PaymentException.class)
                 .hasMessage(INVALID_REQUEST.getMessage());
     }
 
@@ -128,7 +129,8 @@ public class RechargeServiceTest {
         Throwable thrown = catchThrowable(() -> rechargeService.processRecharge(recharge, null));
 
         // then
-        assertThat(thrown).isInstanceOf(PaymentException.class)
+        assertThat(thrown)
+                .isInstanceOf(PaymentException.class)
                 .hasMessage(PAYMENT_NOT_POSSIBLE.getMessage());
     }
 
@@ -155,7 +157,8 @@ public class RechargeServiceTest {
         Throwable thrown = catchThrowable(() -> rechargeService.cancelRecharge(recharge));
 
         // then
-        assertThat(thrown).isInstanceOf(PaymentException.class)
+        assertThat(thrown)
+                .isInstanceOf(PaymentException.class)
                 .hasMessage(CANCELLATION_NOT_POSSIBLE.getMessage());
     }
 
@@ -181,7 +184,8 @@ public class RechargeServiceTest {
         Throwable thrown = catchThrowable(() -> rechargeService.findByOrderId("ABCD"));
 
         // then
-        assertThat(thrown).isInstanceOf(PaymentException.class)
+        assertThat(thrown)
+                .isInstanceOf(PaymentException.class)
                 .hasMessage(NOT_FOUND_RECHARGE_ID.getMessage());
     }
 
@@ -207,7 +211,8 @@ public class RechargeServiceTest {
         Throwable thrown = catchThrowable(() -> rechargeService.findByOrderIdAndMemberId("ABCDE", 1L));
 
         // then
-        assertThat(thrown).isInstanceOf(PaymentException.class)
+        assertThat(thrown)
+                .isInstanceOf(PaymentException.class)
                 .hasMessage(NOT_FOUND_RECHARGE_ID.getMessage());
     }
 

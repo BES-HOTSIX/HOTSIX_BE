@@ -51,7 +51,6 @@ public class Hotel extends DateEntity {
                     foreignKeyDefinition = "foreign key (hotel_id) references hotels (id) on delete cascade"
             )
     )
-
     private List<String> facility = new ArrayList<>();
 
     private String nickname;

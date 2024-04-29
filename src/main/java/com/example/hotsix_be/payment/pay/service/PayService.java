@@ -4,7 +4,6 @@ import com.example.hotsix_be.coupon.dto.request.UseCouponRequest;
 import com.example.hotsix_be.coupon.service.CouponService;
 import com.example.hotsix_be.member.entity.Member;
 import com.example.hotsix_be.payment.cashlog.dto.InitCashLogDto;
-import com.example.hotsix_be.payment.cashlog.entity.CashLog;
 import com.example.hotsix_be.payment.cashlog.entity.EventType;
 import com.example.hotsix_be.payment.cashlog.service.CashLogService;
 import com.example.hotsix_be.payment.pay.entity.Pay;
@@ -39,7 +38,7 @@ public class PayService {
 
         Member buyer = reservation.getMember();
         Long payPrice = reservation.getPrice();
-        Member owner = reservation.getHotel().getOwner();
+        Member owner = reservation.getHost();
 
         Pay pay = Pay.builder()
                 .reservation(reservation)
@@ -63,7 +62,7 @@ public class PayService {
     }
 
     @Transactional
-    public CashLog payByCashOnly(final Reservation reservation, final UseCouponRequest useCouponRequest) {
+    public Pay payByCashOnly(final Reservation reservation, final UseCouponRequest useCouponRequest) {
         Long discountAmount = useCouponRequest.getDiscountAmount();
 
         if (!canPay(reservation, 0L, discountAmount))
@@ -77,7 +76,7 @@ public class PayService {
 
     // 복합 결제 및 토스페이먼츠 결제
     @Transactional
-    public CashLog payByTossPayments(
+    public Pay payByTossPayments(
             final TossConfirmRequest tossConfirmRequest,
             final Reservation reservation,
             final Long discountAmount
