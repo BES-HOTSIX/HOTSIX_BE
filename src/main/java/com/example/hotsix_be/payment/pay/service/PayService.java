@@ -105,7 +105,7 @@ public class PayService {
         return doPay(reservation, EventType.결제__토스페이먼츠, discountAmount);
     }
 
-    public boolean canPay(final Reservation reservation, final Long pgPayPrice, final Long discountAmount) {
+    private boolean canPay(final Reservation reservation, final Long pgPayPrice, final Long discountAmount) {
         Member member = reservation.getMember();
         Long restCash = member.getRestCash();
         Long price = reservation.getPrice();
