@@ -32,6 +32,7 @@ import static com.example.hotsix_be.common.exception.ExceptionCode.INSUFFICIENT_
 import static com.example.hotsix_be.common.exception.ExceptionCode.INVALID_REQUEST;
 import static com.example.hotsix_be.coupon.entity.CouponType.신규회원;
 import static com.example.hotsix_be.payment.cashlog.entity.EventType.결제__예치금;
+import static com.example.hotsix_be.payment.cashlog.entity.EventType.결제__토스페이먼츠;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.ArgumentMatchers.any;
@@ -60,12 +61,20 @@ public class PayServiceTest {
     private final String guestNickname = "Park";
     private final Long guestRestCash = 20_000L;
 
+    private final Long wrongGuestRestCash = 0L;
+
     private final String orderId = "o8sJILLP1EP6V1nLksCBL";
     private final Long totalAmount = 50_000L;
     private final String method = "간편결제";
     private final String status = "DONE";
     private final String secret = "ps_E92LAa5PVbqlR7g5qzJJ37YmpXyJ";
     private final String bankCode = "20";
+
+    private final String paymentType = "NORMAL";
+    private final String pgPrice = "100000";
+    private final String paymentKey = "5zJ4xY7m0kODnyRpQWGrN2xqGlNvLrKwv1M9ENjbeoPaZdL6";
+
+    private final String wrongPgPrice = "0";
 
     private final CouponType couponType = 신규회원;
     private final Long discountAmount = 0L;
@@ -88,7 +97,8 @@ public class PayServiceTest {
     private final Long reservePrice = 10_000L;
     private final boolean isPaid = false;
 
-    private final EventType eventType = 결제__예치금;
+    private final EventType pointPayEventType = 결제__예치금;
+    private final EventType tossPayEventType = 결제__토스페이먼츠;
 
     private final Hotel hotel = getDataHotel();
 
@@ -133,7 +143,7 @@ public class PayServiceTest {
         assertThat(savedInitCashLogDto.getMember().getId()).isEqualTo(guest.getId());
         assertThat(savedInitCashLogDto.getPrice()).isEqualTo(reservation.getPrice() * -1);
         assertThat(savedInitCashLogDto.getOrderId()).isEqualTo(reservation.getOrderId());
-        assertThat(savedInitCashLogDto.getEventType()).isEqualTo(eventType);
+        assertThat(savedInitCashLogDto.getEventType()).isEqualTo(pointPayEventType);
         assertThat(savedInitCashLogDto.getCashLogMarker()).isInstanceOf(Pay.class);
 
         assertThat(savedPay.getReservation()).isEqualTo(reservation);
@@ -146,7 +156,7 @@ public class PayServiceTest {
         Member guest = Member.builder()
                 .id(guestId)
                 .nickname(guestNickname)
-                .restCash(guestRestCash)
+                .restCash(wrongGuestRestCash)
                 .build();
 
         Reservation reservation = Reservation.builder()
@@ -223,7 +233,14 @@ public class PayServiceTest {
                 .member(guest)
                 .build();
 
-        TossConfirmRequest tossConfirmRequest = new TossConfirmRequest("NORMAL", "oa4CWyWY5m89PNh7xJwhk1", "100000", "5zJ4xY7m0kODnyRpQWGrN2xqGlNvLrKwv1M9ENjbeoPaZdL6", 0L, 신규회원);
+        TossConfirmRequest tossConfirmRequest = new TossConfirmRequest(
+                paymentType,
+                orderId,
+                pgPrice,
+                paymentKey,
+                discountAmount,
+                couponType
+        );
 
         when(tossService.confirmTossPayment(any())).thenReturn(this.getTossPaymentRequestMono());
 
@@ -246,7 +263,7 @@ public class PayServiceTest {
         assertThat(savedInitCashLogDto.getMember().getId()).isEqualTo(guest.getId());
         assertThat(savedInitCashLogDto.getPrice()).isEqualTo(reservation.getPrice() * -1);
         assertThat(savedInitCashLogDto.getOrderId()).isEqualTo(reservation.getOrderId());
-        assertThat(savedInitCashLogDto.getEventType()).isEqualTo(eventType);
+        assertThat(savedInitCashLogDto.getEventType()).isEqualTo(tossPayEventType);
         assertThat(savedInitCashLogDto.getCashLogMarker()).isInstanceOf(Pay.class);
 
         assertThat(savedPay.getReservation()).isEqualTo(reservation);
@@ -259,7 +276,7 @@ public class PayServiceTest {
         Member guest = Member.builder()
                 .id(guestId)
                 .nickname(guestNickname)
-                .restCash(guestRestCash)
+                .restCash(wrongGuestRestCash)
                 .build();
 
         Reservation reservation = Reservation.builder()
@@ -272,7 +289,14 @@ public class PayServiceTest {
                 .member(guest)
                 .build();
 
-        TossConfirmRequest tossConfirmRequest = new TossConfirmRequest("NORMAL", "oa4CWyWY5m89PNh7xJwhk1", "50000", "5zJ4xY7m0kODnyRpQWGrN2xqGlNvLrKwv1M9ENjbeoPaZdL6", 0L, 신규회원);
+        TossConfirmRequest tossConfirmRequest = new TossConfirmRequest(
+                paymentType,
+                orderId,
+                wrongPgPrice,
+                paymentKey,
+                discountAmount,
+                couponType
+        );
 
         // when
         Throwable thrown = catchThrowable(() -> payService.payByTossPayments(tossConfirmRequest, reservation, 0L));
