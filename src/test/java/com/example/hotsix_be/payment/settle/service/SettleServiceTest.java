@@ -138,7 +138,8 @@ public class SettleServiceTest {
         Throwable thrown = catchThrowable(() -> settleService.doSettle(reservation));
 
         // then
-        assertThat(thrown).isInstanceOf(PaymentException.class)
+        assertThat(thrown)
+                .isInstanceOf(PaymentException.class)
                 .hasMessage(ALREADY_BEEN_SETTLED.getMessage());
     }
 

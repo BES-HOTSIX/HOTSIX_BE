@@ -3,8 +3,8 @@ package com.example.hotsix_be.payment.pay.controller;
 import com.example.hotsix_be.common.controller.DefaultControllerTest;
 import com.example.hotsix_be.coupon.dto.request.UseCouponRequest;
 import com.example.hotsix_be.coupon.service.CouponService;
-import com.example.hotsix_be.payment.cashlog.entity.CashLog;
 import com.example.hotsix_be.payment.cashlog.service.CashLogService;
+import com.example.hotsix_be.payment.pay.entity.Pay;
 import com.example.hotsix_be.payment.pay.service.PayService;
 import com.example.hotsix_be.payment.payment.dto.request.TossConfirmRequest;
 import com.example.hotsix_be.reservation.service.ReservationService;
@@ -82,7 +82,7 @@ public class PayControllerTest extends DefaultControllerTest {
     @DisplayName("보유하고 있는 캐시만을 통해 결제합니다.")
     void payByCash() throws Exception {
         // given
-        when(payService.payByCashOnly(any(), any())).thenReturn(CashLog.builder().id(1L).build());
+        when(payService.payByCashOnly(any(), any())).thenReturn(Pay.builder().id(1L).build());
         when(cashLogService.getCashLogIdById(any())).thenReturn(null);
 
         // when
@@ -98,7 +98,7 @@ public class PayControllerTest extends DefaultControllerTest {
     @DisplayName("토스페이먼츠만을 통해 잔액을 모두 결제하거나 사용하고자 하는 캐시를 차감하고 남은 금액을 결제합니다.")
     void payByToss() throws Exception {
         // given
-        when(payService.payByTossPayments(any(), any(), any())).thenReturn(CashLog.builder().id(1L).build());
+        when(payService.payByTossPayments(any(), any(), any())).thenReturn(Pay.builder().id(1L).build());
 
         // when
         final ResultActions resultActions = performPayByToss(1L, new TossConfirmRequest("NORMAL", "a4CWyWY5m89PNh7xJwhk1", "100000", "5zJ4xY7m0kODnyRpQWGrN2xqGlNvLrKwv1M9ENjbeoPaZdL6", 0L, 신규회원 ));
